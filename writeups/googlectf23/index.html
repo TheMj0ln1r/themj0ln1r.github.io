@@ -1,0 +1,261 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><title>
+         Google CTF 2023
+        
+    </title><meta content="Google CTF 2023" property=og:title><meta content="Known as TheMj0ln1r" property=og:description><meta content="Known as TheMj0ln1r" name=description><link href=/favicons/favicon.ico rel=icon type=image/png><link href=https://themj0ln1r.github.io/fonts.css rel=stylesheet><script src=https://themj0ln1r.github.io/js/codeblock.js></script><script src=https://themj0ln1r.github.io/js/toc.js></script><script src=https://themj0ln1r.github.io/js/note.js></script><script>MathJax={tex:{inlineMath:[[`\$`,`\$`],[`\\\\(`,`\\\\)`]]}}</script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><link title="Charan Nomula" href=https://themj0ln1r.github.io/atom.xml rel=alternate type=application/atom+xml><link href=https://themj0ln1r.github.io/theme/light.css rel=stylesheet><link href=https://themj0ln1r.github.io/theme/dark.css id=darkModeStyle rel=stylesheet><script src=https://themj0ln1r.github.io/js/themetoggle.js></script><script>setTheme(getSavedTheme())</script><link href=https://themj0ln1r.github.io/main.css media=screen rel=stylesheet><body><div class=content><header><div class=main><a href=https://themj0ln1r.github.io/>Charan Nomula</a><div class=socials><a class=social href=https://x.com/TheMj0ln1r/ rel=me target=_blank> <img alt=twitter src=https://themj0ln1r.github.io/social_icons/twitter.svg> </a><a class=social href=https://linkedin.com/in/mj0ln1r/ rel=me target=_blank> <img alt=linkedin src=https://themj0ln1r.github.io/social_icons/linkedin.svg> </a><a class=social href=https://github.com/TheMj0ln1r/ rel=me target=_blank> <img alt=github src=https://themj0ln1r.github.io/social_icons/github.svg> </a><a href="mailto: playermj0ln1r@gmail.com" class=social rel=me target=_blank> <img alt=Email src=https://themj0ln1r.github.io/social_icons/email.svg> </a></div></div><nav><a href=https://themj0ln1r.github.io/posts style=margin-left:.5em>/posts</a><a href=https://themj0ln1r.github.io/writeups style=margin-left:.5em>/writeups</a><a href=https://themj0ln1r.github.io/projects style=margin-left:.5em>/projects</a><a href=https://themj0ln1r.github.io/contact style=margin-left:.5em>/contact</a><a href=https://themj0ln1r.github.io/tags style=margin-left:.5em>/tags</a> |<a onclick="toggleTheme(); event.preventDefault();" href=# id=dark-mode-toggle> <img alt=Light id=sun-icon src=https://themj0ln1r.github.io/feather/sun.svg style=filter:invert()> <img alt=Dark id=moon-icon src=https://themj0ln1r.github.io/feather/moon.svg> </a><script>updateItemToggleTheme()</script></nav></header><main><article><div class=title><div class=page-header>Google CTF 2023<span class=primary-color style=font-size:1.6em>.</span></div><div class=meta>Posted on <time>2023-06-26</time><span class=tags-label> :: Tags:</span><span class=tags> <a class=post-tag href=https://themj0ln1r.github.io/tags/ctf/>ctf</a> </span></div></div><div class=toc-container><h1 class=toc-title>Table of Contents</h1><ul class=toc-list><li><a href=https://themj0ln1r.github.io/writeups/googlectf23/#crypto-least-common-genominator>Crypto - LEAST COMMON GENOMINATOR?</a></ul></div><section class=body><p>Hello all! I played <a href=https://ctftime.org/event/1929 target=_blank>Google CTF 2023</a> which was happened from 24 June to 26 June.<h1 id=crypto-least-common-genominator><a aria-label="Anchor link for: crypto-least-common-genominator" class=zola-anchor href=#crypto-least-common-genominator>Crypto - LEAST COMMON GENOMINATOR?</a></h1><p><img alt=LCG src=/assets/img/ctf_img/googlectf23/googlectf23_lcg.png><p>Attached File : [generate.py,dump.txt,flag.txt,public.pem]<p><code>generate.py</code><pre class=language-python data-lang=python style=color:#61676c;background-color:#fafafa><code class=language-python data-lang=python><span style=color:#fa6e32>from </span><span>secret </span><span style=color:#fa6e32>import </span><span>config
+</span><span style=color:#fa6e32>from </span><span>Crypto</span><span style=color:#ed9366>.</span><span>PublicKey </span><span style=color:#fa6e32>import </span><span>RSA
+</span><span style=color:#fa6e32>from </span><span>Crypto</span><span style=color:#ed9366>.</span><span>Util</span><span style=color:#ed9366>.</span><span>number </span><span style=color:#fa6e32>import </span><span>bytes_to_long</span><span style=color:#61676ccc>, </span><span>isPrime
+</span><span>
+</span><span style=color:#fa6e32>class </span><span style=color:#399ee6>LCG</span><span>:
+</span><span>    lcg_m </span><span style=color:#ed9366>= </span><span>config</span><span style=color:#ed9366>.</span><span>m
+</span><span>    lcg_c </span><span style=color:#ed9366>= </span><span>config</span><span style=color:#ed9366>.</span><span>c
+</span><span>    lcg_n </span><span style=color:#ed9366>= </span><span>config</span><span style=color:#ed9366>.</span><span>n
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>def </span><span style=color:#f07171>__init__</span><span>(</span><span style=color:#ff8f40>self</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>lcg_s</span><span>):
+</span><span>        </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>state </span><span style=color:#ed9366>= </span><span>lcg_s
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>def </span><span style=color:#f29718>next</span><span>(</span><span style=color:#ff8f40>self</span><span>):
+</span><span>        </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>state </span><span style=color:#ed9366>= </span><span>(</span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>state </span><span style=color:#ed9366>* </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>lcg_m </span><span style=color:#ed9366>+ </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>lcg_c) </span><span style=color:#ed9366>% </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>lcg_n
+</span><span>        </span><span style=color:#fa6e32>return </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>state
+</span><span>
+</span><span style=color:#fa6e32>if </span><span>__name__ </span><span style=color:#ed9366>== </span><span style=color:#86b300>'__main__'</span><span>:
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>assert </span><span style=color:#ff8f40>4096 </span><span style=color:#ed9366>% </span><span>config</span><span style=color:#ed9366>.</span><span>it </span><span style=color:#ed9366>== </span><span style=color:#ff8f40>0
+</span><span>    </span><span style=color:#fa6e32>assert </span><span>config</span><span style=color:#ed9366>.</span><span>it </span><span style=color:#ed9366>== </span><span style=color:#ff8f40>8
+</span><span>    </span><span style=color:#fa6e32>assert </span><span style=color:#ff8f40>4096 </span><span style=color:#ed9366>% </span><span>config</span><span style=color:#ed9366>.</span><span>bits </span><span style=color:#ed9366>== </span><span style=color:#ff8f40>0
+</span><span>    </span><span style=color:#fa6e32>assert </span><span>config</span><span style=color:#ed9366>.</span><span>bits </span><span style=color:#ed9366>== </span><span style=color:#ff8f40>512
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Find prime value of specified bits a specified amount of times
+</span><span>    seed </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>211286818345627549183608678726370412218029639873054513839005340650674982169404937862395980568550063504804783328450267566224937880641772833325018028629959635
+</span><span>    lcg </span><span style=color:#ed9366>= </span><span style=color:#f29718>LCG</span><span>(seed)
+</span><span>    primes_arr </span><span style=color:#ed9366>= </span><span>[]
+</span><span>    
+</span><span>    dump </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>True
+</span><span>    items </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>0
+</span><span>    dump_file </span><span style=color:#ed9366>= </span><span style=color:#f07171>open</span><span>(</span><span style=color:#86b300>"dump.txt"</span><span style=color:#61676ccc>, </span><span style=color:#86b300>"w"</span><span>)
+</span><span>
+</span><span>    primes_n </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>1
+</span><span>    </span><span style=color:#fa6e32>while </span><span style=color:#ff8f40>True</span><span>:
+</span><span>        </span><span style=color:#fa6e32>for </span><span>i </span><span style=color:#fa6e32>in </span><span style=color:#f07171>range</span><span>(config</span><span style=color:#ed9366>.</span><span>it):
+</span><span>            </span><span style=color:#fa6e32>while </span><span style=color:#ff8f40>True</span><span>:
+</span><span>                prime_candidate </span><span style=color:#ed9366>= </span><span>lcg</span><span style=color:#ed9366>.</span><span style=color:#f29718>next</span><span>()
+</span><span>                </span><span style=color:#fa6e32>if </span><span>dump:
+</span><span>                    dump_file</span><span style=color:#ed9366>.</span><span style=color:#f29718>write</span><span>(</span><span style=color:#55b4d4;font-style:italic>str</span><span>(prime_candidate) </span><span style=color:#ed9366>+ </span><span style=color:#86b300>'</span><span style=color:#4cbf99>\n</span><span style=color:#86b300>'</span><span>)
+</span><span>                    items </span><span style=color:#ed9366>+= </span><span style=color:#ff8f40>1
+</span><span>                    </span><span style=color:#fa6e32>if </span><span>items </span><span style=color:#ed9366>== </span><span style=color:#ff8f40>6</span><span>:
+</span><span>                        dump </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>False
+</span><span>                        dump_file</span><span style=color:#ed9366>.</span><span style=color:#f29718>close</span><span>()
+</span><span>                </span><span style=color:#fa6e32>if </span><span style=color:#ed9366>not </span><span style=color:#f29718>isPrime</span><span>(prime_candidate):
+</span><span>                    </span><span style=color:#fa6e32>continue
+</span><span>                </span><span style=color:#fa6e32>elif </span><span>prime_candidate</span><span style=color:#ed9366>.</span><span style=color:#f29718>bit_length</span><span>() </span><span style=color:#ed9366>!= </span><span>config</span><span style=color:#ed9366>.</span><span>bits:
+</span><span>                    </span><span style=color:#fa6e32>continue
+</span><span>                </span><span style=color:#fa6e32>else</span><span>:
+</span><span>                    primes_n </span><span style=color:#ed9366>*= </span><span>prime_candidate
+</span><span>                    primes_arr</span><span style=color:#ed9366>.</span><span style=color:#f29718>append</span><span>(prime_candidate)
+</span><span>                    </span><span style=color:#fa6e32>break
+</span><span>        
+</span><span>        </span><span style=color:#abb0b6;font-style:italic># Check bit length
+</span><span>        </span><span style=color:#fa6e32>if </span><span>primes_n</span><span style=color:#ed9366>.</span><span style=color:#f29718>bit_length</span><span>() </span><span style=color:#ed9366>> </span><span style=color:#ff8f40>4096</span><span>:
+</span><span>            </span><span style=color:#f07171>print</span><span>(</span><span style=color:#86b300>"bit length"</span><span style=color:#61676ccc>, </span><span>primes_n</span><span style=color:#ed9366>.</span><span style=color:#f29718>bit_length</span><span>())
+</span><span>            primes_arr</span><span style=color:#ed9366>.</span><span style=color:#f29718>clear</span><span>()
+</span><span>            primes_n </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>1
+</span><span>            </span><span style=color:#fa6e32>continue
+</span><span>        </span><span style=color:#fa6e32>else</span><span>:
+</span><span>            </span><span style=color:#fa6e32>break
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Create public key 'n'
+</span><span>    n </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>1
+</span><span>    </span><span style=color:#fa6e32>for </span><span>j </span><span style=color:#fa6e32>in </span><span>primes_arr:
+</span><span>        n </span><span style=color:#ed9366>*= </span><span>j
+</span><span>    </span><span style=color:#f07171>print</span><span>(</span><span style=color:#86b300>"[+] Public Key: "</span><span style=color:#61676ccc>, </span><span>n)
+</span><span>    </span><span style=color:#f07171>print</span><span>(</span><span style=color:#86b300>"[+] size: "</span><span style=color:#61676ccc>, </span><span>n</span><span style=color:#ed9366>.</span><span style=color:#f29718>bit_length</span><span>()</span><span style=color:#61676ccc>, </span><span style=color:#86b300>"bits"</span><span>)
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Calculate totient 'Phi(n)'
+</span><span>    phi </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>1
+</span><span>    </span><span style=color:#fa6e32>for </span><span>k </span><span style=color:#fa6e32>in </span><span>primes_arr:
+</span><span>        phi </span><span style=color:#ed9366>*= </span><span>(k </span><span style=color:#ed9366>- </span><span style=color:#ff8f40>1</span><span>)
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Calculate private key 'd'
+</span><span>    d </span><span style=color:#ed9366>= </span><span style=color:#f07171>pow</span><span>(config</span><span style=color:#ed9366>.</span><span>e</span><span style=color:#61676ccc>, </span><span style=color:#ed9366>-</span><span style=color:#ff8f40>1</span><span style=color:#61676ccc>, </span><span>phi)
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Generate Flag
+</span><span>    </span><span style=color:#fa6e32>assert </span><span>config</span><span style=color:#ed9366>.</span><span>flag</span><span style=color:#ed9366>.</span><span style=color:#f29718>startswith</span><span>(</span><span style=color:#fa6e32>b</span><span style=color:#86b300>"CTF{"</span><span>)
+</span><span>    </span><span style=color:#fa6e32>assert </span><span>config</span><span style=color:#ed9366>.</span><span>flag</span><span style=color:#ed9366>.</span><span style=color:#f29718>endswith</span><span>(</span><span style=color:#fa6e32>b</span><span style=color:#86b300>"}"</span><span>)
+</span><span>    enc_flag </span><span style=color:#ed9366>= </span><span style=color:#f29718>bytes_to_long</span><span>(config</span><span style=color:#ed9366>.</span><span>flag)
+</span><span>    </span><span style=color:#fa6e32>assert </span><span>enc_flag </span><span style=color:#ed9366>< </span><span>n
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Encrypt Flag
+</span><span>    _enc </span><span style=color:#ed9366>= </span><span style=color:#f07171>pow</span><span>(enc_flag</span><span style=color:#61676ccc>, </span><span>config</span><span style=color:#ed9366>.</span><span>e</span><span style=color:#61676ccc>, </span><span>n)
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>with </span><span style=color:#f07171>open </span><span>(</span><span style=color:#86b300>"flag.txt"</span><span style=color:#61676ccc>, </span><span style=color:#86b300>"wb"</span><span>) </span><span style=color:#fa6e32>as </span><span>flag_file:
+</span><span>        flag_file</span><span style=color:#ed9366>.</span><span style=color:#f29718>write</span><span>(_enc</span><span style=color:#ed9366>.</span><span style=color:#f29718>to_bytes</span><span>(n</span><span style=color:#ed9366>.</span><span style=color:#f29718>bit_length</span><span>()</span><span style=color:#61676ccc>, </span><span style=color:#86b300>"little"</span><span>))
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Export RSA Key
+</span><span>    rsa </span><span style=color:#ed9366>= </span><span>RSA</span><span style=color:#ed9366>.</span><span style=color:#f29718>construct</span><span>((n</span><span style=color:#61676ccc>, </span><span>config</span><span style=color:#ed9366>.</span><span>e))
+</span><span>    </span><span style=color:#fa6e32>with </span><span style=color:#f07171>open </span><span>(</span><span style=color:#86b300>"public.pem"</span><span style=color:#61676ccc>, </span><span style=color:#86b300>"w"</span><span>) </span><span style=color:#fa6e32>as </span><span>pub_file:
+</span><span>        pub_file</span><span style=color:#ed9366>.</span><span style=color:#f29718>write</span><span>(rsa</span><span style=color:#ed9366>.</span><span style=color:#f29718>exportKey</span><span>()</span><span style=color:#ed9366>.</span><span style=color:#f29718>decode</span><span>())
+</span></code></pre><p><code>dump.txt</code><pre class=language-text data-lang=text style=color:#61676c;background-color:#fafafa><code class=language-text data-lang=text><span>2166771675595184069339107365908377157701164485820981409993925279512199123418374034275465590004848135946671454084220731645099286746251308323653144363063385
+</span><span>6729272950467625456298454678219613090467254824679318993052294587570153424935267364971827277137521929202783621553421958533761123653824135472378133765236115
+</span><span>2230396903302352921484704122705539403201050490164649102182798059926343096511158288867301614648471516723052092761312105117735046752506523136197227936190287
+</span><span>4578847787736143756850823407168519112175260092601476810539830792656568747136604250146858111418705054138266193348169239751046779010474924367072989895377792
+</span><span>7578332979479086546637469036948482551151240099803812235949997147892871097982293017256475189504447955147399405791875395450814297264039908361472603256921612
+</span><span>2550420443270381003007873520763042837493244197616666667768397146110589301602119884836605418664463550865399026934848289084292975494312467018767881691302197
+</span></code></pre><p>And the <code>flag.txt</code> is an encrypted flag.<p>Observations:<pre style=color:#61676c;background-color:#fafafa><code><span>1. The actual flag was encrypted with the RSA
+</span><span>2. The primes are generated using a Linear Congruential Generator
+</span><span>3. The seed is known
+</span><span>4. First 6 generated random values of LCG are known
+</span></code></pre><p>The LCG works on equation :<p>$$ X_{n+1} = (a \times X_{n}+c) mod p $$<p>Where,<ul><li>$$X(n)$$ is a sequence of pseudo random values.<li>$$p$$ is modulo defined as $$0 < p$$<li>$$a$$ is the multiplier defined as $$0 < a < p$$<li>$$c$$ is the increment $$0 <= c < p$$ ( if $$c = 0$$ the LCG is called Multiplicative Congruential Generator)</ul><p>We can see the generate.py implementation.<p><code>lcg_m = a lcg_c = c lcg_n = p</code><p>We have total generated values of lcg including seed.<p>We can find the <code>n(modulus)</code> by making the 4 $$2 \times 2$$ matrices from $$ X_1,X_2,X_3,X_4,X_5,X_6,X_7$$ and finding the GCD of the determinant values of these 7 values.<p>The 4 $$2 \times 2$$ matrices, $$ \begin{bmatrix} X_1 - X_0 & X_2 - X_1\ X_2 - X_0 & X_3 - X_1 \end{bmatrix} \begin{bmatrix} X_2 - X_0 & X_3 - X_1\ X_3 - X_0 & X_4 - X_1 \end{bmatrix}$$<p>$$ \begin{bmatrix} X_3 - X_0 & X_4 - X_1\ X_4 - X_0 & X_5 - X_1 \end{bmatrix}, \begin{bmatrix} X_4 - X_0 & X_5 - X_1\ X_5 - X_0 & X_6 - X_1 \end{bmatrix} $$<p>Finding determinant of these all and then finding the GCD of them will give us the modulus(n) used in lcg.<p>With $$n$$ we can find $$a$$ by solving these equations.<p>$$ X_1 = (a \times X_0+c) mod p\ X_2 = (a \times X_1+c) mod p\ $$<p>$$ X_2 - X_1 = (a \times X_1+c - (X_0 \times a+c)) mod p\ X_2 - X_1 = (a \times X_1 - (X_0 \times a)) mod p\ X_2 - X_1 = (X_1 - X_0) \times a mod p\ \frac{X_2 - X_1}{X_1 - X_0} = a mod p \ a = \frac{X_2 - X_1}{X_1 - X_0} mod p\ a = ((X_2 - X_1)) \times InverseMod(X_1 - X_0,p) mod p\ $$<p>Lets solve for $$c$$,<p>$$ X_1 = (a \times X_0+c) mod p\ X_1 - c = (a \times X_0) mod p\ -c = (a \times X_0 - X_1) mod p\ c = (X_1 - a \times X_0) mod p $$<p>So, with <code>n,c,m</code> we can generate entire series which is used to generate primes in the encryption.<p>The python implementation to find <code>n,c,m</code><pre class=language-python data-lang=python style=color:#61676c;background-color:#fafafa><code class=language-python data-lang=python><span style=color:#fa6e32>import </span><span>math
+</span><span>
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>calc_det</span><span>(</span><span style=color:#ff8f40>i</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>j</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>X</span><span>):
+</span><span>    a1 </span><span style=color:#ed9366>= </span><span>X[i] </span><span style=color:#ed9366>- </span><span>X[</span><span style=color:#ff8f40>0</span><span>]
+</span><span>    b1 </span><span style=color:#ed9366>= </span><span>X[i </span><span style=color:#ed9366>+ </span><span style=color:#ff8f40>1</span><span>] </span><span style=color:#ed9366>- </span><span>X[</span><span style=color:#ff8f40>1</span><span>]
+</span><span>    a2 </span><span style=color:#ed9366>= </span><span>X[j] </span><span style=color:#ed9366>- </span><span>X[</span><span style=color:#ff8f40>0</span><span>]
+</span><span>    b2 </span><span style=color:#ed9366>= </span><span>X[j </span><span style=color:#ed9366>+ </span><span style=color:#ff8f40>1</span><span>] </span><span style=color:#ed9366>- </span><span>X[</span><span style=color:#ff8f40>1</span><span>]
+</span><span>    det </span><span style=color:#ed9366>= </span><span>a1 </span><span style=color:#ed9366>* </span><span>b2 </span><span style=color:#ed9366>- </span><span>a2 </span><span style=color:#ed9366>* </span><span>b1
+</span><span>    </span><span style=color:#fa6e32>return </span><span style=color:#f07171>abs</span><span>(det)
+</span><span>
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>GCD</span><span>(</span><span style=color:#ff8f40>a</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>b</span><span>):
+</span><span>
+</span><span>    a </span><span style=color:#ed9366>= </span><span style=color:#f07171>abs</span><span>(a)
+</span><span>    b </span><span style=color:#ed9366>= </span><span style=color:#f07171>abs</span><span>(b)
+</span><span>    </span><span style=color:#fa6e32>while </span><span>a:
+</span><span>        a, b </span><span style=color:#ed9366>= </span><span>b </span><span style=color:#ed9366>% </span><span>a, a
+</span><span>    </span><span style=color:#fa6e32>return </span><span>b
+</span><span>
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>modInverse</span><span>(</span><span style=color:#ff8f40>a</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>m</span><span>):
+</span><span>    </span><span style=color:#fa6e32>if </span><span style=color:#f29718>GCD</span><span>(a</span><span style=color:#61676ccc>, </span><span>m) </span><span style=color:#ed9366>!= </span><span style=color:#ff8f40>1</span><span>:
+</span><span>        </span><span style=color:#fa6e32>return </span><span style=color:#ff8f40>None  </span><span style=color:#abb0b6;font-style:italic>#if not releatively prime no modinv
+</span><span>    u1, u2, u3 </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>1</span><span>, </span><span style=color:#ff8f40>0</span><span>, a
+</span><span>    v1, v2, v3 </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>0</span><span>, </span><span style=color:#ff8f40>1</span><span>, m
+</span><span>    </span><span style=color:#fa6e32>while </span><span>v3 </span><span style=color:#ed9366>!= </span><span style=color:#ff8f40>0</span><span>:
+</span><span>        q </span><span style=color:#ed9366>= </span><span>u3 </span><span style=color:#ed9366>// </span><span>v3 
+</span><span>        v1, v2, v3, u1, u2, u3 </span><span style=color:#ed9366>= </span><span>(
+</span><span>            u1 </span><span style=color:#ed9366>- </span><span>q </span><span style=color:#ed9366>* </span><span>v1</span><span style=color:#61676ccc>,
+</span><span>            u2 </span><span style=color:#ed9366>- </span><span>q </span><span style=color:#ed9366>* </span><span>v2</span><span style=color:#61676ccc>,
+</span><span>            u3 </span><span style=color:#ed9366>- </span><span>q </span><span style=color:#ed9366>* </span><span>v3</span><span style=color:#61676ccc>,
+</span><span>            v1</span><span style=color:#61676ccc>,
+</span><span>            v2</span><span style=color:#61676ccc>,
+</span><span>            v3</span><span style=color:#61676ccc>,
+</span><span>        )
+</span><span>    </span><span style=color:#fa6e32>return </span><span>u1 </span><span style=color:#ed9366>% </span><span>m
+</span><span>
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>main</span><span>():
+</span><span>    </span><span style=color:#fa6e32>while </span><span style=color:#ff8f40>True</span><span>:
+</span><span>        </span><span style=color:#fa6e32>try</span><span>:
+</span><span>            X </span><span style=color:#ed9366>= </span><span>[
+</span><span>                </span><span style=color:#ff8f40>211286818345627549183608678726370412218029639873054513839005340650674982169404937862395980568550063504804783328450267566224937880641772833325018028629959635</span><span style=color:#61676ccc>,
+</span><span>                </span><span style=color:#ff8f40>2166771675595184069339107365908377157701164485820981409993925279512199123418374034275465590004848135946671454084220731645099286746251308323653144363063385</span><span style=color:#61676ccc>,
+</span><span>                </span><span style=color:#ff8f40>6729272950467625456298454678219613090467254824679318993052294587570153424935267364971827277137521929202783621553421958533761123653824135472378133765236115</span><span style=color:#61676ccc>,
+</span><span>                </span><span style=color:#ff8f40>2230396903302352921484704122705539403201050490164649102182798059926343096511158288867301614648471516723052092761312105117735046752506523136197227936190287</span><span style=color:#61676ccc>,
+</span><span>                </span><span style=color:#ff8f40>4578847787736143756850823407168519112175260092601476810539830792656568747136604250146858111418705054138266193348169239751046779010474924367072989895377792</span><span style=color:#61676ccc>,
+</span><span>                </span><span style=color:#ff8f40>7578332979479086546637469036948482551151240099803812235949997147892871097982293017256475189504447955147399405791875395450814297264039908361472603256921612</span><span style=color:#61676ccc>,
+</span><span>                </span><span style=color:#ff8f40>2550420443270381003007873520763042837493244197616666667768397146110589301602119884836605418664463550865399026934848289084292975494312467018767881691302197</span><span style=color:#61676ccc>,
+</span><span>            ]
+</span><span>
+</span><span>            Det_X </span><span style=color:#ed9366>= </span><span>[]
+</span><span>            Det_X</span><span style=color:#ed9366>.</span><span style=color:#f29718>append</span><span>(</span><span style=color:#f29718>calc_det</span><span>(</span><span style=color:#ff8f40>1</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>2</span><span style=color:#61676ccc>, </span><span>X))
+</span><span>            Det_X</span><span style=color:#ed9366>.</span><span style=color:#f29718>append</span><span>(</span><span style=color:#f29718>calc_det</span><span>(</span><span style=color:#ff8f40>2</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>3</span><span style=color:#61676ccc>, </span><span>X))
+</span><span>            Det_X</span><span style=color:#ed9366>.</span><span style=color:#f29718>append</span><span>(</span><span style=color:#f29718>calc_det</span><span>(</span><span style=color:#ff8f40>3</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>4</span><span style=color:#61676ccc>, </span><span>X))
+</span><span>            Det_X</span><span style=color:#ed9366>.</span><span style=color:#f29718>append</span><span>(</span><span style=color:#f29718>calc_det</span><span>(</span><span style=color:#ff8f40>4</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>5</span><span style=color:#61676ccc>, </span><span>X))
+</span><span>
+</span><span>            found_p </span><span style=color:#ed9366>= </span><span>math</span><span style=color:#ed9366>.</span><span style=color:#f29718>gcd</span><span>(math</span><span style=color:#ed9366>.</span><span style=color:#f29718>gcd</span><span>(Det_X[</span><span style=color:#ff8f40>0</span><span>]</span><span style=color:#61676ccc>, </span><span>Det_X[</span><span style=color:#ff8f40>1</span><span>])</span><span style=color:#61676ccc>, </span><span>math</span><span style=color:#ed9366>.</span><span style=color:#f29718>gcd</span><span>(Det_X[</span><span style=color:#ff8f40>2</span><span>]</span><span style=color:#61676ccc>, </span><span>Det_X[</span><span style=color:#ff8f40>3</span><span>]))
+</span><span>
+</span><span>            </span><span style=color:#abb0b6;font-style:italic># To find 'a' and 'c' we need to solve the 
+</span><span>            mod_inv_a </span><span style=color:#ed9366>= </span><span style=color:#f29718>modInverse</span><span>((X[</span><span style=color:#ff8f40>2</span><span>] </span><span style=color:#ed9366>- </span><span>X[</span><span style=color:#ff8f40>3</span><span>])</span><span style=color:#61676ccc>, </span><span>found_p) 
+</span><span>            found_a </span><span style=color:#ed9366>= </span><span>((X[</span><span style=color:#ff8f40>3</span><span>] </span><span style=color:#ed9366>- </span><span>X[</span><span style=color:#ff8f40>4</span><span>]) </span><span style=color:#ed9366>* </span><span>mod_inv_a) </span><span style=color:#ed9366>% </span><span>found_p
+</span><span>            
+</span><span>            found_c </span><span style=color:#ed9366>= </span><span>(X[</span><span style=color:#ff8f40>4</span><span>] </span><span style=color:#ed9366>- </span><span>found_a </span><span style=color:#ed9366>* </span><span>X[</span><span style=color:#ff8f40>3</span><span>]) </span><span style=color:#ed9366>% </span><span>found_p
+</span><span>           
+</span><span>            </span><span style=color:#f07171>print</span><span>(</span><span style=color:#86b300>"n = </span><span style=color:#ff8f40>%d</span><span style=color:#4cbf99>\n</span><span style=color:#86b300>m = </span><span style=color:#ff8f40>%d</span><span style=color:#4cbf99>\n</span><span style=color:#86b300>c = </span><span style=color:#ff8f40>%d</span><span style=color:#4cbf99>\n</span><span style=color:#86b300>" </span><span style=color:#ed9366>% </span><span>(found_p</span><span style=color:#61676ccc>, </span><span>found_a</span><span style=color:#61676ccc>, </span><span>found_c))
+</span><span>            </span><span style=color:#fa6e32>break
+</span><span>        </span><span style=color:#fa6e32>except </span><span style=color:#55b4d4;font-style:italic>TypeError</span><span>:
+</span><span>            </span><span style=color:#fa6e32>pass
+</span><span>
+</span><span style=color:#fa6e32>if </span><span>__name__ </span><span style=color:#ed9366>== </span><span style=color:#86b300>"__main__"</span><span>:
+</span><span>    </span><span style=color:#f29718>main</span><span>()
+</span><span>
+</span><span style=color:#abb0b6;font-style:italic>#Output
+</span><span style=color:#abb0b6;font-style:italic># n = 8311271273016946265169120092240227882013893131681882078655426814178920681968884651437107918874328518499850252591810409558783335118823692585959490215446923
+</span><span style=color:#abb0b6;font-style:italic># m = 99470802153294399618017402366955844921383026244330401927153381788409087864090915476376417542092444282980114205684938728578475547514901286372129860608477
+</span><span style=color:#abb0b6;font-style:italic># c = 3910539794193409979886870049869456815685040868312878537393070815966881265118275755165613835833103526090552456472867019296386475520134783987251699999776365
+</span></code></pre><p>With these values as input we can find the modulus used in the encryption, <code>n</code>, <code>phi</code> and followed by <code>d</code>.<p>Or we can just import the <code>public.pem</code> to find <code>e,n</code> used in the encryption.<p>Here is the final solution script to get the flag.<pre class=language-python data-lang=python style=color:#61676c;background-color:#fafafa><code class=language-python data-lang=python><span style=color:#fa6e32>from </span><span>Crypto</span><span style=color:#ed9366>.</span><span>PublicKey </span><span style=color:#fa6e32>import </span><span>RSA
+</span><span style=color:#fa6e32>from </span><span>Crypto</span><span style=color:#ed9366>.</span><span>Util</span><span style=color:#ed9366>.</span><span>number </span><span style=color:#fa6e32>import </span><span>bytes_to_long</span><span style=color:#61676ccc>, </span><span>isPrime</span><span style=color:#61676ccc>,</span><span>long_to_bytes
+</span><span>
+</span><span style=color:#fa6e32>class </span><span style=color:#399ee6>LCG</span><span>:
+</span><span>    lcg_m </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>99470802153294399618017402366955844921383026244330401927153381788409087864090915476376417542092444282980114205684938728578475547514901286372129860608477
+</span><span>    lcg_c </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>3910539794193409979886870049869456815685040868312878537393070815966881265118275755165613835833103526090552456472867019296386475520134783987251699999776365
+</span><span>    lcg_n </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>8311271273016946265169120092240227882013893131681882078655426814178920681968884651437107918874328518499850252591810409558783335118823692585959490215446923
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>def </span><span style=color:#f07171>__init__</span><span>(</span><span style=color:#ff8f40>self</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>lcg_s</span><span>):
+</span><span>        </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>state </span><span style=color:#ed9366>= </span><span>lcg_s
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>def </span><span style=color:#f29718>next</span><span>(</span><span style=color:#ff8f40>self</span><span>):
+</span><span>        </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>state </span><span style=color:#ed9366>= </span><span>(</span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>state </span><span style=color:#ed9366>* </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>lcg_m </span><span style=color:#ed9366>+ </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>lcg_c) </span><span style=color:#ed9366>% </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>lcg_n
+</span><span>        </span><span style=color:#fa6e32>return </span><span style=color:#55b4d4;font-style:italic>self</span><span style=color:#ed9366>.</span><span>state
+</span><span>
+</span><span style=color:#fa6e32>if </span><span>__name__ </span><span style=color:#ed9366>== </span><span style=color:#86b300>'__main__'</span><span>:
+</span><span>
+</span><span>    it </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>8
+</span><span>    bits </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>512
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Find prime value of specified bits a specified amount of times
+</span><span>    seed </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>211286818345627549183608678726370412218029639873054513839005340650674982169404937862395980568550063504804783328450267566224937880641772833325018028629959635
+</span><span>    lcg </span><span style=color:#ed9366>= </span><span style=color:#f29718>LCG</span><span>(seed)
+</span><span>    primes_arr </span><span style=color:#ed9366>= </span><span>[]
+</span><span>    
+</span><span>    dump </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>True
+</span><span>    items </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>0
+</span><span>
+</span><span>    primes_n </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>1
+</span><span>    </span><span style=color:#fa6e32>while </span><span style=color:#ff8f40>True</span><span>:
+</span><span>        </span><span style=color:#fa6e32>for </span><span>i </span><span style=color:#fa6e32>in </span><span style=color:#f07171>range</span><span>(it):
+</span><span>            </span><span style=color:#fa6e32>while </span><span style=color:#ff8f40>True</span><span>:
+</span><span>                prime_candidate </span><span style=color:#ed9366>= </span><span>lcg</span><span style=color:#ed9366>.</span><span style=color:#f29718>next</span><span>()
+</span><span>                </span><span style=color:#fa6e32>if </span><span style=color:#ed9366>not </span><span style=color:#f29718>isPrime</span><span>(prime_candidate):
+</span><span>                    </span><span style=color:#fa6e32>continue
+</span><span>                </span><span style=color:#fa6e32>elif </span><span>prime_candidate</span><span style=color:#ed9366>.</span><span style=color:#f29718>bit_length</span><span>() </span><span style=color:#ed9366>!= </span><span>bits:
+</span><span>                    </span><span style=color:#fa6e32>continue
+</span><span>                </span><span style=color:#fa6e32>else</span><span>:
+</span><span>                    primes_n </span><span style=color:#ed9366>*= </span><span>prime_candidate
+</span><span>                    primes_arr</span><span style=color:#ed9366>.</span><span style=color:#f29718>append</span><span>(prime_candidate)
+</span><span>                    </span><span style=color:#fa6e32>break
+</span><span>        
+</span><span>        </span><span style=color:#abb0b6;font-style:italic># Check bit length
+</span><span>        </span><span style=color:#fa6e32>if </span><span>primes_n</span><span style=color:#ed9366>.</span><span style=color:#f29718>bit_length</span><span>() </span><span style=color:#ed9366>> </span><span style=color:#ff8f40>4096</span><span>:
+</span><span>            </span><span style=color:#f07171>print</span><span>(</span><span style=color:#86b300>"bit length"</span><span style=color:#61676ccc>, </span><span>primes_n</span><span style=color:#ed9366>.</span><span style=color:#f29718>bit_length</span><span>())
+</span><span>            primes_arr</span><span style=color:#ed9366>.</span><span style=color:#f29718>clear</span><span>()
+</span><span>            primes_n </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>1
+</span><span>            </span><span style=color:#fa6e32>continue
+</span><span>        </span><span style=color:#fa6e32>else</span><span>:
+</span><span>            </span><span style=color:#fa6e32>break
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Create public key 'n'
+</span><span>    n </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>1
+</span><span>    </span><span style=color:#fa6e32>for </span><span>j </span><span style=color:#fa6e32>in </span><span>primes_arr:
+</span><span>        n </span><span style=color:#ed9366>*= </span><span>j
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Calculate totient 'Phi(n)'
+</span><span>    phi </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>1
+</span><span>    </span><span style=color:#fa6e32>for </span><span>k </span><span style=color:#fa6e32>in </span><span>primes_arr:
+</span><span>        phi </span><span style=color:#ed9366>*= </span><span>(k </span><span style=color:#ed9366>- </span><span style=color:#ff8f40>1</span><span>)
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Read the public key from the "public.pem" file
+</span><span>    </span><span style=color:#fa6e32>with </span><span style=color:#f07171>open</span><span>(</span><span style=color:#86b300>"public.pem"</span><span style=color:#61676ccc>, </span><span style=color:#86b300>"rb"</span><span>) </span><span style=color:#fa6e32>as </span><span>pub_file:
+</span><span>        rsa_key </span><span style=color:#ed9366>= </span><span>RSA</span><span style=color:#ed9366>.</span><span style=color:#f29718>import_key</span><span>(pub_file</span><span style=color:#ed9366>.</span><span style=color:#f29718>read</span><span>())
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Extract the values of e and n from the RSA key
+</span><span>    e </span><span style=color:#ed9366>= </span><span>rsa_key</span><span style=color:#ed9366>.</span><span>e
+</span><span>    n </span><span style=color:#ed9366>= </span><span>rsa_key</span><span style=color:#ed9366>.</span><span>n
+</span><span>
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># Calculate private key 'd'
+</span><span>    d </span><span style=color:#ed9366>= </span><span style=color:#f07171>pow</span><span>(e</span><span style=color:#61676ccc>, </span><span style=color:#ed9366>-</span><span style=color:#ff8f40>1</span><span style=color:#61676ccc>, </span><span>phi)
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>with </span><span style=color:#f07171>open</span><span>(</span><span style=color:#86b300>"flag.txt"</span><span style=color:#61676ccc>, </span><span style=color:#86b300>"rb"</span><span>) </span><span style=color:#fa6e32>as </span><span>flag_file:
+</span><span>        flag_data </span><span style=color:#ed9366>= </span><span>flag_file</span><span style=color:#ed9366>.</span><span style=color:#f29718>read</span><span>()
+</span><span>
+</span><span>    _enc </span><span style=color:#ed9366>= </span><span style=color:#55b4d4;font-style:italic>int</span><span style=color:#ed9366>.</span><span style=color:#f29718>from_bytes</span><span>(flag_data</span><span style=color:#61676ccc>, </span><span style=color:#86b300>"little"</span><span>)
+</span><span>   
+</span><span>    </span><span style=color:#abb0b6;font-style:italic># decrypt flag
+</span><span>    flag </span><span style=color:#ed9366>= </span><span style=color:#f07171>pow</span><span>(_enc</span><span style=color:#61676ccc>,</span><span>d</span><span style=color:#61676ccc>,</span><span>n)
+</span><span>    </span><span style=color:#f07171>print</span><span>(</span><span style=color:#f29718>long_to_bytes</span><span>(flag))
+</span><span>
+</span><span style=color:#abb0b6;font-style:italic># b'CTF{C0nGr@tz_RiV35t_5h4MiR_nD_Ad13MaN_W0ulD_b_h@pPy}'
+</span><span>
+</span></code></pre><blockquote><p><code>Flag : CTF{C0nGr@tz_RiV35t_5h4MiR_nD_Ad13MaN_W0ulD_b_h@pPy}</code></blockquote><hr><p>Reference : <a href=https://teamrocketist.github.io/2019/03/31/Crypto-VolgaCtf2019-LG/ target=_blank>https://teamrocketist.github.io/2019/03/31/Crypto-VolgaCtf2019-LG/</a></section></article></main></div>

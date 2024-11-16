@@ -1,0 +1,299 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><title>
+         InvadersCTF Crypto
+        
+    </title><meta content="InvadersCTF Crypto" property=og:title><meta content="Known as TheMj0ln1r" property=og:description><meta content="Known as TheMj0ln1r" name=description><link href=/favicons/favicon.ico rel=icon type=image/png><link href=https://themj0ln1r.github.io/fonts.css rel=stylesheet><script src=https://themj0ln1r.github.io/js/codeblock.js></script><script src=https://themj0ln1r.github.io/js/toc.js></script><script src=https://themj0ln1r.github.io/js/note.js></script><script>MathJax={tex:{inlineMath:[[`\$`,`\$`],[`\\\\(`,`\\\\)`]]}}</script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><link title="Charan Nomula" href=https://themj0ln1r.github.io/atom.xml rel=alternate type=application/atom+xml><link href=https://themj0ln1r.github.io/theme/light.css rel=stylesheet><link href=https://themj0ln1r.github.io/theme/dark.css id=darkModeStyle rel=stylesheet><script src=https://themj0ln1r.github.io/js/themetoggle.js></script><script>setTheme(getSavedTheme())</script><link href=https://themj0ln1r.github.io/main.css media=screen rel=stylesheet><body><div class=content><header><div class=main><a href=https://themj0ln1r.github.io/>Charan Nomula</a><div class=socials><a class=social href=https://x.com/TheMj0ln1r/ rel=me target=_blank> <img alt=twitter src=https://themj0ln1r.github.io/social_icons/twitter.svg> </a><a class=social href=https://linkedin.com/in/mj0ln1r/ rel=me target=_blank> <img alt=linkedin src=https://themj0ln1r.github.io/social_icons/linkedin.svg> </a><a class=social href=https://github.com/TheMj0ln1r/ rel=me target=_blank> <img alt=github src=https://themj0ln1r.github.io/social_icons/github.svg> </a><a href="mailto: playermj0ln1r@gmail.com" class=social rel=me target=_blank> <img alt=Email src=https://themj0ln1r.github.io/social_icons/email.svg> </a></div></div><nav><a href=https://themj0ln1r.github.io/posts style=margin-left:.5em>/posts</a><a href=https://themj0ln1r.github.io/writeups style=margin-left:.5em>/writeups</a><a href=https://themj0ln1r.github.io/projects style=margin-left:.5em>/projects</a><a href=https://themj0ln1r.github.io/contact style=margin-left:.5em>/contact</a><a href=https://themj0ln1r.github.io/tags style=margin-left:.5em>/tags</a> |<a onclick="toggleTheme(); event.preventDefault();" href=# id=dark-mode-toggle> <img alt=Light id=sun-icon src=https://themj0ln1r.github.io/feather/sun.svg style=filter:invert()> <img alt=Dark id=moon-icon src=https://themj0ln1r.github.io/feather/moon.svg> </a><script>updateItemToggleTheme()</script></nav></header><main><article><div class=title><div class=page-header>InvadersCTF Crypto<span class=primary-color style=font-size:1.6em>.</span></div><div class=meta>Posted on <time>2022-08-16</time><span class=tags-label> :: Tags:</span><span class=tags> <a class=post-tag href=https://themj0ln1r.github.io/tags/ctf/>ctf</a> </span></div></div><div class=toc-container><h1 class=toc-title>Table of Contents</h1><ul class=toc-list><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#crypto-challenges>Crypto Challenges</a> <ul><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#common-what>Common....What?</a></li><ul><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#what-is-common-modulus-attack>What is common modulus attack?</a></ul></ul><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#pwn-challenges>PWN Challenges</a> <ul><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#format-strings>Format Strings</a><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#foodcourt-overflow>FoodCourt Overflow</a></ul><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#reverse-engineering-challenges>Reverse Engineering Challenges</a> <ul><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#warmup>Warmup</a><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#py-encrypter>Py Encrypter</a></li><ul><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#unintend-solution>Unintend Solution</a><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#intended-solution>Intended Solution</a></ul><li><a href=https://themj0ln1r.github.io/writeups/invaderctf-2022/#crackme>CrackME</a></ul></ul></div><section class=body><p>Hi guys!,<p>This is Mj0ln1r and this is my first blog, writeup and first CTF as well. All new ? haha.<p>I started learning new skills and playing CTF's as well to gain hands on experience in the security field. Coming to this blog, its all about my solved challenges in InvaderCTF 2022.<p>InvaderCTF is a CTF competion which was organized by our collenge[RGUKTN] alumni those are working at great positions with the skills learned through CTF's. There is a list of categories in this CTF such as “web”, “pwn”, “reverse”, “cryptography”, and “miscellaneous”. And i solved some challenges from each category.<h1 id=crypto-challenges><a aria-label="Anchor link for: crypto-challenges" class=zola-anchor href=#crypto-challenges>Crypto Challenges</a></h1><h2 id=common-what><a aria-label="Anchor link for: common-what" class=zola-anchor href=#common-what>Common....What?</a></h2><p><img alt=common_modulus src=/assets/img/ctf_img/invaders22/common.png><p>I got a file named <code>common_modulus.zip</code> it has two files <code>chall.py</code> and <code>output.txt</code>. the <code>chall.py</code> script just prints the <code>N e1 e2 c1 c2</code> the content of <code>output.txt</code> as follows.<pre style=color:#61676c;background-color:#fafafa><code><span>N = 11982945131022410542351081395449872615892579857707579658716659690935488669385262821057859182557738914580246000223393286594124225383866984597532935421878496300855873841201081561776719850279196185513497651311088240409358040299378330842236508619359647972763016690363235765860969655129269784424956130539800284778318098141912923725687592311652722505056107470370398021165270753993680221146964650298810348339426550121843506831513763524799788245715184019272818769688806186156054217173423142297185080827697102885478690188900539745266957938792259348667098941846582939290347898221569129727818304319228531810884419349788595299183
+</span><span>e1 = 1432834983003528423789566679766
+</span><span>e2 = 2379308237310255832902020443526
+</span><span>c1 = 10689309714150831372003282520258034721869267911572516423408248565049962108650099748793151534577215410589895845939174468496094911105822340567352621464826482784496348432260039948367408369277304473142781582593382249759117725426180831722441987089651228047819100128903524486005240635239107861739718852670683772477033147265282652735461836031051746173537294339800736436758373421135499142186805931851613817214123606130652548146050084102387221849254771049043101744791081688090961965211538682034166530987653637019819142642682927570692406882796783114872064728299928706994667553634162223654351719854271521012272876869577548029865
+</span><span>c2 = 10108112864771204039110360647151162379625435403389064742046377050800935678884417470071380911451172735126940164631419702014060618271946963698795724980506620687308126757038560340598588393457958478150419444430669593694549750182242922247396011389187919036956934428645928391159497083109718312975799586599853937652754710111738660741391329300491640624992257712646153846113376883043637423386066176238663086142253925553012932883285101598565990266200395298234059134450705194609356310121298248102541581987639348408092513592224044341173092657291900970886956196149689937412107716004555806327078173298630211025335704973121968612105
+</span></code></pre><h3 id=what-is-common-modulus-attack><a aria-label="Anchor link for: what-is-common-modulus-attack" class=zola-anchor href=#what-is-common-modulus-attack>What is common modulus attack?</a></h3><p>A Common Modulus attack can be used to recover the plaintext when the same message is encrypted to two RSA keys that use the same modulus.<pre class=language-bash data-lang=bash style=color:#61676c;background-color:#fafafa><code class=language-bash data-lang=bash><span style=color:#f29718>c1</span><span> = m^e1 % N
+</span><span style=color:#f29718>c2</span><span> = m^e2 % N
+</span></code></pre><p>Assume that we find out <code>a</code> and <code>b</code> such that <code>(e1 * a) + (e2 * b) = 1</code> then we can decode the plain text as <code>(c1 ^ a) + (c2 ^ b)</code>. If we substitute how <code>c1</code> and <code>c2</code> is calculated to above equation, we can get <code>m^(e1 * a + e2 * b) = m^1 = m</code><p>The Python script to perform common modulus attack.<pre class=language-python data-lang=python style=color:#61676c;background-color:#fafafa><code class=language-python data-lang=python><span style=color:#fa6e32>from </span><span>utilis </span><span style=color:#fa6e32>import </span><span>egcd</span><span style=color:#61676ccc>,</span><span>Convert
+</span><span style=color:#fa6e32>import </span><span>gmpy2
+</span><span style=color:#fa6e32>from </span><span>Crypto</span><span style=color:#ed9366>.</span><span>Util</span><span style=color:#ed9366>.</span><span>number </span><span style=color:#fa6e32>import </span><span>GCD
+</span><span>
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>neg_pow</span><span>(</span><span style=color:#ff8f40>a</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>b</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>n</span><span>):
+</span><span>    </span><span style=color:#fa6e32>assert </span><span>b </span><span style=color:#ed9366>< </span><span style=color:#ff8f40>0
+</span><span>    </span><span style=color:#fa6e32>assert </span><span style=color:#f29718>GCD</span><span>(a</span><span style=color:#61676ccc>, </span><span>n) </span><span style=color:#ed9366>== </span><span style=color:#ff8f40>1
+</span><span>    res </span><span style=color:#ed9366>= </span><span style=color:#55b4d4;font-style:italic>int</span><span>(gmpy2</span><span style=color:#ed9366>.</span><span style=color:#f29718>invert</span><span>(a</span><span style=color:#61676ccc>, </span><span>n))
+</span><span>    res </span><span style=color:#ed9366>= </span><span style=color:#f07171>pow</span><span>(res</span><span style=color:#61676ccc>, </span><span>b</span><span style=color:#ed9366>*</span><span>(</span><span style=color:#ed9366>-</span><span style=color:#ff8f40>1</span><span>)</span><span style=color:#61676ccc>, </span><span>n)
+</span><span>    </span><span style=color:#fa6e32>return </span><span>res
+</span><span>
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>common_modulus</span><span>(</span><span style=color:#ff8f40>e1</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>e2</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>n</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>c1</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>c2</span><span>):
+</span><span>	g, a, b </span><span style=color:#ed9366>= </span><span style=color:#f29718>egcd</span><span>(e1</span><span style=color:#61676ccc>, </span><span>e2)
+</span><span>	</span><span style=color:#fa6e32>if </span><span>a </span><span style=color:#ed9366>< </span><span style=color:#ff8f40>0</span><span>:
+</span><span>		c1 </span><span style=color:#ed9366>= </span><span style=color:#f29718>neg_pow</span><span>(c1</span><span style=color:#61676ccc>, </span><span>a</span><span style=color:#61676ccc>, </span><span>n)
+</span><span>	</span><span style=color:#fa6e32>else</span><span>:
+</span><span>		c1 </span><span style=color:#ed9366>= </span><span style=color:#f07171>pow</span><span>(c1</span><span style=color:#61676ccc>, </span><span>a</span><span style=color:#61676ccc>, </span><span>n)
+</span><span>	</span><span style=color:#fa6e32>if </span><span>b </span><span style=color:#ed9366>< </span><span style=color:#ff8f40>0</span><span>:
+</span><span>		c2 </span><span style=color:#ed9366>= </span><span style=color:#f29718>neg_pow</span><span>(c2</span><span style=color:#61676ccc>, </span><span>b</span><span style=color:#61676ccc>, </span><span>n)
+</span><span>	</span><span style=color:#fa6e32>else</span><span>:
+</span><span>		c2 </span><span style=color:#ed9366>= </span><span style=color:#f07171>pow</span><span>(c2</span><span style=color:#61676ccc>, </span><span>b</span><span style=color:#61676ccc>, </span><span>n)
+</span><span>	ct </span><span style=color:#ed9366>= </span><span>c1</span><span style=color:#ed9366>*</span><span>c2 </span><span style=color:#ed9366>% </span><span>n
+</span><span>	m </span><span style=color:#ed9366>= </span><span style=color:#55b4d4;font-style:italic>int</span><span>(gmpy2</span><span style=color:#ed9366>.</span><span style=color:#f29718>iroot</span><span>(ct</span><span style=color:#61676ccc>, </span><span>g)[</span><span style=color:#ff8f40>0</span><span>])
+</span><span>	</span><span style=color:#fa6e32>return </span><span>m
+</span><span>
+</span><span>n </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>11982945131022410542351081395449872615892579857707579658716659690935488669385262821057859182557738914580246000223393286594124225383866984597532935421878496300855873841201081561776719850279196185513497651311088240409358040299378330842236508619359647972763016690363235765860969655129269784424956130539800284778318098141912923725687592311652722505056107470370398021165270753993680221146964650298810348339426550121843506831513763524799788245715184019272818769688806186156054217173423142297185080827697102885478690188900539745266957938792259348667098941846582939290347898221569129727818304319228531810884419349788595299183
+</span><span>e1 </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>1432834983003528423789566679766
+</span><span>e2 </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>2379308237310255832902020443526
+</span><span>c1 </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>10689309714150831372003282520258034721869267911572516423408248565049962108650099748793151534577215410589895845939174468496094911105822340567352621464826482784496348432260039948367408369277304473142781582593382249759117725426180831722441987089651228047819100128903524486005240635239107861739718852670683772477033147265282652735461836031051746173537294339800736436758373421135499142186805931851613817214123606130652548146050084102387221849254771049043101744791081688090961965211538682034166530987653637019819142642682927570692406882796783114872064728299928706994667553634162223654351719854271521012272876869577548029865
+</span><span>c2 </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>10108112864771204039110360647151162379625435403389064742046377050800935678884417470071380911451172735126940164631419702014060618271946963698795724980506620687308126757038560340598588393457958478150419444430669593694549750182242922247396011389187919036956934428645928391159497083109718312975799586599853937652754710111738660741391329300491640624992257712646153846113376883043637423386066176238663086142253925553012932883285101598565990266200395298234059134450705194609356310121298248102541581987639348408092513592224044341173092657291900970886956196149689937412107716004555806327078173298630211025335704973121968612105
+</span><span>
+</span><span style=color:#f29718>Convert</span><span>(</span><span style=color:#f29718>common_modulus</span><span>(e1</span><span style=color:#61676ccc>, </span><span>e2</span><span style=color:#61676ccc>, </span><span>n</span><span style=color:#61676ccc>, </span><span>c1</span><span style=color:#61676ccc>, </span><span>c2))
+</span><span>
+</span></code></pre><blockquote><p>Complete script available at <a href=https://github.com/X-Vector/X-RSA>github</a></blockquote><p>When i run the script with the given <code>N e1 e2 c1 c2 </code> i got the <code>flag</code>.<blockquote><p><code>PlainText in ascii : InvaderCTF{common_modulus_the_attack_name_is_common_modulus}</code></blockquote><h1 id=pwn-challenges><a aria-label="Anchor link for: pwn-challenges" class=zola-anchor href=#pwn-challenges>PWN Challenges</a></h1><h2 id=format-strings><a aria-label="Anchor link for: format-strings" class=zola-anchor href=#format-strings>Format Strings</a></h2><p>Can you exploit echo file to get the FLAG. nc 198.199.123.169 9003<p>Provided source code <code>echo.c</code><pre class=language-c data-lang=c style=color:#61676c;background-color:#fafafa><code class=language-c data-lang=c><span style=color:#fa6e32>#include </span><span style=color:#86b300>&LTunistd.h>
+</span><span style=color:#fa6e32>#include </span><span style=color:#86b300>&LTstdio.h>
+</span><span style=color:#fa6e32>#include </span><span style=color:#86b300>&LTstdlib.h>
+</span><span style=color:#fa6e32>void </span><span style=color:#f29718>initialize</span><span>()
+</span><span>{
+</span><span>  </span><span style=color:#f29718>alarm</span><span>(</span><span style=color:#ff8f40>60</span><span>)</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f07171>setvbuf</span><span>(stdout</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>NULL</span><span style=color:#61676ccc>,</span><span> _IONBF</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>0</span><span>)</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f07171>setvbuf</span><span>(stderr</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>NULL</span><span style=color:#61676ccc>,</span><span> _IONBF</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>0</span><span>)</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f07171>setvbuf</span><span>(stdin</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>NULL</span><span style=color:#61676ccc>,</span><span> _IONBF</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>0</span><span>)</span><span style=color:#61676ccc>;
+</span><span>}
+</span><span>
+</span><span style=color:#fa6e32>int </span><span style=color:#f29718>echo</span><span>(){
+</span><span>  </span><span style=color:#fa6e32>char</span><span> FLAG[] </span><span style=color:#ed9366>= </span><span style=color:#86b300>"InvaderCTF{this_is_not_flag_flag_is_on_the_remote_server}"</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#fa6e32>char</span><span> buffer[</span><span style=color:#ff8f40>0x20</span><span>]</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Can you leak the flag?"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Enter input to echo back:</span><span style=color:#4cbf99>\n</span><span style=color:#86b300>"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f29718>read</span><span>(</span><span style=color:#ff8f40>0</span><span style=color:#61676ccc>,</span><span>buffer</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>0x20</span><span>)</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f07171>printf</span><span>(buffer)</span><span style=color:#61676ccc>;
+</span><span>}
+</span><span style=color:#fa6e32>int </span><span style=color:#f29718>main</span><span>()
+</span><span>{
+</span><span>  </span><span style=color:#f29718>initialize</span><span>()</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f29718>echo</span><span>()</span><span style=color:#61676ccc>;
+</span><span>}
+</span></code></pre><p>First of all i executed the provided binary file <code>echo</code>.The program asks for a input. Observe the source program the input is going to be stored in <code>buffer[0x20]</code>.The <code>0x20</code> is equals to 32 in decimal.<p>If i gave more than 32 characters as input a <code>bufferoverflow</code> will occur it may leads to an unintend outputs. lets see,<p><img alt="Format Strings" src=/assets/img/ctf_img/invaders22/format.png><p>DOOOONE.....!<p>So, this is a simple bufferoverflow problem. In this way i got this flag <code>^_^</code><blockquote><p><code>Flag : InvaderCTF{EZy_PZy_format_strings}</code></blockquote><h2 id=foodcourt-overflow><a aria-label="Anchor link for: foodcourt-overflow" class=zola-anchor href=#foodcourt-overflow>FoodCourt Overflow</a></h2><p><img alt="Format Strings" src=/assets/img/ctf_img/invaders22/fc.png>{: w="400" h="400"}<p>The name itself says that its a overflow problem again <code>^_~</code><p>The source code of the program running in the remote server is as follows<pre class=language-c data-lang=c style=color:#61676c;background-color:#fafafa><code class=language-c data-lang=c><span style=color:#fa6e32>#include </span><span style=color:#86b300>&LTunistd.h>
+</span><span style=color:#fa6e32>#include </span><span style=color:#86b300>&LTstdio.h>
+</span><span style=color:#fa6e32>#include </span><span style=color:#86b300>&LTstdlib.h>
+</span><span>
+</span><span style=color:#fa6e32>int</span><span> wallet </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>200</span><span style=color:#61676ccc>;
+</span><span>
+</span><span style=color:#fa6e32>int </span><span style=color:#f29718>order</span><span>(</span><span style=color:#fa6e32>char </span><span style=color:#ed9366>*</span><span style=color:#ff8f40>item</span><span style=color:#61676ccc>, </span><span style=color:#fa6e32>int </span><span style=color:#ff8f40>cost</span><span>) {
+</span><span>    </span><span style=color:#fa6e32>int</span><span> n</span><span style=color:#61676ccc>;
+</span><span>    </span><span style=color:#f07171>printf</span><span>(</span><span style=color:#86b300>"Input the number of </span><span style=color:#ff8f40>%s</span><span style=color:#86b300> you want to buy?</span><span style=color:#4cbf99>\n</span><span style=color:#86b300>"</span><span style=color:#61676ccc>,</span><span> item)</span><span style=color:#61676ccc>;
+</span><span>    </span><span style=color:#f07171>printf</span><span>(</span><span style=color:#86b300>"> "</span><span>)</span><span style=color:#61676ccc>;
+</span><span>    </span><span style=color:#f07171>scanf</span><span>(</span><span style=color:#86b300>"</span><span style=color:#ff8f40>%d</span><span style=color:#86b300>"</span><span style=color:#61676ccc>, </span><span style=color:#ed9366>&</span><span>n)</span><span style=color:#61676ccc>;
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>if </span><span>(n </span><span style=color:#ed9366>> </span><span style=color:#ff8f40>0</span><span>) {
+</span><span>        cost </span><span style=color:#ed9366>=</span><span> cost </span><span style=color:#ed9366>*</span><span> n</span><span style=color:#61676ccc>;
+</span><span>        </span><span style=color:#f07171>printf</span><span>(</span><span style=color:#86b300>"That will cost Rs</span><span style=color:#ff8f40>%d</span><span style=color:#86b300>.</span><span style=color:#4cbf99>\n</span><span style=color:#86b300>"</span><span style=color:#61676ccc>,</span><span> cost)</span><span style=color:#61676ccc>;
+</span><span>        </span><span style=color:#fa6e32>if </span><span>(cost </span><span style=color:#ed9366><=</span><span> wallet) {
+</span><span>            </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Order placed!"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>            wallet </span><span style=color:#ed9366>-=</span><span> cost</span><span style=color:#61676ccc>;
+</span><span>        } </span><span style=color:#fa6e32>else </span><span>{
+</span><span>            </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Ah man, you don't have enough money to buy this order"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>            n </span><span style=color:#ed9366>= </span><span style=color:#ff8f40>0</span><span style=color:#61676ccc>;
+</span><span>        }
+</span><span>    } </span><span style=color:#fa6e32>else </span><span>{
+</span><span>        </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Nah, buy something."</span><span>)</span><span style=color:#61676ccc>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>return</span><span> n</span><span style=color:#61676ccc>;
+</span><span>}
+</span><span style=color:#fa6e32>void </span><span style=color:#f29718>initialize</span><span>()
+</span><span>{
+</span><span>  </span><span style=color:#f29718>alarm</span><span>(</span><span style=color:#ff8f40>60</span><span>)</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f07171>setvbuf</span><span>(stdout</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>NULL</span><span style=color:#61676ccc>,</span><span> _IONBF</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>0</span><span>)</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f07171>setvbuf</span><span>(stderr</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>NULL</span><span style=color:#61676ccc>,</span><span> _IONBF</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>0</span><span>)</span><span style=color:#61676ccc>;
+</span><span>  </span><span style=color:#f07171>setvbuf</span><span>(stdin</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>NULL</span><span style=color:#61676ccc>,</span><span> _IONBF</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>0</span><span>)</span><span style=color:#61676ccc>;
+</span><span>}
+</span><span>
+</span><span style=color:#fa6e32>int </span><span style=color:#f29718>main</span><span>() {
+</span><span>    </span><span style=color:#fa6e32>int</span><span> item</span><span style=color:#61676ccc>;
+</span><span>    </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Welcome to RGUKT Food Court!"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>    </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"We are giving free 200 RS wallet amount to our online customers."</span><span>)</span><span style=color:#61676ccc>;
+</span><span>    </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Sadly, you don't have enough money to buy the tastiest dish named Flag :/? Or is it? </span><span style=color:#4cbf99>\n</span><span style=color:#86b300>"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>while </span><span>(</span><span style=color:#ff8f40>1</span><span>) {
+</span><span>
+</span><span>        </span><span style=color:#f07171>printf</span><span>(</span><span style=color:#86b300>"Wallet Amount Rs</span><span style=color:#ff8f40>%d</span><span style=color:#86b300>.</span><span style=color:#4cbf99>\n</span><span style=color:#86b300>"</span><span style=color:#61676ccc>,</span><span> wallet)</span><span style=color:#61676ccc>;
+</span><span>        </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Menu: "</span><span>)</span><span style=color:#61676ccc>;
+</span><span>        </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"1. Noodles: 50"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>        </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"2. Biryani: 100"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>        </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"3. Soft Drink: 20"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>        </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"4. Flag: Rs 1000"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>        </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"0. Logout</span><span style=color:#4cbf99>\n</span><span style=color:#86b300>"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>        </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Which item would you like to Order?"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>
+</span><span>        </span><span style=color:#f07171>printf</span><span>(</span><span style=color:#86b300>"> "</span><span>)</span><span style=color:#61676ccc>;
+</span><span>        </span><span style=color:#f07171>scanf</span><span>(</span><span style=color:#86b300>"</span><span style=color:#ff8f40>%d</span><span style=color:#86b300>"</span><span style=color:#61676ccc>, </span><span style=color:#ed9366>&</span><span>item)</span><span style=color:#61676ccc>;
+</span><span>
+</span><span>        </span><span style=color:#fa6e32>switch </span><span>(item) {
+</span><span>            </span><span style=color:#fa6e32>case </span><span style=color:#ff8f40>0</span><span style=color:#61676ccc>:
+</span><span>                </span><span style=color:#f07171>printf</span><span>(</span><span style=color:#86b300>"Logging out"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>                </span><span style=color:#fa6e32>return </span><span style=color:#ff8f40>0</span><span style=color:#61676ccc>;
+</span><span>            </span><span style=color:#fa6e32>case </span><span style=color:#ff8f40>1</span><span style=color:#61676ccc>:
+</span><span>                </span><span style=color:#f29718>order</span><span>(</span><span style=color:#86b300>"Nooooodles"</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>50</span><span>)</span><span style=color:#61676ccc>;
+</span><span>                </span><span style=color:#fa6e32>break</span><span style=color:#61676ccc>;
+</span><span>            </span><span style=color:#fa6e32>case </span><span style=color:#ff8f40>2</span><span style=color:#61676ccc>:
+</span><span>                </span><span style=color:#f29718>order</span><span>(</span><span style=color:#86b300>"Dum Biryani"</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>100</span><span>)</span><span style=color:#61676ccc>;
+</span><span>                </span><span style=color:#fa6e32>break</span><span style=color:#61676ccc>;
+</span><span>            </span><span style=color:#fa6e32>case </span><span style=color:#ff8f40>3</span><span style=color:#61676ccc>:
+</span><span>                </span><span style=color:#f29718>order</span><span>(</span><span style=color:#86b300>"Soft Drink"</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>1</span><span>)</span><span style=color:#61676ccc>;
+</span><span>                </span><span style=color:#fa6e32>break</span><span style=color:#61676ccc>;
+</span><span>            </span><span style=color:#fa6e32>case </span><span style=color:#ff8f40>4</span><span style=color:#61676ccc>:
+</span><span>                </span><span style=color:#fa6e32>if </span><span>(</span><span style=color:#f29718>order</span><span>(</span><span style=color:#86b300>"buy the today's special dish - flag"</span><span style=color:#61676ccc>, </span><span style=color:#ff8f40>1000</span><span>) </span><span style=color:#ed9366>> </span><span style=color:#ff8f40>0</span><span>) {
+</span><span>                    FILE </span><span style=color:#ed9366>*</span><span>fp </span><span style=color:#ed9366>= </span><span style=color:#f07171>fopen</span><span>(</span><span style=color:#86b300>"flag.txt"</span><span style=color:#61676ccc>, </span><span style=color:#86b300>"r"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>                    </span><span style=color:#fa6e32>char</span><span> flag[</span><span style=color:#ff8f40>100</span><span>]</span><span style=color:#61676ccc>;
+</span><span>
+</span><span>                    </span><span style=color:#fa6e32>if </span><span>(fp </span><span style=color:#ed9366>== </span><span style=color:#ff8f40>NULL</span><span>) {
+</span><span>                        </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Create flag.txt in the current working directory"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>                        </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Please report to admin if you saw this error on remote"</span><span>)</span><span style=color:#61676ccc>;
+</span><span>                        </span><span style=color:#f07171>exit</span><span>(</span><span style=color:#ff8f40>1</span><span>)</span><span style=color:#61676ccc>;
+</span><span>                    }
+</span><span>
+</span><span>                    </span><span style=color:#f07171>fgets</span><span>(flag</span><span style=color:#61676ccc>, </span><span style=color:#fa6e32>sizeof</span><span>(flag)</span><span style=color:#61676ccc>,</span><span> fp)</span><span style=color:#61676ccc>;
+</span><span>                    </span><span style=color:#f07171>puts</span><span>(flag)</span><span style=color:#61676ccc>;
+</span><span>                }
+</span><span>                </span><span style=color:#fa6e32>break</span><span style=color:#61676ccc>;
+</span><span>            </span><span style=color:#fa6e32>default</span><span style=color:#61676ccc>:
+</span><span>                </span><span style=color:#f07171>puts</span><span>(</span><span style=color:#86b300>"Please select a valid item."</span><span>)</span><span style=color:#61676ccc>;
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre><p>The Main method is printing the menu and asking the user for the choice.Initially my <code>wallet = 200</code>.i.e balance. I am able to buy anything from the foodcourt except flag, cause it costs 1000. In order function i have to enter number of items i want to buy,i.e <code>n</code>. The cost is going to be multiplied with the number of items <code>cost = cost * n</code>. My balance then its going to place my order. i.e <code>cost <= wallet</code>. Then my balance is going to be update. <code>wallet = wallet - cost</code>.<p>Here i got an ideaaaa.. I see noodles costs 50 and it substracts the total cost from the wallet.but what if the cost is negative? Then the cost is going to be added to the wallet, and if cost is negative enough, then we can get a huge wallet balance.<p>How do we get a negative cost? Notice the cost is multiplied with n. <code>cost = cost * n</code>. So, that if we make the n as negative the cost becomes negative.<p><code>n</code> is declared as integer , specially a signed integer. So i have to give a number out of signed int range.<p>signed int range for<ul><li>2 bytes(-32,768 to 32,767)<li>4 bytes(-2,147,483,648 to 2,147,483,647)</ul><p>The input is multiplied with 1000 and to get an overflow we have to enter a number which gives the result greater than 2,147,483,647. So, if i enter number greater than 21474835 the result will be in out of range.<p>Lets Get That Fa Fa Flag .. <code>*_~</code><pre class=language-bash data-lang=bash style=color:#61676c;background-color:#fafafa><code class=language-bash data-lang=bash><span style=color:#f29718>$</span><span> gcc food-court-overflow.c
+</span><span style=color:#f29718>$</span><span> ./a.out
+</span><span style=color:#f29718>Welcome</span><span> to RGUKT Food Court!
+</span><span style=color:#f29718>We</span><span> are giving free 200 RS wallet amount to our online customers.
+</span><span style=color:#f29718>Sadly,</span><span> you dont have enough money to buy the tastiest dish named Flag :/</span><span style=color:#ed9366>?</span><span> Or is it</span><span style=color:#ed9366>? 
+</span><span>
+</span><span style=color:#f29718>Wallet</span><span> Amount Rs200.
+</span><span style=color:#f29718>Menu: 
+</span><span style=color:#f29718>1.</span><span> Noodles: 50
+</span><span style=color:#f29718>2.</span><span> Biryani: 100
+</span><span style=color:#f29718>3.</span><span> Soft Drink: 20
+</span><span style=color:#f29718>4.</span><span> Flag: Rs 1000
+</span><span style=color:#f29718>0.</span><span> Logout
+</span><span>
+</span><span style=color:#f29718>Which</span><span> item would you like to Order</span><span style=color:#ed9366>?
+</span><span style=color:#ed9366>> </span><span style=color:#ff8f40>4
+</span><span style=color:#f29718>Input</span><span> the number of buy the todays special dish - flag you want to buy</span><span style=color:#ed9366>?
+</span><span style=color:#ed9366>> </span><span style=color:#ff8f40>21474836
+</span><span style=color:#f29718>That</span><span> will cost Rs-480.
+</span><span style=color:#f29718>Order</span><span> placed!
+</span><span style=color:#f29718>InvaderCTF{this_is_not_flag_flag_is_on_the_remote_server</span><span>}
+</span><span style=color:#f29718>Wallet</span><span> Amount Rs680.
+</span><span style=color:#f29718>Menu: 
+</span><span style=color:#f29718>1.</span><span> Noodles: 50
+</span><span style=color:#f29718>2.</span><span> Biryani: 100
+</span><span style=color:#f29718>3.</span><span> Soft Drink: 20
+</span><span style=color:#f29718>4.</span><span> Flag: Rs 1000
+</span><span style=color:#f29718>0.</span><span> Logout
+</span><span>
+</span><span style=color:#f29718>Which</span><span> item would you like to Order</span><span style=color:#ed9366>?
+</span><span style=color:#ed9366>>
+</span></code></pre><p>I got the flag here but it says we have to do same process in the remote server to get the original flag.<blockquote><p><code>The original flag : InvaderCTF{Enjoy_the_fine_F1aG_d1sh_01212124}</code></blockquote><h1 id=reverse-engineering-challenges><a aria-label="Anchor link for: reverse-engineering-challenges" class=zola-anchor href=#reverse-engineering-challenges>Reverse Engineering Challenges</a></h1><h2 id=warmup><a aria-label="Anchor link for: warmup" class=zola-anchor href=#warmup>Warmup</a></h2><p>Really a simple warmup <code>*_~</code><blockquote><p>Warmup chall for beginners. Can we get source back from compiled binary ?</blockquote><p>I got a binary file within the challenge<p>Lets see the strings in the binary file<pre class=language-bash data-lang=bash style=color:#61676c;background-color:#fafafa><code class=language-bash data-lang=bash><span style=color:#f29718>$</span><span> strings warmup
+</span><span style=color:#f29718>/lib64/ld-linux-x86-64.so.2
+</span><span style=color:#f29718>libc.so.6
+</span><span style=color:#f29718>__isoc99_scanf
+</span><span style=color:#f29718>puts
+</span><span style=color:#f29718>__stack_chk_fail
+</span><span style=color:#f07171>printf
+</span><span style=color:#f29718>__cxa_finalize
+</span><span style=color:#f29718>strcmp
+</span><span style=color:#f29718>__libc_start_main
+</span><span style=color:#f29718>GLIBC_2.7
+</span><span style=color:#f29718>GLIBC_2.4
+</span><span style=color:#f29718>GLIBC_2.2.5
+</span><span style=color:#f29718>_ITM_deregisterTMCloneTable
+</span><span style=color:#f29718>__gmon_start__
+</span><span style=color:#f29718>_ITM_registerTMCloneTable
+</span><span style=color:#f29718>u+UH
+</span><span style=color:#f29718>[]A</span><span style=color:#4cbf99>\A</span><span style=color:#f29718>]A^A_
+</span><span style=color:#f29718>InvaderCTF{pl4in_t3xt_s3cr3ts_0n_cl1ent_s1d3_c0de</span><span>}
+</span><span style=color:#f29718>Enter</span><span> flag : 
+</span><span style=color:#f29718>]%*c
+</span><span style=color:#f29718>Yepp,</span><span> It is correct :)
+</span><span style=color:#f29718>Submit</span><span> in https://ctf.pwn.af
+</span><span style=color:#f29718>Nope</span><span> :(
+</span></code></pre><p>Wait..What...? Sorry i forgot that its a warmup <code>*_~</code><blockquote><p><code>Flag = InvaderCTF{pl4in_t3xt_s3cr3ts_0n_cl1ent_s1d3_c0de}</code></blockquote><h2 id=py-encrypter><a aria-label="Anchor link for: py-encrypter" class=zola-anchor href=#py-encrypter>Py Encrypter</a></h2><p><img alt="Py encrypter" src=/assets/img/ctf_img/invaders22/pyencrypter.png><p>The code in the given source file<pre class=language-python data-lang=python style=color:#61676c;background-color:#fafafa><code class=language-python data-lang=python><span style=color:#fa6e32>import </span><span>random
+</span><span>
+</span><span style=color:#abb0b6;font-style:italic># Two byte hash
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>myHash</span><span>(</span><span style=color:#ff8f40>string</span><span>):
+</span><span>    random</span><span style=color:#ed9366>.</span><span style=color:#f29718>seed</span><span>(</span><span style=color:#86b300>"H4shS33d" </span><span style=color:#ed9366>+ </span><span>string)
+</span><span>    num </span><span style=color:#ed9366>= </span><span>random</span><span style=color:#ed9366>.</span><span style=color:#f29718>getrandbits</span><span>(</span><span style=color:#ff8f40>16</span><span>)
+</span><span>    </span><span style=color:#fa6e32>return </span><span style=color:#f07171>hex</span><span>(num)[</span><span style=color:#ff8f40>2</span><span style=color:#61676ccc>:</span><span>]</span><span style=color:#ed9366>.</span><span style=color:#f29718>zfill</span><span>(</span><span style=color:#ff8f40>4</span><span>)
+</span><span>
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>encryptFlag</span><span>(</span><span style=color:#ff8f40>flag</span><span>):
+</span><span>    enc </span><span style=color:#ed9366>= </span><span style=color:#86b300>""
+</span><span>    </span><span style=color:#fa6e32>for </span><span>char </span><span style=color:#fa6e32>in </span><span>flag:
+</span><span>        enc </span><span style=color:#ed9366>+= </span><span style=color:#f29718>myHash</span><span>(char)
+</span><span>    </span><span style=color:#fa6e32>return </span><span>enc
+</span><span>
+</span><span>flag </span><span style=color:#ed9366>= </span><span style=color:#f07171>input</span><span>(</span><span style=color:#86b300>"Enter flag : "</span><span>)
+</span><span>enc </span><span style=color:#ed9366>= </span><span style=color:#f29718>encryptFlag</span><span>(flag)
+</span><span style=color:#f07171>print</span><span>(</span><span style=color:#86b300>"Encrypted flag is : "</span><span style=color:#61676ccc>, </span><span>enc)
+</span></code></pre><p>I know i have to reverse the hash to get the flag,but i did in a unintend way <code>-_-</code><h3 id=unintend-solution><a aria-label="Anchor link for: unintend-solution" class=zola-anchor href=#unintend-solution>Unintend Solution</a></h3><p>In the Challenge files they gave a hint that the flag is going to starts with <code>InvaderCTF{</code><p>So, i tried to get the hash of the 'I' in using the given encryption script. Its the first 4 chars of the encrypted flag. I decided to seperate the encrypted string into group of 4 chars.<p>Then i did the bruteforce <code>+_+</code>. Sorry author! But i got the flag ,haha.<pre class=language-python data-lang=python style=color:#61676c;background-color:#fafafa><code class=language-python data-lang=python><span style=color:#fa6e32>import </span><span>random
+</span><span>
+</span><span style=color:#abb0b6;font-style:italic># Two byte hash
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>myHash</span><span>(</span><span style=color:#ff8f40>string</span><span>):
+</span><span>    random</span><span style=color:#ed9366>.</span><span style=color:#f29718>seed</span><span>(</span><span style=color:#86b300>"H4shS33d" </span><span style=color:#ed9366>+ </span><span>string)
+</span><span>    num </span><span style=color:#ed9366>= </span><span>random</span><span style=color:#ed9366>.</span><span style=color:#f29718>getrandbits</span><span>(</span><span style=color:#ff8f40>16</span><span>)
+</span><span>    </span><span style=color:#fa6e32>return </span><span style=color:#f07171>hex</span><span>(num)[</span><span style=color:#ff8f40>2</span><span style=color:#61676ccc>:</span><span>]</span><span style=color:#ed9366>.</span><span style=color:#f29718>zfill</span><span>(</span><span style=color:#ff8f40>4</span><span>)
+</span><span>
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>encryptFlag</span><span>(</span><span style=color:#ff8f40>flag</span><span>):
+</span><span>    enc </span><span style=color:#ed9366>= </span><span style=color:#86b300>""
+</span><span>    </span><span style=color:#fa6e32>for </span><span>char </span><span style=color:#fa6e32>in </span><span>flag:
+</span><span>        enc </span><span style=color:#ed9366>+= </span><span style=color:#f29718>myHash</span><span>(char)
+</span><span>    </span><span style=color:#fa6e32>return </span><span>enc
+</span><span>
+</span><span>brut </span><span style=color:#ed9366>= </span><span style=color:#86b300>"ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz0123456789_"
+</span><span style=color:#f07171>hash </span><span style=color:#ed9366>= </span><span style=color:#86b300>"1fb9,bdbf,bfa9,5295,262c,1fb9,17ac,7573,5295,6685,500e,bfa9,cf34,7573,d256,6685,bdbf,bfa9,cf34,bdbf,f2a3,0797,b15a,6685,6217,cf34,6685,0728,7573,262c,9082"
+</span><span style=color:#f07171>hash </span><span style=color:#ed9366>= </span><span style=color:#f07171>hash</span><span style=color:#ed9366>.</span><span style=color:#f29718>split</span><span>(</span><span style=color:#86b300>","</span><span>)
+</span><span>
+</span><span>flag </span><span style=color:#ed9366>= </span><span style=color:#86b300>""
+</span><span style=color:#fa6e32>for </span><span>i </span><span style=color:#fa6e32>in </span><span style=color:#f07171>range</span><span>(</span><span style=color:#f07171>len</span><span>(brut)):
+</span><span>    enc </span><span style=color:#ed9366>= </span><span style=color:#f29718>encryptFlag</span><span>(brut[i])
+</span><span>    </span><span style=color:#fa6e32>for </span><span>j </span><span style=color:#fa6e32>in </span><span style=color:#f07171>range</span><span>(</span><span style=color:#f07171>len</span><span>(</span><span style=color:#f07171>hash</span><span>)):
+</span><span>        </span><span style=color:#fa6e32>if </span><span>enc </span><span style=color:#ed9366>== </span><span style=color:#f07171>hash</span><span>[j]:
+</span><span>            </span><span style=color:#f07171>hash</span><span>[j] </span><span style=color:#ed9366>= </span><span>brut[i]
+</span><span style=color:#f07171>print</span><span>(</span><span style=color:#86b300>"InvaderCTF{"</span><span style=color:#ed9366>+</span><span style=color:#86b300>""</span><span style=color:#ed9366>.</span><span style=color:#f29718>join</span><span>(</span><span style=color:#f07171>hash</span><span>)</span><span style=color:#ed9366>+</span><span style=color:#86b300>"}"</span><span>)
+</span></code></pre><blockquote><p><code>Flag : InvaderCTF{ch4ract3r_b4s3d_h4sh1ng_is_w3ak}</code></blockquote><h3 id=intended-solution><a aria-label="Anchor link for: intended-solution" class=zola-anchor href=#intended-solution>Intended Solution</a></h3><p>I have to do it in other way am i correct?<p>Here it is..<pre class=language-python data-lang=python style=color:#61676c;background-color:#fafafa><code class=language-python data-lang=python><span style=color:#fa6e32>import </span><span>random
+</span><span style=color:#fa6e32>import </span><span>string
+</span><span>flag </span><span style=color:#ed9366>= </span><span style=color:#86b300>"08ef07973844262cd256a8635295ad53ece7518ae30f1fb9bdbfbfa95295262c1fb917ac757352956685500ebfa9cf347573d2566685bdbfbfa9cf34bdbff2a30797b15a66856217cf34668507287573262c908276b5"
+</span><span>flag </span><span style=color:#ed9366>= </span><span>[flag[i</span><span style=color:#61676ccc>:</span><span>i</span><span style=color:#ed9366>+</span><span style=color:#ff8f40>4</span><span>] </span><span style=color:#fa6e32>for </span><span>i </span><span style=color:#fa6e32>in </span><span style=color:#f07171>range</span><span>(</span><span style=color:#ff8f40>0</span><span style=color:#61676ccc>,</span><span style=color:#f07171>len</span><span>(flag)</span><span style=color:#61676ccc>,</span><span style=color:#ff8f40>4</span><span>)]
+</span><span style=color:#fa6e32>for </span><span>j </span><span style=color:#fa6e32>in </span><span>flag:
+</span><span>    </span><span style=color:#fa6e32>for </span><span>i </span><span style=color:#fa6e32>in </span><span>string</span><span style=color:#ed9366>.</span><span>printable:
+</span><span>        random</span><span style=color:#ed9366>.</span><span style=color:#f29718>seed</span><span>(</span><span style=color:#86b300>"H4shS33d"</span><span style=color:#ed9366>+</span><span>i) 
+</span><span>        num </span><span style=color:#ed9366>= </span><span>random</span><span style=color:#ed9366>.</span><span style=color:#f29718>getrandbits</span><span>(</span><span style=color:#ff8f40>16</span><span>)
+</span><span>        </span><span style=color:#fa6e32>if </span><span style=color:#55b4d4;font-style:italic>int</span><span>(j</span><span style=color:#61676ccc>,</span><span style=color:#ff8f40>16</span><span>)</span><span style=color:#ed9366>==</span><span>num:
+</span><span>            </span><span style=color:#f07171>print</span><span>(i</span><span style=color:#61676ccc>,</span><span style=color:#ff8f40>end</span><span style=color:#ed9366>=</span><span style=color:#86b300>""</span><span>)
+</span><span>            </span><span style=color:#fa6e32>break
+</span></code></pre><blockquote><p><code>Flag : InvaderCTF{ch4ract3r_b4s3d_h4sh1ng_is_w3ak}</code></blockquote><h2 id=crackme><a aria-label="Anchor link for: crackme" class=zola-anchor href=#crackme>CrackME</a></h2><p><img alt="Crack me" src=/assets/img/ctf_img/invaders22/crack_me.png><p>In the attached files they gave me a <code>crackme.pyc</code> binary file. I used a online decompiler to get back the source code.<p>The source code of the binary file.<pre class=language-python data-lang=python style=color:#61676c;background-color:#fafafa><code class=language-python data-lang=python><span>
+</span><span style=color:#fa6e32>import </span><span>random
+</span><span>random</span><span style=color:#ed9366>.</span><span style=color:#f29718>seed</span><span>(</span><span style=color:#fa6e32>u</span><span style=color:#86b300>'[5</span><span style=color:#4cbf99>\x80</span><span style=color:#86b300>E</span><span style=color:#4cbf99>\x1d\x1a</span><span style=color:#86b300>X</span><span style=color:#4cbf99>\x91</span><span style=color:#86b300>Z</span><span style=color:#4cbf99>\x8f</span><span style=color:#86b300>'</span><span>)
+</span><span>
+</span><span style=color:#fa6e32>def </span><span style=color:#f29718>encrypt</span><span>(</span><span style=color:#ff8f40>string</span><span>):
+</span><span>    enc </span><span style=color:#ed9366>= </span><span>[]
+</span><span>    </span><span style=color:#fa6e32>for </span><span>char </span><span style=color:#fa6e32>in </span><span>string:
+</span><span>        temp </span><span style=color:#ed9366>= </span><span style=color:#f07171>ord</span><span>(char) </span><span style=color:#ed9366>+ </span><span style=color:#ff8f40>120 </span><span style=color:#ed9366>^ </span><span>random</span><span style=color:#ed9366>.</span><span style=color:#f29718>getrandbits</span><span>(</span><span style=color:#ff8f40>7</span><span>)
+</span><span>        enc</span><span style=color:#ed9366>.</span><span style=color:#f29718>append</span><span>(temp)
+</span><span>
+</span><span>    </span><span style=color:#fa6e32>return </span><span style=color:#55b4d4;font-style:italic>bytearray</span><span>(enc)
+</span><span>
+</span><span>
+</span><span>flag </span><span style=color:#ed9366>= </span><span style=color:#f07171>input</span><span>(</span><span style=color:#86b300>'Enter flag : '</span><span>)
+</span><span>encFlag </span><span style=color:#ed9366>= </span><span style=color:#f29718>encrypt</span><span>(flag)
+</span><span style=color:#fa6e32>if </span><span>encFlag </span><span style=color:#ed9366>== </span><span style=color:#86b300>'</span><span style=color:#4cbf99>\xd1\xe0\xb3\x9e\x80\xbf\xd3\x97\xa1\xda\x97\xdd\xe4\xef\xc9\xdf\x92\xff\xa2\xd5\x95\xfc\x99\xe6\xbc\xfa\xf5\xab\xd1\x89\xae\xd4\xe0\x94\xbb\x80\x96\x97\xa4\xd5\xd1\xe6\xce</span><span style=color:#86b300>'</span><span>:
+</span><span>    </span><span style=color:#f07171>print</span><span>(</span><span style=color:#86b300>'Flag was right :)'</span><span>)
+</span><span style=color:#fa6e32>else</span><span>:
+</span><span>    </span><span style=color:#f07171>print</span><span>(</span><span style=color:#86b300>'Nope'</span><span>)
+</span></code></pre><p>The encrypted flag is<pre class=language-text data-lang=text style=color:#61676c;background-color:#fafafa><code class=language-text data-lang=text><span>\xd1\xe0\xb3\x9e\x80\xbf\xd3\x97\xa1\xda\x97\xdd\xe4\xef\xc9\xdf\x92\xff\xa2\xd5\x95\xfc\x99\xe6\xbc\xfa\xf5\xab\xd1\x89\xae\xd4\e0\x94\xbb\x80\x96\x97\xa4\xd5\xd1\xe6\xce
+</span></code></pre><p>I have to get the input char from the encrypted flag, the encryption is done with the XOR operation. And the seed is also same for every byte, so we can get flag char by<pre class=language-python data-lang=python style=color:#61676c;background-color:#fafafa><code class=language-python data-lang=python><span>temp </span><span style=color:#ed9366>= </span><span style=color:#f07171>ord</span><span>(char) </span><span style=color:#ed9366>+ </span><span style=color:#ff8f40>120 </span><span style=color:#ed9366>^ </span><span>random</span><span style=color:#ed9366>.</span><span style=color:#f29718>getrandbits</span><span>(</span><span style=color:#ff8f40>7</span><span>)
+</span><span style=color:#f07171>ord</span><span>(char) </span><span style=color:#ed9366>= </span><span>encryptedbyte </span><span style=color:#ed9366>^ </span><span>random</span><span style=color:#ed9366>.</span><span style=color:#f29718>getrandbits</span><span>(</span><span style=color:#ff8f40>7</span><span>) </span><span style=color:#ed9366>- </span><span style=color:#ff8f40>120
+</span></code></pre><p>The script to get the flag is<pre class=language-python data-lang=python style=color:#61676c;background-color:#fafafa><code class=language-python data-lang=python><span style=color:#fa6e32>import </span><span>random
+</span><span>random</span><span style=color:#ed9366>.</span><span style=color:#f29718>seed</span><span>(</span><span style=color:#fa6e32>u</span><span style=color:#86b300>'[5</span><span style=color:#4cbf99>\x80</span><span style=color:#86b300>E</span><span style=color:#4cbf99>\x1d\x1a</span><span style=color:#86b300>X</span><span style=color:#4cbf99>\x91</span><span style=color:#86b300>Z</span><span style=color:#4cbf99>\x8f</span><span style=color:#86b300>'</span><span>)
+</span><span>enc_flag </span><span style=color:#ed9366>= </span><span>l </span><span style=color:#ed9366>= </span><span style=color:#55b4d4;font-style:italic>list</span><span>(</span><span style=color:#fa6e32>b</span><span style=color:#86b300>'</span><span style=color:#4cbf99>\xd1\xe0\xb3\x9e\x80\xbf\xd3\x97\xa1\xda\x97\xdd\xe4\xef\xc9\xdf\x92\xff\xa2\xd5\x95\xfc\x99\xe6\xbc\xfa\xf5\xab\xd1\x89\xae\xd4\xe0\x94\xbb\x80\x96\x97\xa4\xd5\xd1\xe6\xce</span><span style=color:#86b300>'</span><span>)
+</span><span>
+</span><span>j </span><span style=color:#ed9366>= </span><span>[]
+</span><span style=color:#fa6e32>for </span><span>i </span><span style=color:#fa6e32>in </span><span>l:
+</span><span>    temp </span><span style=color:#ed9366>= </span><span>i </span><span style=color:#ed9366>^ </span><span>random</span><span style=color:#ed9366>.</span><span style=color:#f29718>getrandbits</span><span>(</span><span style=color:#ff8f40>7</span><span>)
+</span><span>    temp </span><span style=color:#ed9366>-= </span><span style=color:#ff8f40>120
+</span><span>    j</span><span style=color:#ed9366>.</span><span style=color:#f29718>append</span><span>(temp)
+</span><span>
+</span><span style=color:#fa6e32>for </span><span>i </span><span style=color:#fa6e32>in </span><span>j:
+</span><span>    </span><span style=color:#f07171>print</span><span>(</span><span style=color:#f07171>chr</span><span>(i)</span><span style=color:#61676ccc>,</span><span style=color:#ff8f40>end</span><span style=color:#ed9366>=</span><span style=color:#86b300>""</span><span>)
+</span></code></pre><blockquote><p><code>Flag : InvaderCTF{d3c0mpilati0n_m4kes_l1f3_e4si3r}</code></blockquote><hr><p>Thank you &LT3</section></article></main></div>
