@@ -1,5 +1,5 @@
 +++
-title = "Backdoor CTF 2023"
+title = "Backdoor CTF 2024"
 date = "2024-12-23"
 
 [taxonomies]
@@ -7,7 +7,7 @@ tags=["ctf", "blockchain"]
 
 +++
 
-Back to CTF's to be sharper in problem solving. I played <a href="https://ctftime.org/event/2540" target=_blank>Backdoor CTF 2023</a> with our amazing team <a href="https://ctftime.org/team/364723" target=_blank>Infobahn</a>. We got **`4th`** place in this CTF. I solved few Blockchain challs as usual. Solutions,,,
+Back to CTF's to be sharper in problem solving. I played <a href="https://ctftime.org/event/2540" target=_blank>Backdoor CTF 2023</a> with our amazing team <a href="https://ctftime.org/team/364723" target=_blank>Infobahn</a>. We got **`4th`** place in this CTF. I solved few Blockchain challs as usual. Solutions,
 
 # Curvy Pool
 
