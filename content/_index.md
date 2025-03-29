@@ -10,7 +10,7 @@ I am a __
 
 - CTF Player
 
-- Senior Blockchain Engineer
+- Senior Blockchain Engineer [@Supra](https://x.com/SUPRA_Labs)
     - Interoperability Solutions
     - Light clients
     - Consensus
@@ -19,6 +19,6 @@ I am a __
 
 - Security Researcher
 
-- Blind Fold Programmer of {`.py`, `.rs`, `.sol`, `.sh`, `.js`}
+- Blind Fold Programmer of {`.rs`, `.sol`, `.move`, `.huff`, `.py`, `.sh`, `.js`}
 
 - Trail By Fire Programmer of  {`.*`}

