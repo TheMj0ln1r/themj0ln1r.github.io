@@ -7,8 +7,7 @@ tags=["ctf", "blockchain", "solidity", "bridge", "defi", "Huff", "evm"]
 
 +++
 
-Alpha content here... I participated and solved a private web3 security CTF 
-focused on smart contract security of various concepts like,
+Alpha content here... To keep up my security review skills, I participated in Statemind web3 security fellowship CTF focused on smart contract security of various concepts like,
 
 - DeFi protocol vulnerabilities
 - Cross-chain bridge security
