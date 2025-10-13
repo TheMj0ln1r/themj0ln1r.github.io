@@ -1,7 +1,7 @@
 +++
 title = "Novel Cryptography Technique for Video Encryption"
 description = "Minor project submitted during graduation"
-weight = 1
+weight = 2
 date = "2023-06-13"
 
 [extra]

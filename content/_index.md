@@ -1,5 +1,5 @@
 +++
-title= "Charan Nomula"
+title= "TheMj0ln1r"
 template = "homepage.html"
 insert_anchor_links = "heading"
 +++
@@ -22,3 +22,9 @@ I am a __
 - Blind Fold Programmer of {`.rs`, `.sol`, `.move`, `.huff`, `.py`, `.sh`, `.js`}
 
 - Trail By Fire Programmer of  {`.*`}
+
+- Find me here 
+    - <a href="https://x.com/TheMj0ln1r/" target=_blank>Twitter/X</a>
+    - <a href="https://linkedin.com/in/mj0ln1r/" target=_blank>LinkedIn</a>
+    - <a href="https://github.com/TheMj0ln1r/" target=_blank>GitHub</a>
+    - <a href="mailto: playermj0ln1r@gmail.com" target=_blank>Email</a>

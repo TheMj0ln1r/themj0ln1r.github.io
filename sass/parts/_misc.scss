@@ -40,13 +40,8 @@ blockquote {
 }
 
 a {
-  border-bottom: 3px solid var(--primary-color);
-  color: inherit;
+  color: var(--primary-color);
   text-decoration: none;
-
-  // Make sure the underline is at the top
-  position: relative; // needed for z-index
-  z-index: 1;
 }
 
 a.zola-anchor {
@@ -54,8 +49,8 @@ a.zola-anchor {
 }
 
 a:hover {
-  background-color: var(--primary-color);
-  color: var(--hover-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 time {
@@ -65,12 +60,12 @@ time {
 /* Remove post list padding */
 .list>ul {
   margin: 0;
-  padding: 1rem 0 0 0;
+  padding: .5rem 0 0 0;
 }
 
 /* Post list */
 .list-item {
-  margin-bottom: 30px;
+  margin-bottom: 16px;
   list-style-type: none;
 }
 
@@ -83,11 +78,12 @@ del {
 @media all and (max-width: 640px) {
   .post-header {
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
 
     h1 {
-      margin-top: 0;
-      // font-size: 130%;
+      margin: 0;
+      font-size: 1em;
 
       a {
         border-bottom: none;
@@ -101,18 +97,29 @@ del {
   .post-header {
     display: grid;
     gap: 1rem;
-    grid-row-gap: 1.5rem;
+  grid-row-gap: .25rem;
     grid-template-columns: auto 1fr;
+    align-items: baseline;
 
     h1 {
       margin: 0;
-      font-size: 130%;
+      font-size: 1em;
 
       a {
         border-bottom: none;
       }
     }
   }
+}
+
+/* Remove heading hashes for list titles only */
+.list .post-header h1::before,
+.list .post-header h2::before,
+.list .post-header h3::before,
+.list .post-header h4::before,
+.list .post-header h5::before,
+.list .post-header h6::before {
+  content: none;
 }
 
 /* Remove styling from theme toggle button */

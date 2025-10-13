@@ -26,7 +26,7 @@ P: "Your goal is to drain all ether from the Vault contract. Use the deposit and
 
 {% note(clickable=true, header="Vault.sol") %}
 
-```soliidty
+```solidity
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;

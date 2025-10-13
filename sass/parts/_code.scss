@@ -1,7 +1,7 @@
 // Define base colors and fonts for light and dark themes
 :root {
-    --code-font: 'Courier New', monospace;
-    --bg-primary: var(--bg-1);
+    --code-font: 'Inter', system-ui, sans-serif;
+    --bg-primary: var(--bg-3);
     --text-color: var(--text-0); // Color of the code text
     --label-color: #f0f0f0; // Text color of the label
 
@@ -46,6 +46,7 @@ $language-colors: (
     "clojure": (#5881d8, "Clojure"),
     "bash": (#4eaa25, "Bash"),
     "default": (#333, "Code"),
+    "solidity": (#039b77, "Solidity"),
 );
 
 @mixin base-label-style($bg-color, $text-color: var(--label-color)) {
