@@ -24,7 +24,7 @@ All of these challenges with solutions can be found here : [TheMj0ln1r/statemind
 
 P: "Your goal is to drain all ether from the Vault contract. Use the deposit and withdraw functions to reduce the vault's balance to zero. Once the isSolved function returns true, you've completed the challenge."
 
-{% note(clickable=true, header="Vault.sol") %}
+{% note(clickable=true, hidden=true, header="Vault.sol") %}
 
 ```solidity
 // SPDX-License-Identifier: UNLICENSED
@@ -75,7 +75,7 @@ Here's how I exploited it:
 
 The exploit script uses a malicious contract (`Attack`) that implements a `receive()` function to recursively withdraw funds from the vault. When the vault sends ETH to our contract, the `receive()` function is triggered, allowing us to withdraw more funds before the vault updates its balance.
 
-{% note(clickable=true, header="Vault.s.sol") %}
+{% note(clickable=true, hidden=true, header="Vault.s.sol") %}
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -139,7 +139,7 @@ contract Attack{
 
 P: "You've encountered a proxy contract setup where the Proxy delegates calls to an Executor implementation. Find a way to manipulate the logic and get isSolved to return true."
 
-{% note(clickable=true, header="Proxy.sol") %}
+{% note(clickable=true, hidden=true, header="Proxy.sol") %}
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -218,7 +218,7 @@ The goal is to manipulate the logic to make `isSolved()` return true. But If we 
 
 The key vulnerability lies in the `execute()` function which uses `delegatecall` to execute arbitrary logic, allowing us to potentially manipulate the contract's state. Simply, the calls to Proxy contract is delegated to the Executor and the Executor is delegating to the `exec()` function of a arbitray Logic contract. So the context of the call (`msg.sender`, `msg.value`, `this` and storage) remains same inside the `exec()` function on Logic. So, If we can update the Executor address in the Proxy slot to a new contract which have the logic of returning `true` on calling `isSolved()` then the chall is done. This is what I did in the following exploit script.
 
-{% note(clickable=true, header="Proxy.s.sol") %}
+{% note(clickable=true, hidden=true, header="Proxy.s.sol") %}
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -310,7 +310,7 @@ contract NewExecutor is Initializable{
 
 P: "You have lending protocol that interacts with interesting pair. You need to steal all funds from lending protocol."
 
-{% note(clickable=true, header="Lending.sol") %}
+{% note(clickable=true, hidden=true, header="Lending.sol") %}
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -713,7 +713,7 @@ So, during this callback we can borrow from Lending contract but the reserves ne
 
 Thats how I manipulated the `borrowToken` price to borrowed all the tokens from Lending. Find the exploit below.
 
-{% note(clickable=true, header="Lending.s.sol") %}
+{% note(clickable=true, hidden=true, header="Lending.s.sol") %}
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -807,7 +807,7 @@ contract Attack is IUniswapV2Callee {
 
 P: "UniswapV3 yield farming is so easy! Just make sure there is liquidity around the spot price. You are given 5e18 each of token0 and token1. Your goal is to get 15e18 of LP tokens."
 
-{% note(clickable=true, header="Yield.sol") %}
+{% note(clickable=true, hidden=true, header="Yield.sol") %}
 ```solidity
 // SPDX-License-Identifier: Unlicense
 
@@ -1315,7 +1315,7 @@ I suspected the following things in the protocol as the potential issues to expl
    - When the price is manipulated to extreme values, the share calculation becomes inaccurate
    - This allows us to get more LP tokens than we should for our deposit
 
-{% note(clickable=true, header="Yield.s.sol") %}
+{% note(clickable=true, hidden=true, header="Yield.s.sol") %}
 
 ```solidity
 // SPDX-License-Identifier: Unlicense
@@ -1455,7 +1455,7 @@ P: "Michael wrote a Dex pool for USDe and USDC tokens along with their respectiv
 
 Might help you: check the differences betweeen the current implementation and the implementation deployed at the pool creation time on mainnet"
 
-{% note(clickable=true, header="Oracle.sol") %}
+{% note(clickable=true, hidden=true, header="Oracle.sol") %}
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -1975,7 +1975,7 @@ Thats seems simple but you need to go through a lot of grinding there.
 
 Can't explain more, just read my messy exploit script. 
 
-{% note(clickable=true, header="Oracle.s.sol") %}
+{% note(clickable=true, hidden=true, header="Oracle.s.sol") %}
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -2139,7 +2139,7 @@ manager.updateSignal(debtToken, 3520 ether);
 You are given 6000 of ETH. Your goal is to get 50_000_000 of MIM.
 """
 
-{% note(clickable=true, header="StableCoin.sol") %}
+{% note(clickable=true, hidden=true, header="StableCoin.sol") %}
 ```solidity
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
@@ -2730,7 +2730,7 @@ So, the result from the `divUp()` will be very high. i.e, we are minting more `p
 
 Find my messy exploit below,
 
-{% note(clickable=true, header="Stablecoin.s.sol") %}
+{% note(clickable=true, hidden=true, header="Stablecoin.s.sol") %}
 
 ```solidity
 
@@ -2844,7 +2844,7 @@ contract StablecoinSolve is Script {
 
 P: "You've stumbled upon a cross-chain bridge contract, enabling ETH and ERC20 token transfers between chains. The Bridge contract has 100 ether of flag token. You are given 1 ether of flag token. Your goal is to drain Bridge contract below 90 ether."
 
-{% note(clickable=true, header="Bridge.sol") %}
+{% note(clickable=true, hidden=true, header="Bridge.sol") %}
 
 ```solidity
 //SPDX-License-Identifier:MIT
@@ -3281,7 +3281,7 @@ Now do you own math and find a way to execute this logic until you got atleast `
 Don't look at my following exploit, I did a terrible math there. 
 
 
-{% note(clickable=true, header="Bridge.s.sol") %}
+{% note(clickable=true, hidden=true, header="Bridge.s.sol") %}
 ```solidity
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.20;
@@ -3398,7 +3398,7 @@ contract Attack is ERC1820Implementer, IERC777Sender {
 
 P: "You heard there is a new Dex primitive that has launched on-chain with a lot of tokens. As a whitehat hacker, you race to find any bugs before the blackhats do. Can you rescue the tokens from the contract?"
 
-{% note(clickable=true, header="Exchange.sol") %}
+{% note(clickable=true, hidden=true, header="Exchange.sol") %}
 
 ```solidity
 // SPDX-License-Identifier: UNLICENSED
@@ -3863,7 +3863,7 @@ Don't ask me anything please follow the math explained above. Th issues I see he
 - Only handling the cases where the `currentPosition == 0 || newPosition == 0`. 
 
 
-{% note(clickable=true, header="Exchange.s.sol") %}
+{% note(clickable=true, hidden=true, header="Exchange.s.sol") %}
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -3970,7 +3970,7 @@ contract Attack2 is SwapCallback{
 
 P: "In the aftermath of the Great War, the world lies shattered, but hope endures in the form of Nuka-Cola Caps, the currency of the wasteland. Your mission, should you choose to accept it, is to obtain 1,000,000 Nuka-Cola Caps and secure your place as a true survivor in the barren expanse of post-apocalyptic America."
 
-{% note(clickable=true, header="Fallout.sol") %}
+{% note(clickable=true, hidden=true, header="Fallout.sol") %}
 ```solidity
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
@@ -4546,7 +4546,7 @@ Now we need to sign the above message with the computed private key and pass the
 
 Python script to perform **Smart Attack**
 
-{% note(clickable=true, header="fall.py") %}
+{% note(clickable=true, hidden=true, header="fall.py") %}
 
 ```python
 # https://mslc.ctf.su/wp/polictf-2012-crypto-500/
@@ -4644,7 +4644,7 @@ print (f"Verification: {result}")
 
 Solidity script to call `mint()`.
 
-{% note(clickable=true, header="Fallout.s.sol") %}
+{% note(clickable=true, hidden=true, header="Fallout.s.sol") %}
 
 ```solidity
 // SPDX-License-Identifier: MIT

@@ -1,7 +1,7 @@
 +++
 title= "TheMj0ln1r"
 template = "homepage.html"
-insert_anchor_links = "heading"
+insert_anchor_links = "none"
 +++
 
 Hello anon, this is Charan Nomula aka MJ0LN1R or THEMJ0LN1R. 

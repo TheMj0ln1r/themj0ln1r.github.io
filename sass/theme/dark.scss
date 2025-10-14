@@ -1,10 +1,10 @@
-$bg-0: #121212;
+$bg-0: #171717; // Slightly lighter dark base to reduce harshness
 
 // Dark theme needs a bigger contrast compared to the white theme.
 $bg-1: lighten($bg-0, 5%);
 $bg-2: lighten($bg-1, 10%);
 
-$text-0: lighten($bg-0, 87%);
+$text-0: lighten($bg-0, 70%); // Slightly dimmer primary text for dark theme
 $text-1: lighten($bg-0, 60%);
 
 :root.dark {
@@ -18,7 +18,7 @@ $text-1: lighten($bg-0, 60%);
   --border-color: var(--bg-2);
 
   --primary-color: #428bca;
-  --hover-color: var(--primary-color);
+  --hover-color: var(--text-0);
 
   .social>img {
     filter: invert(1);

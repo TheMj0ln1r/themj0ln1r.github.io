@@ -13,7 +13,7 @@ Back to CTF's to be sharper in problem solving. I played <a href="https://ctftim
 
 No description required, `isSolved()` is the problem statement for us (most of the time).
 
-{% note(clickable=true, header="Setup.sol") %}
+{% note(clickable=true, hidden=true, header="Setup.sol") %}
 
 ```soliidty
 // SPDX-License-Identifier: MIT
@@ -87,7 +87,7 @@ contract Setup {
 
 {% end %}
 
-{% note(clickable=true, header="Pool.sol") %}
+{% note(clickable=true, hidden=true, header="Pool.sol") %}
 
 ```soliidty
 // SPDX-License-Identifier: UNLICENSED
@@ -276,7 +276,7 @@ contract Pool is LiquidityToken {
 {% end %}
 
 
-{% note(clickable=true, header="LiquidityToken.sol") %}
+{% note(clickable=true, hidden=true, header="LiquidityToken.sol") %}
 
 ```soliidty
 
@@ -317,7 +317,7 @@ So, now what we can do is, we will swap our `WETH` completely for `PuffETH` toke
 Then we remove the liquidity to get equal amount of `WETH` and `PuffETH` tokens. We will continue this for 2 iterations, so we will get more than 10 ether of `WETH` and `PuffETH` tokens. At last providing liquidity of both tokens to the pool
 will mint us more LP tokens than owner. 
 
-{% note(clickable=true, header="Solve.s.sol") %}
+{% note(clickable=true, hidden=true, header="Solve.s.sol") %}
 
 ```
 // SPDX-License-Identifier: UNLICENSED
@@ -391,7 +391,7 @@ forge script script/Solve.s.sol:SolveScript --rpc-url <RPC_URL> --broadcast
 
 # EasyPeasy
 
-{% note(clickable=true, header="Setup.sol") %}
+{% note(clickable=true, hidden=true, header="Setup.sol") %}
 
 ```
 // SPDX-License-Identifier: UNLICENSED
@@ -413,7 +413,7 @@ contract Setup {
 {% end %}
 
 
-{% note(clickable=true, header="Challenge.sol") %}
+{% note(clickable=true, hidden=true, header="Challenge.sol") %}
 
 ```
 // SPDX-License-Identifier: MIT
@@ -631,7 +631,7 @@ The flag `h4v333_y0uuuu_r34d_EVMMM?` is well deserved for anyone who can solve t
 # Betray 
 
 
-{% note(clickable=true, header="Setup.sol") %}
+{% note(clickable=true, hidden=true, header="Setup.sol") %}
 
 ```
 // SPDX-License-Identifier: MIT
@@ -663,7 +663,7 @@ contract Setup {
 {% end %}
 
 
-{% note(clickable=true, header="Challenge.sol") %}
+{% note(clickable=true, hidden=true, header="Challenge.sol") %}
 
 ```
 // SPDX-License-Identifier: MIT
@@ -922,7 +922,7 @@ Our contract returns "I'm_L0yal;)" which, when shifted right by 24*7 bits, match
 
 ### Solution Script
 
-{% note(clickable=true, header="SolveScript.s.sol") %}
+{% note(clickable=true, hidden=true, header="SolveScript.s.sol") %}
 
 ```solidity
 contract SolveScript is Script {
