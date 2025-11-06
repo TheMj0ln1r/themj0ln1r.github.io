@@ -21,7 +21,7 @@ header {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 1em 0;
+    padding: 0.5em 0;
 }
 
 header .main {
@@ -83,7 +83,7 @@ header .socials {
     header {
         flex-direction: column;
         align-items: center;
-        padding: 1em 0;
+        padding: 0.5em 0;
     }
 
     header .main a {
@@ -116,34 +116,4 @@ h5,
 h6 {
     font-size: 1.2rem;
     margin-top: 2em;
-}
-
-h1::before {
-    color: var(--primary-color);
-    content: "# ";
-}
-
-h2::before {
-    color: var(--primary-color);
-    content: "## ";
-}
-
-h3::before {
-    color: var(--primary-color);
-    content: "### ";
-}
-
-h4::before {
-    color: var(--primary-color);
-    content: "#### ";
-}
-
-h5::before {
-    color: var(--primary-color);
-    content: "##### ";
-}
-
-h6::before {
-    color: var(--primary-color);
-    content: "###### ";
 }

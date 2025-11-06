@@ -1,5 +1,5 @@
 base_url = "https://themj0ln1r.github.io/"
-title = "TheMj0ln1r"
+title = "Home"
 description = ""
 build_search_index = false
 generate_feeds = true
@@ -27,18 +27,17 @@ katex_auto_render = true
 repo_url = "https://github.com/TheMj0ln1r/themj0ln1r.github.io/"
 
 menu = [
-    { name = "posts", url = "/posts", weight = 1 },
-    { name = "writeups", url = "/writeups", weight = 2 },
-    { name = "projects", url = "/projects", weight = 3 },
-    { name = "tags", url = "/tags", weight = 4 },
+    { name = "CV", url = "/cv", weight = 2 },
+    { name = "Archive", url = "/archive", weight = 3 },
+    { name = "Tags", url = "/tags", weight = 4 },
 ]
 
-socials = [
-    { name = "twitter", url = "https://x.com/TheMj0ln1r/", icon = "twitter" },
-    { name = "linkedin", url = "https://linkedin.com/in/mj0ln1r/", icon = "linkedin" },
-    { name = "github", url = "https://github.com/TheMj0ln1r/", icon = "github" },
-    { name = "Email", url = "mailto: playermj0ln1r@gmail.com", icon = "email" }
-]
+# socials = [
+#     { name = "twitter", url = "https://x.com/TheMj0ln1r/", icon = "twitter" },
+#     { name = "linkedin", url = "https://linkedin.com/in/mj0ln1r/", icon = "linkedin" },
+#     { name = "github", url = "https://github.com/TheMj0ln1r/", icon = "github" },
+#     { name = "Email", url = "mailto: playermj0ln1r@gmail.com", icon = "email" }
+# ]
 
 custom_css = []
 

@@ -1,6 +1,6 @@
 +++
 paginate_by = 0
-title = "CTF Writeups"
+title = "CTF Archive"
 sort_by = "date"
 
 insert_anchor_links = "none"
