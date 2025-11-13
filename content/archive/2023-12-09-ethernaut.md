@@ -30,7 +30,7 @@ Solution scripts under `/script`
 
 You need to add a `.env` file and fill following required fieds.
 
-```text
+```
 RPC_URL=
 MY_ADDRESS=
 PRIVATE_KEY=

@@ -15,7 +15,7 @@ No description required, `isSolved()` is the problem statement for us (most of t
 
 {% note(clickable=true, hidden=true, header="Setup.sol") %}
 
-```soliidty
+```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.16;
 
@@ -89,7 +89,7 @@ contract Setup {
 
 {% note(clickable=true, hidden=true, header="Pool.sol") %}
 
-```soliidty
+```solidity
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.16;
 
@@ -278,7 +278,7 @@ contract Pool is LiquidityToken {
 
 {% note(clickable=true, hidden=true, header="LiquidityToken.sol") %}
 
-```soliidty
+```solidity
 
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.16;

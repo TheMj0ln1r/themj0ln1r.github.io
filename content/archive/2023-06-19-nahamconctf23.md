@@ -18,7 +18,7 @@ I solved 10+ challs, A bit busy to write crear writeups, See you again...
 
 Dirty writeup.txt used during CTF
 
-```text
+```
 Blur Glasses
 
 	flag½₧8084e4530cf649814456f2a291eb81e9½―
