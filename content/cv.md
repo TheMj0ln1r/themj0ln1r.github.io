@@ -14,17 +14,21 @@ template = "cv.html"
 
 ### Supra
 **Lead Blockchain Engineer** *Apr 2025 - Present*
-- Blockchain Lead of SupraNova
+- Technical Lead of SupraNova
 - Protocol architecture design
+- Protocol fee models design
 - Implementation and security reviews
+- SupraNova Ethereum to Supra, BSC to Supra, Supra to EVM trustless bridge implementations
+- Security review of Design, Solidity, Rust and Supra Move.
+- Extensive E2E testing, Fuzz and Invariant testings
 
 **Senior Blockchain Engineer** *August 2024 - February 2025*
-- Technical Lead & Software Architect
+- Blockchain Lead of SupraNova
 - Research on cross-chain interoperability
 - Deep dive into protocols like Wormhole, CCTP, Axelar Light Client, HyperBridge, ChainLink, HyperLane, DeBridge
 - Design and configuration of Supra interoperability solutions
-- Design of novel algorithms (sliding window, order-preserving in non-interactive setup)
-- Solidity contract implementation of Multisig & Trustless bridges
+- Implementation of novel algorithms (sliding window, order-preserving in non-interactive setup) in smart contracts
+- Solidity contract implementation trustless bridges
 - Rust implementation of bridge nodes, Light Clients & Relayers
 - Security reviews of implementations
 
@@ -60,7 +64,7 @@ template = "cv.html"
 
 ## Technical Skills
 
-**Blockchain:** EVM, Interoperability, Bridges, Consensus, DeFi, Auditing
+**Blockchain:** EVM, Interoperability, Bridges, Consensus, DeFi, Auditing, ZK
 
 **Programming:** Solidity, Huff, Rust, Python, Circom, Move, Bash, Assembly 
 

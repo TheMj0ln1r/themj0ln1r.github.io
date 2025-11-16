@@ -236,26 +236,26 @@ If the borrower does not pay back the loan, therequire statement with the messag
 
 **Refinancing Loans**
 
-For regular DeFi loans, they typically require some kind of collateral. For example, if you were borrowing $10,000 in stable coins, you would need to deposit $15,000 of Ether as collateral.
+For regular DeFi loans, they typically require some kind of collateral. For example, if you were borrowing \\$10,000 in stable coins, you would need to deposit \\$15,000 of Ether as collateral.
 
 If your stable coins loan had a 5% interest and you wanted to refinance with another lending smart contract at 4%, you would need to
 
-1. pay back the $10,000 in stable coins
-2. withdraw the $15,000 Ether collateral
-3. deposit the $15,000 Ether collateral into the other protocol
-4. borrow $10,000 in stable coins again at the lower rate
+1. pay back the \\$10,000 in stable coins
+2. withdraw the \\$15,000 Ether collateral
+3. deposit the \\$15,000 Ether collateral into the other protocol
+4. borrow \\$10,000 in stable coins again at the lower rate
 
-This would be problematic if you had the $10,000 tied up in some other application. With a flashloan, you can do steps 1-4 without using any of your own stable coins.
+This would be problematic if you had the \\$10,000 tied up in some other application. With a flashloan, you can do steps 1-4 without using any of your own stable coins.
 
 **Exchanging collateral**
 
-In the example above, the borrower was using $15,000 of Ether as collateral. But suppose the protocol is offering a lower collateralization ratio using wBTC (wrapped bitcoin)? The borrower could use a flash loan and a similar set of steps outline above to swap out the collateral instead of the principal.
+In the example above, the borrower was using \\$15,000 of Ether as collateral. But suppose the protocol is offering a lower collateralization ratio using wBTC (wrapped bitcoin)? The borrower could use a flash loan and a similar set of steps outline above to swap out the collateral instead of the principal.
 
 **Liquidating Borrowers**
 
-In the context of DeFi loans, if the collateral falls below a certain threshold, then the collateral can get liquidated — forcibly sold to cover the cost of the loan. In the example above, if the value of the Ether was to drop to $12,000, then the protocol might allow someone to purchase the Ether for $11,500 if they first pay back the $10,000 loan.
+In the context of DeFi loans, if the collateral falls below a certain threshold, then the collateral can get liquidated — forcibly sold to cover the cost of the loan. In the example above, if the value of the Ether was to drop to \\$12,000, then the protocol might allow someone to purchase the Ether for \\$11,500 if they first pay back the \\$10,000 loan.
 
-A liquidator could use a flash loan to pay off the $10,000 stable coin loan and receive $11,500. They would then sell this on another exchange for stable coins, and then pay back the flash loan.
+A liquidator could use a flash loan to pay off the \\$10,000 stable coin loan and receive \\$11,500. They would then sell this on another exchange for stable coins, and then pay back the flash loan.
 
 **Increase yield for other DeFi applications**
 
@@ -428,7 +428,7 @@ Liquidity providers can only provide assets proportional to the current ratio of
 
 <img src="/assets/img/blog_img/uniswap-v2-complete/u2_chapter3_2.webp">
 
-The missed out on gains are called “**impermanent loss**.” In the table above, the impermanent loss is $810 = ($990 - $180).
+The missed out on gains are called “**impermanent loss**.” In the table above, the impermanent loss is \\$810 = (\\$990 - \\$180).
 
 # Architecture of Uniswap V2
 
@@ -872,9 +872,9 @@ If the ratio is not the same as what the pool currently has, then there are alwa
 
 With this rule, the liquidity providers are incentivized to add tokens at the same ratio as the pool. And we know the rate is always close to the market price otherwise Arbitrageurs will arbitrage if the token ratio was off the market.
 
-Why enforce this? Let’s say the pool currently has 100 of token0 and 1 of token1, and the supply of LP tokens is 1. Let’s say the total value, in dollars, of both tokens is $100 each, so the total value of the pool is $200.
+Why enforce this? Let’s say the pool currently has 100 of token0 and 1 of token1, and the supply of LP tokens is 1. Let’s say the total value, in dollars, of both tokens is \\$100 each, so the total value of the pool is \\$200.
 
-If we took the ***maximum*** of the two ratios, someone could supply one additional token1 (at a cost of $100) and raise the pool value to $300. They’ve increase the pool value by 50%. However, under the maximum calculation, they would get minted 1 LP tokens, meaning they own 50% of the supply of the LP tokens, since the total circulating supply is now 2 LP tokens. Now they control 50% of the $300 pool (worth $150) by only depositing $100 of value. This is clearly stealing from other LP providers.
+If we took the ***maximum*** of the two ratios, someone could supply one additional token1 (at a cost of \\$100) and raise the pool value to \\$300. They’ve increase the pool value by 50%. However, under the maximum calculation, they would get minted 1 LP tokens, meaning they own 50% of the supply of the LP tokens, since the total circulating supply is now 2 LP tokens. Now they control 50% of the \\$300 pool (worth \\$150) by only depositing \\$100 of value. This is clearly stealing from other LP providers.
 
 **Supply Ratio Safety Check**
 
@@ -1197,7 +1197,7 @@ A TWAP (Time Weighted Average Price) is the average of the price for the specifi
 
 **Example:**
 
-Over the last day, the price of an asset was $10 for the first 23 hours and $11 for the most recent one. The expected average price should be closer to $10 than $11, but it will still be in between those values. Specifically, it will be ($10 * 23 + $11 * 1) / 24 = $10.0417
+Over the last day, the price of an asset was \\$10 for the first 23 hours and \\$11 for the most recent one. The expected average price should be closer to \\$10 than \\$11, but it will still be in between those values. Specifically, it will be (\\$10 * 23 + \\$11 * 1) / 24 = \\$10.0417
 
 <img src="/assets/img/blog_img/uniswap-v2-complete/u2_chapter7_4.png">
 
