@@ -25,30 +25,23 @@ mathjax_dollar_inline_enable = true
 katex_enable = true
 katex_auto_render = true
 repo_url = "https://github.com/TheMj0ln1r/themj0ln1r.github.io/"
-
 menu = [
     { name = "CV", url = "/cv", weight = 2 },
     { name = "Archive", url = "/archive", weight = 3 },
     { name = "Tags", url = "/tags", weight = 4 },
 ]
-
 # socials = [
 #     { name = "twitter", url = "https://x.com/TheMj0ln1r/", icon = "twitter" },
 #     { name = "linkedin", url = "https://linkedin.com/in/mj0ln1r/", icon = "linkedin" },
 #     { name = "github", url = "https://github.com/TheMj0ln1r/", icon = "github" },
 #     { name = "Email", url = "mailto: playermj0ln1r@gmail.com", icon = "email" }
 # ]
-
 custom_css = []
 
 
 [extra.analytics]
-enabled = false
+enabled = true
 
 [extra.analytics.goatcounter]
-user = "your_user"
-host = "example.com" # default= goatcounter.com
-
-[extra.analytics.umami]
-website_id = "43929cd1-1e83...."
-host_url = "https://stats.mywebsite.com" # default: https://analytics.eu.umami.is
+user = "themj0ln1r"
+host = "goatcounter.com" # default= goatcounter.com
