@@ -88,6 +88,8 @@ template = "cv.html"
 
 - Prototyped Hyperloop, a non-interactive multisig bridge for research publication
 
+- Contributed to open-source [Interoperability-Protocol-Security-Checklist](https://github.com/windhustler/Interoperability-Protocol-Security-Checklist/blob/main/audit-checklists/Wormhole.md)
+
 - Ranked in top 10 in Web3 CTFs including Statemind (top 3), MetaRedCTF, TCP1PCTF, and HackedlabsCTF, solving all Web3 challenges
 
 - Completed Secureum bootcamp and Ethereum development bootcamp by Alchemy
