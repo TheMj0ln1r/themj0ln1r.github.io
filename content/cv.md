@@ -23,6 +23,7 @@ template = "cv.html"
 - Designed and executed comprehensive testing including unit, invariant, fuzz, and E2E tests for bridge components
 - Contributed to extending Supra's Move layer with native functions to support bridge operations
 - Upgraded internal Ethereum full nodes and bridge codebase for compatibility with Fusaka hard fork
+- Established multisig admin accounts and secure private key management for off-chain infrastructure
 
 **Senior Blockchain Engineer** *August 2024 - February 2025*
 - Researched cross-chain interoperability solutions with deep analysis of Wormhole, deBridge, LayerZero, Hyperbridge, Hyperlane, Axelar, Telepathy, ZK Bridge, Circle CCTP, and Dexlyn
