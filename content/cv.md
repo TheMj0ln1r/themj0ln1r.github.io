@@ -22,7 +22,7 @@ template = "cv.html"
 - Conducted security reviews and PR reviews of protocol design and implementations across Solidity, Rust, and Move codebases
 - Designed and executed comprehensive testing including unit, invariant, fuzz, and E2E tests for bridge components
 - Contributed to extending Supra's Move layer with native functions to support bridge operations
-- Upgraded internal Ethereum full nodes and bridge codebase for compatibility with Fusaka hard fork
+- Updated internal Ethereum full nodes and bridge codebase for compatibility with Fusaka hard fork
 - Established multisig admin accounts and secure private key management for off-chain infrastructure
 
 **Senior Blockchain Engineer** *August 2024 - February 2025*
@@ -30,13 +30,12 @@ template = "cv.html"
 - Architected Supra's interoperability solution based on research findings
 - Implemented novel algorithms in Solidity including sliding window and order-preserving mechanisms in non-interactive setups
 - Built trustless bridge smart contracts in Solidity and off-chain components including relayers and light clients in Rust
-- Studied Ethereum consensus layer, beacon chain architecture, full nodes, and light clients with focus on Helios
 - Conducted security reviews of bridge implementations
 
 **Blockchain Engineer** *Feb 2024 - July 2024*
 - Prototyped Hyperloop, a non-interactive multisig cross-chain bridge for research publication
-- Studied Ethereum consensus specifications, sync-committee protocol, and security models of trustless bridges
-- Upgraded internal Ethereum full nodes and bridge codebase for compatibility with Electra hard fork in May
+- Studied Ethereum consensus specifications, sync-committee protocol, security models of trustless bridges, beacon chain architecture, full nodes, and light clients with focus on Helios
+- Updated internal Ethereum full nodes and bridge codebase for compatibility with Electra hard fork
 
 
 ### CyberRecon Pvt.Ltd
