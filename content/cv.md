@@ -18,7 +18,7 @@ template = "cv.html"
 - Architected the SupraNova bridge protocol, including bidirectional EVM to Supra bridge design with smart contracts, off-chain relayers, and monitoring services
 - Designed and implemented a cross-chain dynamic fee calculation model with fuzz testing
 - Led the team to successfully deploy Ethereum to Supra trustless bridge on mainnet at [https://supranova.ai/](https://supranova.ai/)
-- Leading development of BSC to Supra, Sonic to Supra, and Supra to EVM bridges (under development)
+- Leading development of BSC to Supra, Sonic to Supra, and Supra to EVM bridges
 - Conducted security reviews and PR reviews of protocol design and implementations across Solidity, Rust, and Move codebases
 - Designed and executed comprehensive testing including unit, invariant, fuzz, and E2E tests for bridge components
 - Contributed to extending Supra's Move layer with native functions to support bridge operations
@@ -45,31 +45,26 @@ template = "cv.html"
 - Practiced penetration testing through TryHackMe platform
 
 ### CTF Competetions
-**CTFer** *Aug 2022 – Feb 2024*
+**CTF Player** *Aug 2022 – Feb 2024*
 - Competed in CTF events with teams Invaders0x1, CyberSpace, and Infobahn
-- Solved Web3 CTF challenges and published writeups for the community
+- Solved Web3 CTF challenges and published writeups
 
 
 ## Education
 
-**RGUKT, AP, India** *2020 – 2024*
+**Rajiv Gandhi University of Knowledge Technologies - Nuzvid, AP, India** *2020 – 2024*
 
 *Bachelor of Technology, Computer Science* **CGPA: 9.6/10**
 
-**RGUKT, AP, India** *2018 – 2020*
-
-*Pre University Course, MPC* **CGPA: 8.8/10**
-
-
 ## Technical Skills
 
-**Blockchain:** EVM, Interoperability, Bridges, Consensus, DeFi, Auditing, ZK
+**Blockchain:** EVM, Aptos, Supra, Bridges, Consensus, DeFi, Auditing, ZK
 
-**Programming:** Solidity, Huff, Rust, Python, Circom, Move, Bash, Assembly 
+**Programming:** Rust, Solidity, Huff, Move, Circom, Python, Bash, Assembly 
 
 **Cryptography:** Cryptanalysis, Symmetric & Asymmetric Cryptosystems, Hashing & Signatures
 
-**Tools & Packages:** Foundry, Cargo, Hardhat, Alloy.rs, Docker, RabbitMQ, Git & Github
+**Tools & Packages:** Forge, Hardhat, Alloy.rs, Docker, RabbitMQ, Git & Github
 
 **Pentest Tools:** Burp Suite, Nmap, Metasploit, John, Wireshark, Virtualbox, Aircrack-ng, etc.
 
@@ -78,7 +73,7 @@ template = "cv.html"
 
 ## Personal Projects
 
-### Academic project [Blog](https://themj0ln1r.github.io/)
+### Academic project [Git](https://github.com/TheMj0ln1r/novel-cryptography-project/tree/main)
 *Python, Flask, RSA, AES, ECC* *Feb – Mar 2023*
 - Implemented a published research paper titled "A Novel Cryptography Technique for Video Stream" as an academic project using multi-key hybrid cryptography for video communication security
 - Built video encryption and decryption software using Elliptic Curve Cryptography (ECC) for pseudo-random key generation
@@ -94,9 +89,9 @@ template = "cv.html"
 
 - Completed Secureum bootcamp and Ethereum development bootcamp by Alchemy
 
-- Solved 120+ penetration testing labs and ranked in Top 1% on TryHackMe leaderboard
+- Completed a 180 days of hacking streak, solved 130+ penetration testing labs and ranked in Top 1% on [TryHackMe](https://tryhackme.com/p/Mj0ln1r) leaderboard
 
-- Completed 100+ labs on x86 assembly, HTTP requests, and program misuse at PWN.College
+- Completed 100+ labs on x86 assembly, HTTP requests, and program misuse at [PWN.College](https://pwn.college/)
 
 
 ## Domains of Interest

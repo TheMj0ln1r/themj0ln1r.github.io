@@ -134,11 +134,12 @@
     }
 
     a {
-        color: var(--link-color, var(--text-0));
-        text-decoration: underline;
+        color: var(--primary-color);
+        text-decoration: none;
 
         &:hover {
-            opacity: 0.8;
+            text-decoration: underline;
+            text-underline-offset: 2px;
         }
     }
 }
