@@ -1,15 +1,24 @@
 // Define base colors and fonts for light and dark themes
 :root {
-    --code-font: 'Inter', system-ui, sans-serif;
+    --code-font: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
     --bg-primary: var(--bg-3);
-    --text-color: var(--text-0); // Color of the code text
-    --label-color: #f0f0f0; // Text color of the label
-
+    --text-color: var(--text-0);
+    --label-color: #f0f0f0;
     --hightlight-color: #f0f0f0;
+
+    // GitHub Light theme colors
+    --code-bg: #f6f8fa;
+    --code-border: #d0d7de;
+    --code-text: #24292f;
 }
 
 :root.dark {
     --hightlight-color: #204e8a;
+
+    // GitHub Dark theme colors
+    --code-bg: #0d1117;
+    --code-border: #30363d;
+    --code-text: #c9d1d9;
 }
 
 
@@ -76,21 +85,25 @@ $language-colors: (
 }
 
 code {
-    background-color: var(--bg-primary);
-    padding: 0.1em 0.2em;
-    border-radius: 5px;
-    border: 1px solid var(--border-color);
+    background-color: var(--code-bg);
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+    border: 1px solid var(--code-border);
     font-family: var(--code-font);
+    font-size: 0.875em; // Smaller than content text (87.5% of base)
+    color: var(--code-text);
 }
 
 pre {
-    background-color: var(--bg-primary) !important;
-    border-radius: 5px;
-    border: 1px solid var(--border-color);
-    line-height: 1.8;
+    background-color: var(--code-bg) !important;
+    border-radius: 8px;
+    border: 1px solid var(--code-border);
+    line-height: 1.6;
     overflow-x: auto;
-    padding: 1em;
+    padding: 16px;
     position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin: 1.5em 0;
 
     /* Minimal, low-contrast horizontal scrollbar for code blocks */
     scrollbar-width: thin; /* Firefox */
@@ -121,8 +134,8 @@ pre {
 
     code {
         background-color: transparent !important;
-        color: var(--text-color);
-        font-size: 100%;
+        color: var(--code-text);
+        font-size: 0.875em; // 87.5% of base font size
         padding: 0;
         border: none;
         font-family: var(--code-font);

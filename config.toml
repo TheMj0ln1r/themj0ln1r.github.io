@@ -9,17 +9,17 @@ taxonomies = [{ name = "tags" }]
 
 [markdown]
 highlight_code = true
-highlight_theme = "ayu-light"
+highlight_theme = "inspired-github"
 extra_syntaxes_and_themes = ["syntaxes"]
 
 [extra]
 toc = true
 use_cdn = false
 favicon = "/favicons/favicon.ico"
-theme = "toggle"              # light, dark, auto, toggle
+theme = "toggle" # light, dark, auto, toggle
 comment = false
 fancy_code = true
-dynamic_note = true           # a note that can be toggled
+dynamic_note = true # a note that can be toggled
 mathjax = true
 mathjax_dollar_inline_enable = true
 katex_enable = true

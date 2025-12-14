@@ -1,0 +1,268 @@
+%YAML 1.2
+---
+name: Huff
+file_extensions: [huff]
+scope: source.huff
+
+variables:
+  identifier: '(?:[A-Za-z_]\w*)'
+  number: '(?:0x[0-9a-fA-F_]+|\d+)'
+  hex_number: '(?:0[Xx][0-9a-fA-F_]+)'
+
+  # Huff-specific keywords
+  huff_define: '#define'
+  huff_include: '#include'
+  huff_constant: 'constant'
+  huff_macro: 'macro|fn|function|test'
+  huff_storage: 'FREE_STORAGE_POINTER'
+
+  # EVM opcodes
+  opcode: stop|add|sub|mul|div|sdiv|mod|smod|exp|not|lt|gt|slt|sgt|eq|iszero|and|or|xor|byte|shl|shr|sar|addmod|mulmod|signextend|keccak256|sha3|pc|pop|mload|mstore|mstore8|sload|sstore|msize|gas|address|balance|selfbalance|caller|callvalue|calldataload|calldatasize|calldatacopy|codesize|codecopy|extcodesize|extcodecopy|returndatasize|returndatacopy|extcodehash|create|create2|call|callcode|delegatecall|staticcall|return|revert|selfdestruct|invalid|log0|log1|log2|log3|log4|chainid|basefee|origin|gasprice|blockhash|coinbase|timestamp|number|difficulty|prevrandao|gaslimit|jump|jumpi|jumpdest|dup1|dup2|dup3|dup4|dup5|dup6|dup7|dup8|dup9|dup10|dup11|dup12|dup13|dup14|dup15|dup16|swap1|swap2|swap3|swap4|swap5|swap6|swap7|swap8|swap9|swap10|swap11|swap12|swap13|swap14|swap15|swap16|push0|push1|push2|push3|push4|push5|push6|push7|push8|push9|push10|push11|push12|push13|push14|push15|push16|push17|push18|push19|push20|push21|push22|push23|push24|push25|push26|push27|push28|push29|push30|push31|push32
+
+  # Huff built-in macros
+  builtin_macros: '__FUNC_SIG|__EVENT_HASH|__ERROR|__RIGHTPAD|__codesize|__tablesize|__tablestart'
+
+contexts:
+  main:
+    - match: (?=\S)
+      push: program
+
+  else-pop:
+    - match: (?=\S)
+      pop: true
+
+  eol-pop:
+    - match: \n
+      pop: true
+
+  prototype:
+    - include: comments
+
+  comments:
+    - match: '//'
+      scope: punctuation.definition.comment.huff
+      push:
+        - meta_include_prototype: false
+        - meta_scope: comment.line.double-slash.huff
+        - match: \n
+          pop: true
+    - match: '/\*'
+      scope: punctuation.definition.comment.begin.huff
+      push:
+        - meta_include_prototype: false
+        - meta_scope: comment.block.huff
+        - match: '\*/'
+          scope: punctuation.definition.comment.end.huff
+          pop: true
+
+  program:
+    - include: define-directive
+    - include: include-directive
+    - include: macro-definition
+    - include: constant-definition
+    - include: function-signature
+    - include: event-signature
+    - include: error-signature
+    - include: macro-body
+
+  define-directive:
+    - match: '({{huff_define}})\s+({{huff_macro}})\s+({{identifier}})'
+      captures:
+        1: keyword.control.huff
+        2: storage.type.huff
+        3: entity.name.function.huff
+      push: macro-parameters
+
+  include-directive:
+    - match: '({{huff_include}})\s+"([^"]+)"'
+      captures:
+        1: keyword.control.import.huff
+        2: string.quoted.double.huff
+
+  constant-definition:
+    - match: '({{huff_define}})\s+({{huff_constant}})\s+({{identifier}})\s*=\s*'
+      captures:
+        1: keyword.control.huff
+        2: storage.type.huff
+        3: constant.other.huff
+      push: constant-value
+
+  constant-value:
+    - match: '{{hex_number}}'
+      scope: constant.numeric.hex.huff
+      pop: true
+    - match: '{{number}}'
+      scope: constant.numeric.huff
+      pop: true
+    - match: '{{huff_storage}}\(\)'
+      scope: support.function.huff
+      pop: true
+    - match: '\['
+      scope: punctuation.section.brackets.begin.huff
+      push:
+        - match: '{{identifier}}'
+          scope: variable.other.huff
+        - match: '\]'
+          scope: punctuation.section.brackets.end.huff
+          pop: true
+    - include: else-pop
+
+  function-signature:
+    - match: '({{huff_define}})\s+(function)\s+({{identifier}})\('
+      captures:
+        1: keyword.control.huff
+        2: storage.type.function.huff
+        3: entity.name.function.huff
+      push: function-parameters
+
+  function-parameters:
+    - match: '\b(address|uint256|uint|int|string|bytes\d*|bool)\b'
+      scope: storage.type.huff
+    - match: '\b(view|pure|payable|nonpayable)\b'
+      scope: storage.modifier.huff
+    - match: '\b(returns)\b'
+      scope: keyword.control.huff
+    - match: '\)'
+      scope: punctuation.section.parens.end.huff
+      pop: true
+
+  event-signature:
+    - match: '({{huff_define}})\s+(event)\s+({{identifier}})\('
+      captures:
+        1: keyword.control.huff
+        2: storage.type.event.huff
+        3: entity.name.event.huff
+      push: event-parameters
+
+  event-parameters:
+    - match: '\b(indexed)\b'
+      scope: storage.modifier.huff
+    - match: '\b(address|uint256|uint|int|string|bytes\d*|bool)\b'
+      scope: storage.type.huff
+    - match: '\)'
+      scope: punctuation.section.parens.end.huff
+      pop: true
+
+  error-signature:
+    - match: '({{huff_define}})\s+(error)\s+({{identifier}})\('
+      captures:
+        1: keyword.control.huff
+        2: storage.type.error.huff
+        3: entity.name.error.huff
+      push: error-parameters
+
+  error-parameters:
+    - match: '\b(address|uint256|uint|int|string|bytes\d*|bool)\b'
+      scope: storage.type.huff
+    - match: '\)'
+      scope: punctuation.section.parens.end.huff
+      pop: true
+
+  macro-parameters:
+    - match: '\('
+      scope: punctuation.section.parens.begin.huff
+      push: macro-param-list
+    - match: '='
+      scope: keyword.operator.assignment.huff
+      push: macro-body
+    - include: else-pop
+
+  macro-param-list:
+    - match: '\)'
+      scope: punctuation.section.parens.end.huff
+      pop: true
+    - match: '\b(takes|returns)\b'
+      scope: keyword.control.huff
+    - match: '\('
+      scope: punctuation.section.parens.begin.huff
+    - match: '{{number}}'
+      scope: constant.numeric.huff
+
+  macro-body:
+    - match: '\{'
+      scope: punctuation.section.block.begin.huff
+      push: macro-body-contents
+    - include: else-pop
+
+  macro-body-contents:
+    - match: '\}'
+      scope: punctuation.section.block.end.huff
+      pop: true
+    - include: opcodes
+    - include: builtin-macros
+    - include: macro-invocation
+    - include: jump-labels
+    - include: hex-literals
+    - include: numeric-literals
+    - include: string-literals
+    - include: stack-comments
+    - include: comments
+
+  macro-definition:
+    - match: '\b({{identifier}})\s*\('
+      captures:
+        1: support.function.macro.huff
+      push: macro-arguments
+
+  macro-arguments:
+    - match: '\)'
+      scope: punctuation.section.parens.end.huff
+      pop: true
+    - match: '{{hex_number}}'
+      scope: constant.numeric.hex.huff
+    - match: '{{number}}'
+      scope: constant.numeric.huff
+    - match: '{{identifier}}'
+      scope: variable.parameter.huff
+
+  opcodes:
+    - match: '\b({{opcode}})\b'
+      scope: keyword.operator.opcode.huff
+
+  builtin-macros:
+    - match: '{{builtin_macros}}'
+      scope: support.function.builtin.huff
+    - match: '\[{{identifier}}\]'
+      scope: variable.other.constant.huff
+
+  macro-invocation:
+    - match: '\b([A-Z_][A-Z0-9_]*)\s*\('
+      captures:
+        1: support.function.macro.huff
+      push: macro-arguments
+
+  jump-labels:
+    - match: '\b({{identifier}})\s*:'
+      captures:
+        1: entity.name.label.huff
+    - match: '\b({{identifier}})\b(?=\s+(jump|jumpi))'
+      scope: entity.name.label.huff
+
+  hex-literals:
+    - match: '{{hex_number}}'
+      scope: constant.numeric.hex.huff
+
+  numeric-literals:
+    - match: '\b{{number}}\b'
+      scope: constant.numeric.huff
+
+  string-literals:
+    - match: '"'
+      scope: punctuation.definition.string.begin.huff
+      push:
+        - meta_include_prototype: false
+        - meta_scope: string.quoted.double.huff
+        - match: '"'
+          scope: punctuation.definition.string.end.huff
+          pop: true
+        - match: '\\.'
+          scope: constant.character.escape.huff
+
+  stack-comments:
+    - match: '//\s*(Stack:|takes|returns|Input:|Output:)'
+      scope: comment.line.documentation.huff
+      push:
+        - meta_include_prototype: false
+        - meta_scope: comment.line.documentation.huff
+        - match: \n
+          pop: true
