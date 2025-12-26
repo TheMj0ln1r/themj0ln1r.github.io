@@ -1,5 +1,5 @@
 +++
-title = "Blockchain Interoperability Part-2 : Atomic Swaps"
+title = "Blockchain Interoperability Part-2 : Atomic Swaps & HTLC's"
 date = "2025-12-27"
 
 [taxonomies]
