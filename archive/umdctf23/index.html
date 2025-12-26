@@ -1,0 +1,567 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><title>
+         UMD CTF 2023
+        
+    </title><meta content="UMD CTF 2023" property=og:title><link href=/favicons/favicon.ico rel=icon type=image/png><link href=https://themj0ln1r.github.io/fonts.css rel=stylesheet><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel=stylesheet><script async data-goatcounter=https://themj0ln1r.goatcounter.com/count src=https://themj0ln1r.github.io/js/count.js></script><noscript><img src="https://themj0ln1r.goatcounter.com//count?p=/archive/umdctf23/&t=UMD CTF 2023"></noscript><script src=https://themj0ln1r.github.io/js/codeblock.js></script><script src=https://themj0ln1r.github.io/js/toc.js></script><script src=https://themj0ln1r.github.io/js/note.js></script><script>MathJax = {
+              tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+              }
+            };</script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><link title="TheMj0ln1r Blog" href=https://themj0ln1r.github.io/atom.xml rel=alternate type=application/atom+xml><link href=https://themj0ln1r.github.io/theme/light.css rel=stylesheet><link href=https://themj0ln1r.github.io/theme/dark.css id=darkModeStyle rel=stylesheet><script src=https://themj0ln1r.github.io/js/themetoggle.js></script><script>setTheme(getSavedTheme());</script><link href=https://themj0ln1r.github.io/main.css media=screen rel=stylesheet><body><div class=content><header><div class=main><a href=https://themj0ln1r.github.io/><b>TheMj0ln1r Blog</b></a><div class=socials></div></div><nav><a href=https://themj0ln1r.github.io/cv style=margin-left:.5em><b>CV</b></a><a href=https://themj0ln1r.github.io/archive style=margin-left:.5em><b>Archive</b></a><a href=https://themj0ln1r.github.io/tags style=margin-left:.5em><b>Tags</b></a> |<a onclick="toggleTheme(); event.preventDefault();" href=# id=dark-mode-toggle> <img alt=Light id=sun-icon src=https://themj0ln1r.github.io/feather/sun.svg style=filter:invert()> <img alt=Dark id=moon-icon src=https://themj0ln1r.github.io/feather/moon.svg> </a><script>updateItemToggleTheme()</script></nav></header><main><article><div class=title><div class=page-header>UMD CTF 2023</div><div class=meta>Posted on <time>2023-05-01</time><span class=tags-label> :: Tags:</span><span class=tags> <a class=post-tag href=https://themj0ln1r.github.io/tags/ctf/>ctf</a> </span></div></div><div class=toc-container><h5 class=toc-title>Table of Contents</h5><ul class=toc-list><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#crypto>Crypto</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#cbc-mac1>CBC-MAC1</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#pokecomms>Pokecomms</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#rev>Rev</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#welcome-to-python>Welcome to Python</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#hardware>Hardware</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#beep1>beep1</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#clutter>clutter</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#forensics>Forensics</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#fire-type-pokemons-only>Fire Type Pokemons Only</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#no-352>No. 352</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#mirror-unknown>Mirror Unknown</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#osint>OSINT</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#gone-missing-1>Gone Missing 1</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#web>Web</a><li><a href=https://themj0ln1r.github.io/archive/umdctf23/#treps-ticket-system>Treps Ticket System</a></ul></div><section class=body><p>Hi Readers! I played <a href=https://ctftime.org/event/1949 target=_blank>UMDCTF 2023</a> which was happened from 29 Apr to 01 May. I played it with the team <a href=https://ctftime.org/team/217079>Invaders0x1</a>.<p>These are the writeups for the challenges I solved.<h1 id=crypto>Crypto</h1><h1 id=cbc-mac1>CBC-MAC1</h1><p><img alt=cbcmac1 src=/assets/img/ctf_img/umd23/umdctf23_cbcmac1.png><p>Attached Files : <a>cbc-mac1.py</a><p><strong>cbc-mac1.py</strong><pre class=language-python data-lang=python style=color:#323232;background-color:#fff><code class=language-python data-lang=python><span style=color:#a71d5d;font-weight:700>import </span><span>socket
+</span><span style=color:#a71d5d;font-weight:700>import </span><span>threading
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>_thread </span><span style=color:#a71d5d;font-weight:700>import </span><span style=color:#0086b3>*
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>Crypto </span><span style=color:#a71d5d;font-weight:700>import </span><span>Random
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>Crypto.Cipher </span><span style=color:#a71d5d;font-weight:700>import </span><span style=color:#0086b3>AES
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>binascii </span><span style=color:#a71d5d;font-weight:700>import </span><span>hexlify, unhexlify
+</span><span style=color:#0086b3>HOST </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>'0.0.0.0'  </span><span style=color:#969896;font-style:italic># Standard loopback interface address (localhost)
+</span><span style=color:#0086b3>PORT </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>60001        </span><span style=color:#969896;font-style:italic># Port to listen on (non-privileged ports are > 1023)
+</span><span style=color:#0086b3>FLAG </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>open</span><span>(</span><span style=color:#183691>'flag.txt'</span><span>, </span><span style=color:#183691>'r'</span><span>).read().strip()
+</span><span style=color:#0086b3>MENU </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>"</span><span style=color:#0086b3>\n</span><span style=color:#183691>What would you like to do?</span><span style=color:#0086b3>\n\t</span><span style=color:#183691>(1) MAC Query</span><span style=color:#0086b3>\n\t</span><span style=color:#183691>(2) Forgery</span><span style=color:#0086b3>\n\t</span><span style=color:#183691>(3) Exit</span><span style=color:#0086b3>\n\n</span><span style=color:#183691>Choice: "
+</span><span style=color:#0086b3>INITIAL </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>"Team Rocket told me CBC-MAC with arbitrary-length messages is safe from forgery. If you manage to forge a message you haven't queried using my oracle, I'll give you something in return.</span><span style=color:#0086b3>\n</span><span style=color:#183691>"
+</span><span style=color:#0086b3>BS </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>16 </span><span style=color:#969896;font-style:italic># Block Size
+</span><span style=color:#0086b3>MAX_QUERIES </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>10
+</span><span style=color:#a71d5d;font-weight:700>def </span><span style=color:#323232;font-weight:700>cbc_mac</span><span>(msg, key):
+</span><span>    iv </span><span style=color:#a71d5d;font-weight:700>= b</span><span style=color:#183691>'</span><span style=color:#0086b3>\x00</span><span style=color:#183691>'</span><span style=color:#a71d5d;font-weight:700>*</span><span style=color:#0086b3>BS
+</span><span>    cipher </span><span style=color:#a71d5d;font-weight:700>= </span><span>AES.new(key, </span><span style=color:#0086b3>AES</span><span>.</span><span style=color:#0086b3>MODE_CBC</span><span>, iv</span><span style=color:#a71d5d;font-weight:700>=</span><span>iv)
+</span><span>    t </span><span style=color:#a71d5d;font-weight:700>= </span><span>cipher.encrypt(msg)[</span><span style=color:#a71d5d;font-weight:700>-</span><span style=color:#0086b3>16</span><span>:]
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>return </span><span>hexlify(t)
+</span><span style=color:#a71d5d;font-weight:700>def </span><span style=color:#323232;font-weight:700>threading</span><span>(conn):
+</span><span>    conn.sendall(INITIAL.encode())
+</span><span>    key </span><span style=color:#a71d5d;font-weight:700>= </span><span>Random.get_random_bytes(</span><span style=color:#0086b3>16</span><span>)
+</span><span>    queries </span><span style=color:#a71d5d;font-weight:700>= </span><span>[]
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>while </span><span style=color:#62a35c>len</span><span>(queries) </span><span style=color:#a71d5d;font-weight:700>&lt; </span><span style=color:#0086b3>MAX_QUERIES</span><span>:
+</span><span>        conn.sendall(MENU.encode())
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>try</span><span>:
+</span><span>            choice </span><span style=color:#a71d5d;font-weight:700>= </span><span>conn.recv(</span><span style=color:#0086b3>1024</span><span>).decode().strip()
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>except </span><span style=color:#0086b3>ConnectionResetError </span><span style=color:#a71d5d;font-weight:700>as </span><span>cre:
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>return
+</span><span>        </span><span style=color:#969896;font-style:italic># MAC QUERY
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>if </span><span>choice </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#183691>'1'</span><span>:
+</span><span>            conn.sendall(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'msg (hex): '</span><span>)
+</span><span>            msg </span><span style=color:#a71d5d;font-weight:700>= </span><span>conn.recv(</span><span style=color:#0086b3>1024</span><span>).strip()
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>try</span><span>:
+</span><span>                msg </span><span style=color:#a71d5d;font-weight:700>= </span><span>unhexlify(msg)
+</span><span>                </span><span style=color:#a71d5d;font-weight:700>if </span><span>(</span><span style=color:#62a35c>len</span><span>(msg) </span><span style=color:#a71d5d;font-weight:700>+ </span><span style=color:#0086b3>BS</span><span>) </span><span style=color:#a71d5d;font-weight:700>% </span><span style=color:#0086b3>BS </span><span style=color:#a71d5d;font-weight:700>!= </span><span style=color:#0086b3>0</span><span>:
+</span><span>                    conn.sendall(</span><span style=color:#a71d5d;font-weight:700>f</span><span style=color:#183691>'Invalid msg length. Must be a multiple of BS=</span><span>{</span><span style=color:#0086b3>BS</span><span>}</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>.encode())
+</span><span>                </span><span style=color:#a71d5d;font-weight:700>else</span><span>:
+</span><span>                    queries.append(msg)
+</span><span>                    t </span><span style=color:#a71d5d;font-weight:700>= </span><span>cbc_mac(msg, key)
+</span><span>                    conn.sendall(</span><span style=color:#a71d5d;font-weight:700>f</span><span style=color:#183691>'CBC-MAC(msg): </span><span>{t.decode()}</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>.encode())
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>except </span><span style=color:#0086b3>Exception </span><span style=color:#a71d5d;font-weight:700>as </span><span>e:
+</span><span>                conn.sendall(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'Invalid msg format. Must be in hexadecimal</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>)
+</span><span>        </span><span style=color:#969896;font-style:italic># FORGERY (impossible as I'm told)
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>elif </span><span>choice </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#183691>'2'</span><span>:
+</span><span>            conn.sendall(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'msg (hex): '</span><span>)
+</span><span>            msg </span><span style=color:#a71d5d;font-weight:700>= </span><span>conn.recv(</span><span style=color:#0086b3>1024</span><span>).strip()
+</span><span>            conn.sendall(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'tag (hex): '</span><span>)
+</span><span>            tag </span><span style=color:#a71d5d;font-weight:700>= </span><span>conn.recv(</span><span style=color:#0086b3>1024</span><span>).strip()
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>try</span><span>:
+</span><span>                msg </span><span style=color:#a71d5d;font-weight:700>= </span><span>unhexlify(msg)
+</span><span>                </span><span style=color:#a71d5d;font-weight:700>if </span><span>(</span><span style=color:#62a35c>len</span><span>(msg) </span><span style=color:#a71d5d;font-weight:700>+ </span><span style=color:#0086b3>BS</span><span>) </span><span style=color:#a71d5d;font-weight:700>% </span><span style=color:#0086b3>BS </span><span style=color:#a71d5d;font-weight:700>!= </span><span style=color:#0086b3>0</span><span>:
+</span><span>                    conn.sendall(</span><span style=color:#a71d5d;font-weight:700>f</span><span style=color:#183691>'Invalid msg length. Must be a multiple of BS=</span><span>{</span><span style=color:#0086b3>BS</span><span>}</span><span style=color:#183691> bytes</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>.encode())
+</span><span>                </span><span style=color:#a71d5d;font-weight:700>elif </span><span style=color:#62a35c>len</span><span>(tag) </span><span style=color:#a71d5d;font-weight:700>!= </span><span style=color:#0086b3>BS</span><span style=color:#a71d5d;font-weight:700>*</span><span style=color:#0086b3>2</span><span>:
+</span><span>                    conn.sendall(</span><span style=color:#a71d5d;font-weight:700>f</span><span style=color:#183691>'Invalid tag length. Must be </span><span>{</span><span style=color:#0086b3>BS</span><span>}</span><span style=color:#183691> bytes</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>.encode())
+</span><span>                </span><span style=color:#a71d5d;font-weight:700>elif </span><span>msg </span><span style=color:#a71d5d;font-weight:700>in </span><span>queries:
+</span><span>                    conn.sendall(</span><span style=color:#a71d5d;font-weight:700>f</span><span style=color:#183691>'cheater</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>.encode())
+</span><span>                </span><span style=color:#a71d5d;font-weight:700>else</span><span>:
+</span><span>                    t_ret </span><span style=color:#a71d5d;font-weight:700>= </span><span>cbc_mac(msg, key)
+</span><span>                    </span><span style=color:#a71d5d;font-weight:700>if </span><span>t_ret </span><span style=color:#a71d5d;font-weight:700>== </span><span>tag:
+</span><span>                        conn.sendall(</span><span style=color:#a71d5d;font-weight:700>f</span><span style=color:#183691>'If you reach this point, I guess we need to find a better MAC (and not trust TR). </span><span>{</span><span style=color:#0086b3>FLAG</span><span>}</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>.encode())
+</span><span>                    </span><span style=color:#a71d5d;font-weight:700>else</span><span>:
+</span><span>                        conn.sendall(</span><span style=color:#0086b3>str</span><span>(t_ret </span><span style=color:#a71d5d;font-weight:700>== </span><span>tag).encode() </span><span style=color:#a71d5d;font-weight:700>+ b</span><span style=color:#183691>'</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>)
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>except </span><span style=color:#0086b3>Exception </span><span style=color:#a71d5d;font-weight:700>as </span><span>e:
+</span><span>                conn.sendall(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'Invalid msg format. Must be in hexadecimal</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>)
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>else</span><span>:
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>if </span><span>choice </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#183691>'3'</span><span>: </span><span style=color:#969896;font-style:italic># EXIT
+</span><span>                conn.sendall(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'bye</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>)
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>else</span><span>: </span><span style=color:#969896;font-style:italic># INVALID CHOICE
+</span><span>                conn.sendall(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'invalid menu choice</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>)
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>break
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>if </span><span style=color:#62a35c>len</span><span>(queries) </span><span style=color:#a71d5d;font-weight:700>> </span><span style=color:#0086b3>MAX_QUERIES</span><span>:
+</span><span>        conn.sendall(</span><span style=color:#a71d5d;font-weight:700>f</span><span style=color:#183691>'too many queries: </span><span>{</span><span style=color:#62a35c>len</span><span>(queries)}</span><span style=color:#0086b3>\n</span><span style=color:#183691>'</span><span>.encode())
+</span><span>    conn.close()
+</span><span style=color:#a71d5d;font-weight:700>if </span><span>__name__ </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#183691>"__main__"</span><span>:
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>with </span><span>socket.socket(socket.</span><span style=color:#0086b3>AF_INET</span><span>, socket.</span><span style=color:#0086b3>SOCK_STREAM</span><span>) </span><span style=color:#a71d5d;font-weight:700>as </span><span>s:
+</span><span>        s.setsockopt(socket.</span><span style=color:#0086b3>SOL_SOCKET</span><span>, socket.</span><span style=color:#0086b3>SO_REUSEADDR</span><span>, </span><span style=color:#0086b3>1</span><span>)
+</span><span>        s.bind((</span><span style=color:#0086b3>HOST</span><span>, </span><span style=color:#0086b3>PORT</span><span>))
+</span><span>        s.listen()
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>while </span><span style=color:#0086b3>True</span><span>:
+</span><span>            conn, addr </span><span style=color:#a71d5d;font-weight:700>= </span><span>s.accept()
+</span><span>            </span><span style=color:#62a35c>print</span><span>(</span><span style=color:#a71d5d;font-weight:700>f</span><span style=color:#183691>'new connection: </span><span>{addr}</span><span style=color:#183691>'</span><span>)
+</span><span>            start_new_thread(threading, (conn, ))
+</span><span>        s.close()
+</span><span>
+</span></code></pre><p>The remote challenge is at <strong>nc 0.cloud.chals.io 12769</strong>. The challenges is Generating a <strong>Message Authentication Code [Tag]</strong> For the given input message. The message should be in hex format and the length of the message has to be multiple of 16.<pre class=language-sh data-lang=sh style=color:#323232;background-color:#fff><code class=language-sh data-lang=sh><span>mj0ln1r@AHLinux:~/cbc0mac1$ nc 0.cloud.chals.io 12769
+</span><span>Team Rocket told me CBC-MAC with arbitrary-length messages is safe from forgery. If you manage to forge a message you haven</span><span style=color:#183691>'t queried using my oracle, I'</span><span>ll give you something in return.
+</span><span>
+</span><span>What would you like to do</span><span style=color:#a71d5d;font-weight:700>?
+</span><span>	(1) MAC Query
+</span><span>	(2) Forgery
+</span><span>	(3) Exit
+</span><span>
+</span><span>Choice: 1
+</span><span>msg (hex)</span><span style=color:#62a35c>:</span><span> 6162636465666768696a6b6c6d6e6f70
+</span><span>CBC-MAC(msg)</span><span style=color:#62a35c>:</span><span> f670f2abb9159a15a82a5779adbfb7bc
+</span><span>
+</span><span>What would you like to do</span><span style=color:#a71d5d;font-weight:700>?
+</span><span>	(1) MAC Query
+</span><span>	(2) Forgery
+</span><span>	(3) Exit
+</span><span>
+</span><span>Choice: 1
+</span><span>msg (hex)</span><span style=color:#62a35c>:</span><span> 6162636465666768696a6b6c6d6e6f706162636465666768696a6b6c6d6e6f70
+</span><span>CBC-MAC(msg)</span><span style=color:#62a35c>:</span><span> 2836413262109e028fe4e00452f60f53
+</span><span>
+</span><span>What would you like to do</span><span style=color:#a71d5d;font-weight:700>?
+</span><span>	(1) MAC Query
+</span><span>	(2) Forgery
+</span><span>	(3) Exit
+</span><span>
+</span><span>Choice: 
+</span><span>
+</span></code></pre><p>The program is taking the variable length message as input, this is a flag in cbc-mac.<p><img alt=cbcmac11 src=/assets/img/ctf_img/umd23/umdctf23_cbcmac11.png><p>So, The MAC or Tag is the last encrypted plaintext in the CBC Mode of AES. As the program allowing us to input variable length message we can generate a new message <code>M2</code> with the same tag <code>t1</code> which is the tag of <code>M1</code>. To do this I choosed <code>M2</code> with 2 blocks of plaintext with 16 characters each. The <code>new_M2 = (last block of M2) xor t1</code> This <code>new_M2</code> will have the same tag <code>t1</code>. This is how we can forge the message. Here is the automated script for the challenge.<pre class=language-python data-lang=python style=color:#323232;background-color:#fff><code class=language-python data-lang=python><span style=color:#a71d5d;font-weight:700>from </span><span>pwn </span><span style=color:#a71d5d;font-weight:700>import </span><span style=color:#0086b3>*
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>Crypto.Util.strxor </span><span style=color:#a71d5d;font-weight:700>import </span><span>strxor
+</span><span>
+</span><span>conn </span><span style=color:#a71d5d;font-weight:700>= </span><span>remote(</span><span style=color:#183691>'0.cloud.chals.io'</span><span>,</span><span style=color:#0086b3>12769</span><span>)
+</span><span>conn.recvuntil(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'Choice: '</span><span>)
+</span><span>conn.sendall(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'1'</span><span>)
+</span><span>conn.recvuntil(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'msg (hex): '</span><span>)
+</span><span>
+</span><span>m1 </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>"abcdefghijklmnop"
+</span><span>m2 </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>"abcdefghijklmnopqrstuvwxyz123456"
+</span><span>
+</span><span>m1_hex </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>''</span><span>.join(</span><span style=color:#62a35c>hex</span><span>(</span><span style=color:#62a35c>ord</span><span>(c))[</span><span style=color:#0086b3>2</span><span>:] </span><span style=color:#a71d5d;font-weight:700>for </span><span>c </span><span style=color:#a71d5d;font-weight:700>in </span><span>m1)
+</span><span>m2_hex </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>''</span><span>.join(</span><span style=color:#62a35c>hex</span><span>(</span><span style=color:#62a35c>ord</span><span>(c))[</span><span style=color:#0086b3>2</span><span>:] </span><span style=color:#a71d5d;font-weight:700>for </span><span>c </span><span style=color:#a71d5d;font-weight:700>in </span><span>m2)
+</span><span>
+</span><span>conn.sendline(m1_hex.encode())
+</span><span>conn.recvuntil(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>'(msg): '</span><span>)
+</span><span>
+</span><span>tag1 </span><span style=color:#a71d5d;font-weight:700>= </span><span>conn.recvline().strip()
+</span><span>x </span><span style=color:#a71d5d;font-weight:700>= </span><span>strxor(m2_hex[</span><span style=color:#0086b3>32</span><span>:].encode(),tag1)
+</span><span>new_m2 </span><span style=color:#a71d5d;font-weight:700>= </span><span>m2_hex[:</span><span style=color:#0086b3>32</span><span>]</span><span style=color:#a71d5d;font-weight:700>+</span><span>x.decode()
+</span><span>conn.recvuntil(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"Choice: "</span><span>)
+</span><span>conn.sendline(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"2"</span><span>)
+</span><span>conn.recvuntil(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"msg (hex): "</span><span>)
+</span><span>conn.sendline(new_m2.encode())
+</span><span>conn.recvuntil(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"tag (hex): "</span><span>)
+</span><span>conn.sendline(tag1)
+</span><span>flag </span><span style=color:#a71d5d;font-weight:700>= </span><span>conn.recv()
+</span><span style=color:#62a35c>print</span><span>(flag)
+</span></code></pre><blockquote><p><code>Flag : UMDCTF{Th!s_M@C_Sch3M3_1s_0nly_S3cur3_f0r_f!xed_l3ngth_m3ss4g3s_78232813}</code></blockquote><h1 id=pokecomms>Pokecomms</h1><p><img alt=pokecomms src=/assets/img/ctf_img/umd23/umdctf23_pokecomms.png><p>The challenge had this txt file.<pre style=color:#323232;background-color:#fff><code><span> CHU! PIKA CHU! PIKA CHU! PIKA CHU! PIKA
+</span><span> CHU! PIKA CHU! CHU! PIKA PIKA CHU! PIKA
+</span><span> CHU! PIKA CHU! CHU! CHU! PIKA CHU! CHU!
+</span><span> CHU! PIKA CHU! CHU! CHU! CHU! PIKA PIKA
+</span><span> CHU! PIKA CHU! PIKA CHU! PIKA CHU! CHU!
+</span><span> CHU! PIKA CHU! CHU! CHU! PIKA PIKA CHU!
+</span><span> CHU! PIKA PIKA PIKA PIKA CHU! PIKA PIKA
+</span><span> CHU! PIKA CHU! PIKA CHU! CHU! CHU! CHU!
+</span><span> CHU! CHU! PIKA PIKA CHU! CHU! CHU! PIKA
+</span><span> CHU! PIKA CHU! CHU! PIKA CHU! PIKA PIKA
+</span><span> CHU! CHU! PIKA PIKA CHU! PIKA CHU! CHU!
+</span><span> .
+</span><span> .
+</span><span> CHU! CHU! PIKA PIKA CHU! PIKA CHU! CHU!
+</span></code></pre><p>The first thing I did is eliminated the duplicate lines in text file. Then I saw that there are only 8 words in every line. And the The words are only CHU! PIKA with random sequence. So, I changed CHU! to 1 and PIKA to 0. Got the binary bits then converted it to ascii to get the flag.<p>The solution script is<pre class=language-python data-lang=python style=color:#323232;background-color:#fff><code class=language-python data-lang=python><span style=color:#a71d5d;font-weight:700>with </span><span style=color:#62a35c>open</span><span>(</span><span style=color:#183691>"pokecomms.txt"</span><span>,</span><span style=color:#183691>"r"</span><span>) </span><span style=color:#a71d5d;font-weight:700>as </span><span>f:
+</span><span>    l </span><span style=color:#a71d5d;font-weight:700>= </span><span>f.readlines()
+</span><span>m </span><span style=color:#a71d5d;font-weight:700>= </span><span>[]
+</span><span style=color:#a71d5d;font-weight:700>for </span><span>i </span><span style=color:#a71d5d;font-weight:700>in </span><span>l:
+</span><span>    m.append(i.strip())
+</span><span>s </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>list</span><span>(</span><span style=color:#0086b3>set</span><span>(m))
+</span><span>byte</span><span style=color:#a71d5d;font-weight:700>=</span><span>[]
+</span><span style=color:#a71d5d;font-weight:700>for </span><span>i </span><span style=color:#a71d5d;font-weight:700>in </span><span>m:
+</span><span>    bits</span><span style=color:#a71d5d;font-weight:700>=</span><span>[]
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>for </span><span>j </span><span style=color:#a71d5d;font-weight:700>in </span><span>i.split():
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>if </span><span>j </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#183691>"CHU!"</span><span>:
+</span><span>            bits.append(</span><span style=color:#183691>'0'</span><span>)
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>elif </span><span>j </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#183691>"PIKA"</span><span>:
+</span><span>            bits.append(</span><span style=color:#183691>'1'</span><span>)
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>else</span><span>:
+</span><span>            </span><span style=color:#62a35c>print</span><span>(</span><span style=color:#183691>"else"</span><span>)
+</span><span>    oneb </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>""</span><span>.join(bits)
+</span><span>    byte.append(</span><span style=color:#0086b3>int</span><span>(oneb,</span><span style=color:#0086b3>2</span><span>))
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>for </span><span>i </span><span style=color:#a71d5d;font-weight:700>in </span><span>byte:
+</span><span>    </span><span style=color:#62a35c>print</span><span>(</span><span style=color:#62a35c>chr</span><span>(i),end</span><span style=color:#a71d5d;font-weight:700>=</span><span style=color:#183691>""</span><span>)
+</span><span>
+</span><span style=color:#969896;font-style:italic>#UMDCTF{P1K4CHU_Once_upon_a_time,_there_was_a_young_boy_named_Ash_who_dreamed_of_becoming_the_world's_greatest_Pokemon_trainer._He_set_out_on_a_journey_with_his_trusty_Pokemon_partner,_Pikachu,_a_cute_and_powerful_electric-type_Pokemon._As_Ash_and_Pikachu_traveled_through_the_regions,_they_encountered_many_challenges_and_made_many_friends._But_they_also_faced_their_fair_share_of_enemies,_including_the_notorious_Team_Rocket,_who_were_always_trying_to_steal_Pikachu._Despite_the_odds_stacked_against_them,_Ash_and_Pikachu_never_gave_up._They_trained_hard_and_battled_even_harder,_always_looking_for_ways_to_improve_their_skills_and_strengthen_their_bond._And_along_the_way,_they_learned_valuable_lessons_about_friendship,_determination,_and_the_power_of_believing_in_oneself._Eventually,_Ash_and_Pikachu's_hard_work_paid_off._They_defeated_powerful_opponents,_earned_badges_from_Gym_Leaders,_and_even_competed_in_the_prestigious_Pokemon_League_tournaments._But_no_matter_how_many_victories_they_achieved,_Ash_and_Pikachu_never_forgot_where_they_came_from_or_the_importance_of_their_friendship._In_the_end,_Ash_and_Pikachu_became_a_legendary_team,_admired_by_Pokemon_trainers_around_the_world._And_although_their_journey_may_have_had_its_ups_and_downs,_they_always_knew_that_as_long_as_they_had_each_other,_they_could_overcome_any_obstacle_that_stood_in_their_way}
+</span><span>
+</span></code></pre><hr><h1 id=rev>Rev</h1><h1 id=welcome-to-python>Welcome to Python</h1><p><img alt=welcome src=/assets/img/ctf_img/umd23/umdctf23_welcometopy.png><p>Challenge had this binary file <a>chall</a><p>As it is a ELF file I decompiled it to <code>Pyc</code> then Pyc to <code>py</code> file. My teammates found that python generated <code>ELF</code> can be decompiled to pyc with <a href=https://snapcraft.io/pyinstxtractor target=_blank>pyinstxtractor</a>. It generated a pyc file then used online pyc decompiler to decompile to the py file.<p>The decompiled <code>chall.py</code> is<pre class=language-python data-lang=python style=color:#323232;background-color:#fff><code class=language-python data-lang=python><span style=color:#969896;font-style:italic># Source Generated with Decompyle++
+</span><span style=color:#969896;font-style:italic># File: chal.pyc (Python 3.10)
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>math </span><span style=color:#a71d5d;font-weight:700>import </span><span>sqrt, sin, cos
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>ctypes </span><span style=color:#a71d5d;font-weight:700>import </span><span>c_uint32, c_float
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>sys </span><span style=color:#a71d5d;font-weight:700>import </span><span>exit </span><span style=color:#a71d5d;font-weight:700>as </span><span>exit_
+</span><span>source </span><span style=color:#a71d5d;font-weight:700>= </span><span>[
+</span><span>    </span><span style=color:#0086b3>672662614</span><span>,
+</span><span>    </span><span style=color:#0086b3>741343303</span><span>,
+</span><span>    </span><span style=color:#0086b3>495239261</span><span>,
+</span><span>    </span><span style=color:#0086b3>744259788</span><span>,
+</span><span>    </span><span style=color:#0086b3>722021046</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA70AA247</span><span>,
+</span><span>    </span><span style=color:#0086b3>1053692</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA8050035</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA982A820</span><span>,
+</span><span>    </span><span style=color:#0086b3>624689</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA90D20BC</span><span>,
+</span><span>    </span><span style=color:#0086b3>41134</span><span>,
+</span><span>    </span><span style=color:#0086b3>295340</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA0028102</span><span>,
+</span><span>    </span><span style=color:#0086b3>622681</span><span>,
+</span><span>    </span><span style=color:#0086b3>576469</span><span>,
+</span><span>    </span><span style=color:#0086b3>671170814</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x8041086E</span><span>,
+</span><span>    </span><span style=color:#0086b3>765</span><span>,
+</span><span>    </span><span style=color:#0086b3>680595550</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x80200166</span><span>,
+</span><span>    </span><span style=color:#0086b3>698368102</span><span>,
+</span><span>    </span><span style=color:#0086b3>2437137</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x8042C1EE</span><span>,
+</span><span>    </span><span style=color:#0086b3>570966112</span><span>,
+</span><span>    </span><span style=color:#0086b3>4612341</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x800008D4</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA94D02CE</span><span>,
+</span><span>    </span><span style=color:#0086b3>16484</span><span>,
+</span><span>    </span><span style=color:#0086b3>2103301</span><span>,
+</span><span>    </span><span style=color:#0086b3>136226</span><span>,
+</span><span>    </span><span style=color:#0086b3>9438506</span><span>,
+</span><span>    </span><span style=color:#0086b3>663820758</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x8013523B</span><span>,
+</span><span>    </span><span style=color:#0086b3>8405532</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA4000875</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x80030A78</span><span>,
+</span><span>    </span><span style=color:#0086b3>136768</span><span>]
+</span><span>seed </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>64
+</span><span style=color:#a71d5d;font-weight:700>def </span><span style=color:#323232;font-weight:700>wandom</span><span>(x):
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>return </span><span>x </span><span style=color:#a71d5d;font-weight:700>* </span><span>x </span><span style=color:#a71d5d;font-weight:700>* </span><span>cos(x) </span><span style=color:#a71d5d;font-weight:700>* </span><span>sin(x) </span><span style=color:#a71d5d;font-weight:700>/ </span><span style=color:#0086b3>1000
+</span><span style=color:#a71d5d;font-weight:700>def </span><span style=color:#323232;font-weight:700>evil_bit_hack</span><span>(y):
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>return </span><span style=color:#0086b3>int</span><span>(c_uint32.from_buffer(c_float(y)).value)
+</span><span style=color:#62a35c>print</span><span>(</span><span style=color:#183691>'=========================================='</span><span>)
+</span><span style=color:#62a35c>print</span><span>(</span><span style=color:#183691>'Professional flag checker service (v 97.2)'</span><span>)
+</span><span style=color:#62a35c>print</span><span>(</span><span style=color:#183691>'=========================================='</span><span>)
+</span><span>flag </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>input</span><span>(</span><span style=color:#183691>'Show me the flag: '</span><span>)
+</span><span>lf </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>len</span><span>(flag)
+</span><span>ls </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>len</span><span>(source)
+</span><span>l </span><span style=color:#a71d5d;font-weight:700>= </span><span>lf </span><span style=color:#a71d5d;font-weight:700>if </span><span>lf </span><span style=color:#a71d5d;font-weight:700>&lt; </span><span>ls </span><span style=color:#a71d5d;font-weight:700>else </span><span>ls
+</span><span style=color:#a71d5d;font-weight:700>for </span><span>i </span><span style=color:#a71d5d;font-weight:700>in </span><span style=color:#62a35c>range</span><span>(seed, seed </span><span style=color:#a71d5d;font-weight:700>+ </span><span>l):
+</span><span>    w </span><span style=color:#a71d5d;font-weight:700>= </span><span>wandom(i)
+</span><span>    c </span><span style=color:#a71d5d;font-weight:700>= ~</span><span>(</span><span style=color:#a71d5d;font-weight:700>~</span><span style=color:#62a35c>ord</span><span>(flag[i </span><span style=color:#a71d5d;font-weight:700>- </span><span>seed]) </span><span style=color:#a71d5d;font-weight:700>^ </span><span>evil_bit_hack(wandom(wandom(w))) </span><span style=color:#a71d5d;font-weight:700>& </span><span>evil_bit_hack(w)) </span><span style=color:#a71d5d;font-weight:700>+ </span><span style=color:#0086b3>1
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>if </span><span>source[i </span><span style=color:#a71d5d;font-weight:700>- </span><span>seed] </span><span style=color:#a71d5d;font-weight:700>!= </span><span>c:
+</span><span>        </span><span style=color:#62a35c>print</span><span>(</span><span style=color:#183691>"Uh oh! We don't think your flag is correct... :("</span><span>)
+</span><span>        exit_(</span><span style=color:#0086b3>1</span><span>)
+</span><span style=color:#a71d5d;font-weight:700>if </span><span>lf </span><span style=color:#a71d5d;font-weight:700>== </span><span>ls:
+</span><span>    </span><span style=color:#62a35c>print</span><span>(</span><span style=color:#183691>'Your flag is correct!'</span><span>)
+</span><span style=color:#969896;font-style:italic># None('Some of your flag is correct...')
+</span></code></pre><p>Points I observed<ul><li>The seed is 64<li>source values are known<li><code>c</code> is generated by XORing flag char with evil_bit_hack(wandom(wandom(w))) & evil_bit_hack(w) and 1 is added at the end.</ul><p>So, I just need to reverse this line <code> c = ~(~ord(flag[i - seed]) ^ evil_bit_hack(wandom(wandom(w))) & evil_bit_hack(w)) + 1</code> To print the flag.<p>Interesting, lets do it<p><code>res = (source[i-seed]-1)^ evil_bit_hack(wandom(wandom(w))) & evil_bit_hack(w)</code> Will be the reversed function.<p>And here is the solution script to print the flag.<pre class=language-python data-lang=python style=color:#323232;background-color:#fff><code class=language-python data-lang=python><span style=color:#969896;font-style:italic># Source Generated with Decompyle++
+</span><span style=color:#969896;font-style:italic># File: chal.pyc (Python 3.10)
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>math </span><span style=color:#a71d5d;font-weight:700>import </span><span>sqrt, sin, cos
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>ctypes </span><span style=color:#a71d5d;font-weight:700>import </span><span>c_uint32, c_float
+</span><span style=color:#a71d5d;font-weight:700>from </span><span>sys </span><span style=color:#a71d5d;font-weight:700>import </span><span>exit </span><span style=color:#a71d5d;font-weight:700>as </span><span>exit_
+</span><span>source </span><span style=color:#a71d5d;font-weight:700>= </span><span>[
+</span><span>    </span><span style=color:#0086b3>672662614</span><span>,
+</span><span>    </span><span style=color:#0086b3>741343303</span><span>,
+</span><span>    </span><span style=color:#0086b3>495239261</span><span>,
+</span><span>    </span><span style=color:#0086b3>744259788</span><span>,
+</span><span>    </span><span style=color:#0086b3>722021046</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA70AA247</span><span>,
+</span><span>    </span><span style=color:#0086b3>1053692</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA8050035</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA982A820</span><span>,
+</span><span>    </span><span style=color:#0086b3>624689</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA90D20BC</span><span>,
+</span><span>    </span><span style=color:#0086b3>41134</span><span>,
+</span><span>    </span><span style=color:#0086b3>295340</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA0028102</span><span>,
+</span><span>    </span><span style=color:#0086b3>622681</span><span>,
+</span><span>    </span><span style=color:#0086b3>576469</span><span>,
+</span><span>    </span><span style=color:#0086b3>671170814</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x8041086E</span><span>,
+</span><span>    </span><span style=color:#0086b3>765</span><span>,
+</span><span>    </span><span style=color:#0086b3>680595550</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x80200166</span><span>,
+</span><span>    </span><span style=color:#0086b3>698368102</span><span>,
+</span><span>    </span><span style=color:#0086b3>2437137</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x8042C1EE</span><span>,
+</span><span>    </span><span style=color:#0086b3>570966112</span><span>,
+</span><span>    </span><span style=color:#0086b3>4612341</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x800008D4</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA94D02CE</span><span>,
+</span><span>    </span><span style=color:#0086b3>16484</span><span>,
+</span><span>    </span><span style=color:#0086b3>2103301</span><span>,
+</span><span>    </span><span style=color:#0086b3>136226</span><span>,
+</span><span>    </span><span style=color:#0086b3>9438506</span><span>,
+</span><span>    </span><span style=color:#0086b3>663820758</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x8013523B</span><span>,
+</span><span>    </span><span style=color:#0086b3>8405532</span><span>,
+</span><span>    </span><span style=color:#0086b3>0xA4000875</span><span>,
+</span><span>    </span><span style=color:#0086b3>0x80030A78</span><span>,
+</span><span>    </span><span style=color:#0086b3>136768</span><span>]
+</span><span>seed </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>64
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>def </span><span style=color:#323232;font-weight:700>wandom</span><span>(x):
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>return </span><span>x </span><span style=color:#a71d5d;font-weight:700>* </span><span>x </span><span style=color:#a71d5d;font-weight:700>* </span><span>cos(x) </span><span style=color:#a71d5d;font-weight:700>* </span><span>sin(x) </span><span style=color:#a71d5d;font-weight:700>/ </span><span style=color:#0086b3>1000
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>def </span><span style=color:#323232;font-weight:700>evil_bit_hack</span><span>(y):
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>return </span><span style=color:#0086b3>int</span><span>(c_uint32.from_buffer(c_float(y)).value)
+</span><span>flag </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>38 </span><span style=color:#a71d5d;font-weight:700>* </span><span style=color:#183691>'A'
+</span><span>lf </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>len</span><span>(flag)
+</span><span>ls </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>len</span><span>(source)
+</span><span>l </span><span style=color:#a71d5d;font-weight:700>= </span><span>lf </span><span style=color:#a71d5d;font-weight:700>if </span><span>lf </span><span style=color:#a71d5d;font-weight:700>&lt; </span><span>ls </span><span style=color:#a71d5d;font-weight:700>else </span><span>ls
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>for </span><span>i </span><span style=color:#a71d5d;font-weight:700>in </span><span style=color:#62a35c>range</span><span>(seed, seed </span><span style=color:#a71d5d;font-weight:700>+ </span><span>l):
+</span><span>    w </span><span style=color:#a71d5d;font-weight:700>= </span><span>wandom(i)
+</span><span>    x </span><span style=color:#a71d5d;font-weight:700>= </span><span>evil_bit_hack(wandom(wandom(w))) </span><span style=color:#a71d5d;font-weight:700>& </span><span>evil_bit_hack(w)
+</span><span>    c </span><span style=color:#a71d5d;font-weight:700>= ~</span><span>(</span><span style=color:#a71d5d;font-weight:700>~</span><span style=color:#62a35c>ord</span><span>(flag[i </span><span style=color:#a71d5d;font-weight:700>- </span><span>seed]) </span><span style=color:#a71d5d;font-weight:700>^ </span><span>evil_bit_hack(wandom(wandom(w))) </span><span style=color:#a71d5d;font-weight:700>& </span><span>evil_bit_hack(w)) </span><span style=color:#a71d5d;font-weight:700>+ </span><span style=color:#0086b3>1
+</span><span>    res </span><span style=color:#a71d5d;font-weight:700>= </span><span>(source[i</span><span style=color:#a71d5d;font-weight:700>-</span><span>seed]</span><span style=color:#a71d5d;font-weight:700>-</span><span style=color:#0086b3>1</span><span>)</span><span style=color:#a71d5d;font-weight:700>^</span><span>x
+</span><span>    </span><span style=color:#62a35c>print</span><span>(</span><span style=color:#62a35c>chr</span><span>(res),end</span><span style=color:#a71d5d;font-weight:700>=</span><span style=color:#183691>""</span><span>)
+</span><span style=color:#969896;font-style:italic>#UMDCTF{0_0+-+eXP-eLLiARm_us_!!!-12345}
+</span></code></pre><blockquote><p><code>Flag : UMDCTF{0_0+-+eXP-eLLiARm_us_!!!-12345}</code></blockquote><hr><h1 id=hardware>Hardware</h1><h1 id=beep1>beep1</h1><p><img alt=beep src=/assets/img/ctf_img/umd23/umdctf23_beep1.png><p>The attached files are <a>Beep1.circ</a> which is a xml file and a <a>flag.enc</a> file.<p><strong>Beep1.circ</strong> is<pre class=language-xml data-lang=xml style=color:#323232;background-color:#fff><code class=language-xml data-lang=xml><span>&lt;?</span><span style=color:#63a35c>xml </span><span style=color:#795da3>version</span><span>=</span><span style=color:#183691>"1.0" </span><span style=color:#795da3>encoding</span><span>=</span><span style=color:#183691>"UTF-8" </span><span style=color:#795da3>standalone</span><span>=</span><span style=color:#183691>"no"</span><span>?>
+</span><span>&lt;</span><span style=color:#63a35c>project </span><span style=color:#795da3>source</span><span>=</span><span style=color:#183691>"3.8.0" </span><span style=color:#795da3>version</span><span>=</span><span style=color:#183691>"1.0"</span><span>>
+</span><span>  This file is intended to be loaded by Logisim-evolution v3.8.0(https://github.com/logisim-evolution/).
+</span><span>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#Wiring" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"0"</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Pin"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"appearance" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"classic"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>tool</span><span>>
+</span><span>  &lt;/</span><span style=color:#63a35c>lib</span><span>>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#Gates" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"1"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#Plexers" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"2"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#Arithmetic" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"3"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#Memory" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"4"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#I/O" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"5"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#TTL" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"6"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#TCL" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"7"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#Base" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"8"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#BFH-Praktika" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"9"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#Input/Output-Extra" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"10"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>lib </span><span style=color:#795da3>desc</span><span>=</span><span style=color:#183691>"#Soc" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"11"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>main </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"main"</span><span>/>
+</span><span>  &lt;</span><span style=color:#63a35c>options</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"gateUndefined" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"ignore"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"simlimit" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"1000"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"simrand" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"0"</span><span>/>
+</span><span>  &lt;/</span><span style=color:#63a35c>options</span><span>>
+</span><span>  &lt;</span><span style=color:#63a35c>mappings</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"8" </span><span style=color:#795da3>map</span><span>=</span><span style=color:#183691>"Button2" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Poke Tool"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"8" </span><span style=color:#795da3>map</span><span>=</span><span style=color:#183691>"Button3" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Menu Tool"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"8" </span><span style=color:#795da3>map</span><span>=</span><span style=color:#183691>"Ctrl Button1" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Menu Tool"</span><span>/>
+</span><span>  &lt;/</span><span style=color:#63a35c>mappings</span><span>>
+</span><span>  &lt;</span><span style=color:#63a35c>toolbar</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"8" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Poke Tool"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"8" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Edit Tool"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"8" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Wiring Tool"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"8" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Text Tool"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>sep</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"0" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Pin"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"0" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Pin"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"facing" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"west"</span><span>/>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"output" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"true"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>tool</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>sep</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"1" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"NOT Gate"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"1" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"AND Gate"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"1" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"OR Gate"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"1" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"XOR Gate"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"1" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"NAND Gate"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"1" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"NOR Gate"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>sep</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"4" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"D Flip-Flop"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>tool </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"4" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Register"</span><span>/>
+</span><span>  &lt;/</span><span style=color:#63a35c>toolbar</span><span>>
+</span><span>  &lt;</span><span style=color:#63a35c>circuit </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"main"</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"appearance" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"logisim_evolution"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"circuit" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"main"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"clabelup" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"north"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"simulationFrequency" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"8.0"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"0" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(140,300)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Clock"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"label" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"clk"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"0" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(350,220)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Splitter"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"fanout" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"8"</span><span>/>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"incoming" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"8"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"0" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(440,460)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Splitter"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"facing" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"west"</span><span>/>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"fanout" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"8"</span><span>/>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"incoming" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"8"</span><span>/>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"spacing" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"2"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"0" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(460,130)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Splitter"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"facing" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"west"</span><span>/>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"fanout" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"8"</span><span>/>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"incoming" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"8"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"0" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(670,190)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Bit Extender"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"out_width" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"7"</span><span>/>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"type" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"one"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"1" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(290,380)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"NOT Gate"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"facing" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"north"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"1" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(300,340)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Controlled Buffer"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"1" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(320,540)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"NOR Gate"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"facing" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"west"</span><span>/>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"inputs" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"8"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"4" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(320,300)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Counter"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"appearance" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"classic"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"4" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(340,290)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"ROM"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"appearance" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"classic"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"5" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(140,370)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Button"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"label" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"rst"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"5" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(710,200)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"TTY"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"cols" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"40"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>comp </span><span style=color:#795da3>lib</span><span>=</span><span style=color:#183691>"5" </span><span style=color:#795da3>loc</span><span>=</span><span style=color:#183691>"(710,260)" </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"Button"</span><span>>
+</span><span>      &lt;</span><span style=color:#63a35c>a </span><span style=color:#795da3>name</span><span>=</span><span style=color:#183691>"label" </span><span style=color:#795da3>val</span><span>=</span><span style=color:#183691>"tty_rst"</span><span>/>
+</span><span>    &lt;/</span><span style=color:#63a35c>comp</span><span>>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(140,300)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(160,300)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(140,370)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(310,370)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(160,300)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(160,340)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(160,340)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(280,340)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(290,350)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(290,380)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(290,410)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(290,540)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(290,540)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(320,540)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(300,320)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(300,340)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(300,340)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(330,340)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(310,320)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(310,370)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(320,300)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(340,300)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(330,230)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(330,340)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(330,230)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(690,230)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(350,220)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(350,270)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(350,270)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(590,270)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(370,120)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(370,140)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(370,120)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(480,120)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(370,150)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,150)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(370,160)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(380,160)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(370,170)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(440,170)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(370,180)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(390,180)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(370,190)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(390,190)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(370,200)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(380,200)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(370,210)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(370,220)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(370,220)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,220)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,140)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(380,160)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,140)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(430,140)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,200)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(380,210)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,210)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(400,210)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,500)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(390,500)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,510)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(400,510)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,520)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(410,520)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,530)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,530)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,550)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,550)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,560)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(410,560)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,570)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(400,570)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(380,580)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(390,580)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(390,160)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(390,180)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(390,160)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(440,160)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(390,190)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(390,200)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(390,200)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(440,200)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(390,470)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(390,500)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(390,470)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,470)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(390,580)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(390,600)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(390,600)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,600)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(400,180)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(400,210)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(400,180)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(440,180)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(400,490)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(400,510)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(400,490)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,490)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(400,570)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(400,590)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(400,590)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,590)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(410,510)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(410,520)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(410,510)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,510)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(410,560)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(410,570)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(410,570)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,570)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(420,130)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,150)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(420,130)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(440,130)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(420,190)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,220)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(420,190)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(440,190)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(420,600)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(420,610)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(430,140)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(430,150)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(430,150)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(440,150)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(440,130)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(440,140)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(440,210)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(440,220)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(440,220)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(480,220)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(440,460)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(590,460)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(460,130)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(590,130)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(480,120)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(480,220)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(580,350)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(590,350)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(590,130)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(590,190)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(590,190)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(630,190)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(590,270)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(590,350)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(590,350)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(590,460)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(670,190)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(710,190)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(690,200)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(690,230)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(690,200)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(710,200)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(710,260)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(720,260)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(720,230)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(720,260)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(720,230)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(730,230)"</span><span>/>
+</span><span>    &lt;</span><span style=color:#63a35c>wire </span><span style=color:#795da3>from</span><span>=</span><span style=color:#183691>"(730,210)" </span><span style=color:#795da3>to</span><span>=</span><span style=color:#183691>"(730,230)"</span><span>/>
+</span><span>  &lt;/</span><span style=color:#63a35c>circuit</span><span>>
+</span><span>&lt;/</span><span style=color:#63a35c>project</span><span>>
+</span></code></pre><p>The solution, the header contains the github link to the <a href=https://github.com/logisim-evolution/>logisim</a> software. Downloaded the <code>logisim-evolution-3.8.0-all.jar</code> file and runned it locally. And Opened the <code>beep1.circ</code> file in the software and loaded the <code>flag.enc</code> file in the ROM. And started the simmulation then the flag is displayed in the TTY.</p><img class=autoimg src=/assets/img/ctf_img/umd23/umdctf23_beep11.png><blockquote><p><code>Flag: UMDCTF{w3lc0me_t0_l0g1s1m_yeet}</code></blockquote><h1 id=clutter>clutter</h1><p><img alt=clutter src=/assets/img/ctf_img/umd23/umdctf23_clutter.png><p>The challenge has two files <a>clutter.vsp</a> and a pdf about the installation of <code>VeSP</code> software.<p>The clutter.vsp is<pre class=language-txt data-lang=txt style=color:#323232;background-color:#fff><code class=language-txt data-lang=txt><span>2000
+</span><span>0000
+</span><span>2001
+</span><span>0000
+</span><span>2001
+</span><span>0003
+</span><span>2000
+</span><span>0052
+</span><span>0000
+</span><span>315B
+</span><span>0000
+</span><span>2001
+</span><span>0008
+</span><span>2000
+</span><span>0045
+</span><span>0000
+</span><span>3285
+</span><span>0000
+</span><span>...
+</span><span>..
+</span><span>and upto 215 lines
+</span></code></pre><p>Solution,<p>Installed and started the VeSP<pre class=language-sh data-lang=sh style=color:#323232;background-color:#fff><code class=language-sh data-lang=sh><span>mj0ln1r@AHLinux:~/clutter$ wget https://user.eng.umd.edu/</span><span style=color:#0086b3>\~</span><span>yavuz/teaching/courses/enee350/vesp-source-code/vesp1.1X/main.cpp -o vesp1_1.cpp
+</span><span>mj0ln1r@AHLinux:~/clutter$ cpp vesp1_1.cpp -o vesp1_1
+</span><span>mj0ln1r@AHLinux:~/clutter$ ls
+</span><span>vesp1_1
+</span><span>mj0ln1r@AHLinux:~/clutter$ ./vesp1_1
+</span><span>Welcome to Vesp 1.1
+</span><span>
+</span><span>
+</span><span>Type 
+</span><span> 0 to enter a program
+</span><span> 1 to display registers
+</span><span> 2 to display memory: 
+</span><span>
+</span></code></pre><p>Okay, I followed the instructions and loaded the <code>clutter.vsp</code> file in the vesp1_1 program. After running the program with long trace(in verbose mode). I found some memory storage locations in every instruction execution like this <code>Memory[0001] = 000A</code>. After observing all the same memory location values I got to know that flag characters are stored in memory locations other than <code>0000</code> and <code>0001</code>. I couldn't found any way to store the output of the program to a file so I wrote this automated script using <code>pwntools</code>. Cool, Right!<p>solve.py<pre class=language-python data-lang=python style=color:#323232;background-color:#fff><code class=language-python data-lang=python><span style=color:#a71d5d;font-weight:700>from </span><span>pwn </span><span style=color:#a71d5d;font-weight:700>import </span><span style=color:#0086b3>*
+</span><span style=color:#a71d5d;font-weight:700>import </span><span>re
+</span><span>
+</span><span>target </span><span style=color:#a71d5d;font-weight:700>= </span><span>process(</span><span style=color:#183691>"vesp/vesp1_1"</span><span>)
+</span><span>
+</span><span>target.recv()
+</span><span>target.sendline(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"0"</span><span>)
+</span><span>target.sendline(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"002"</span><span>)
+</span><span>target.sendline(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"1"</span><span>)
+</span><span>target.sendline(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"clutter/clutter.vsp"</span><span>)
+</span><span>target.sendline(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"0"</span><span>)
+</span><span>target.sendline(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"1"</span><span>)
+</span><span>
+</span><span>output </span><span style=color:#a71d5d;font-weight:700>= </span><span>target.recvuntil(</span><span style=color:#a71d5d;font-weight:700>b</span><span style=color:#183691>"The number of clock cycles used = 396"</span><span>).decode(</span><span style=color:#183691>'utf-8'</span><span>)
+</span><span>
+</span><span>regex </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>"Memory</span><span style=color:#b52a1d;background-color:#f5f5f5;font-weight:700>\[\w</span><span style=color:#183691>+</span><span style=color:#b52a1d;background-color:#f5f5f5;font-weight:700>\]</span><span style=color:#183691> = .</span><span style=color:#0086b3>{4}</span><span style=color:#183691>"
+</span><span>
+</span><span>match </span><span style=color:#a71d5d;font-weight:700>= </span><span>re.findall(regex,output)
+</span><span style=color:#a71d5d;font-weight:700>for </span><span>i </span><span style=color:#a71d5d;font-weight:700>in </span><span>match:
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>if </span><span>(</span><span style=color:#183691>"0000" </span><span style=color:#a71d5d;font-weight:700>not in </span><span>i) </span><span style=color:#a71d5d;font-weight:700>and </span><span>(</span><span style=color:#183691>"0001" </span><span style=color:#a71d5d;font-weight:700>not in </span><span>i):
+</span><span>        x </span><span style=color:#a71d5d;font-weight:700>= </span><span>i[</span><span style=color:#0086b3>15</span><span>:]
+</span><span>        di </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>int</span><span>(x,</span><span style=color:#0086b3>16</span><span>)
+</span><span>        </span><span style=color:#62a35c>print</span><span>(</span><span style=color:#62a35c>chr</span><span>(di),end</span><span style=color:#a71d5d;font-weight:700>=</span><span style=color:#183691>""</span><span>)
+</span><span>
+</span><span style=color:#969896;font-style:italic># UMDCTF{Ux13-us3-m3m0ry-w1p3!}
+</span></code></pre><blockquote><p><code>Flag: UMDCTF{Ux13-us3-m3m0ry-w1p3!}</code></blockquote><hr><h1 id=forensics>Forensics</h1><h1 id=fire-type-pokemons-only>Fire Type Pokemons Only</h1><p><img alt=firetype src=/assets/img/ctf_img/umd23/umdctf23_ftpo.png><p>Attached file : <a href=/assets/files/ctf_files/umdctf23/fire-type-pokemon-only.pcapng.zip>fire-type-pokemon-only.pcapng.zip</a><p>Without opening the pcap file I know that I had to look for <code>FTP</code> packets in the file. So I extracted the zip and opened the pcap file in wireshark.<p>Solution<ul><li>Opened the pcap in wireshark<li>Filtered FTP packets in wireshark<li>Followed the TCP stream of FTP data<li>Found a password <code>piku</code><li>Some Images are transfered over network</ul><p>So, I just exported the FTP-DATA saved the files. The files are <code>Diglett.png</code> , <code>secretpic1.png</code>, <code>hmmmm</code> and <code>secret.zip</code><p>The zip is password protected, I used <code>piku</code> as the password for the zip. A video file is extracted, the flag is diplayed in the video.<p><img alt=firetype src=/assets/img/ctf_img/umd23/umdctf23_ftpoflag.png><blockquote><p><code>Flag : UMDCTF{its_n0t_p1kachu!!}</code></blockquote><h1 id=no-352>No. 352</h1><p><img alt=352 src=/assets/img/ctf_img/umd23/umdctf23_no352.png><p>A <a>hide-n-seek.jpg</a> file is attached<p>Used Steghide immediately<ul><li>First password <code>kecleon</code> (from google search)<li>Second password <code>timetofindwhatkecleonishiding</code></ul><pre class=language-sh data-lang=sh style=color:#323232;background-color:#fff><code class=language-sh data-lang=sh><span>mj0ln1r@AHLinux:~/no352$ steghide extract -sf hide-n-seek.jpg
+</span><span>Enter passphrase : kecleon
+</span><span>extracted data kecleon.jpg
+</span><span>mj0ln1r@AHLinux:~/no352$ steghide extract -sf kecleon.jpg
+</span><span>Enter passphrase : timetofindwhatkecleonishiding
+</span><span>extracted data wrote to flag.txt
+</span><span>mj0ln1r@AHLinux:~/no352$ cat flag.txt
+</span><span>UMDCTF{KECLE0NNNNN}
+</span></code></pre><blockquote><p><code>Flag : UMDCTF{KECLE0NNNNN}</code></blockquote><h1 id=mirror-unknown>Mirror Unknown</h1><p><img alt=mirror src=/assets/img/ctf_img/umd23/umdctf23_mirror.png><p>The attached image is<p><img alt=mirror1 src=/assets/img/ctf_img/umd23/umdctf23_mirror1.png><p>Solution,<p>Did a reverse image search on google images. And found the letters associated with the symbols.<p><a href="https://lens.google.com/search?p=ATHekxerHQuSfeoaj3EZuxksrJRLN2lKODT1iiXlao7WYlgVQ9PEur4KOhjNvgU6awWK6K5r5D90H_dTI5-VuQa6i7fgp2ImdswSBpCNy_uZo3FzCylYUA8aDQc-hzEJTuXgOoy_m1mC7QTZBE5TH51MFcoMO8sWvqMtVWINMZj_iM1DYXmyHN7pvGwpeUKOc5T-kt6bvqEdFvOLHNtyv4Riw7t2Qn9BkX9JNMrYHKKvjh30uuFEGLpVkbuTW7jqDLoEj_YHysjJRSsT0cOdR1uSy0XXA3CCm3GUFbwccW9S&ep=gsbubb&hl=en-IN&re=df#lns=W251bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsIkVrY0tKR1V3WldGbE1tWTVMV1E0T1RndE5EUTFaaTFpWmprd0xUTTFOR1ppTWpZeU9EUmpOUklmVFMxQlR6VkxhVmROVTFsbFdVeHVaVFo2U1ROWFNFOVdXbWN5TUdaQ1p3PT0iXQ==" target=_blank>Image reverse search result</a><p>The Alphabets associated with symbols are - <code>HOJNISSNIUR</code><p>Reversed the letters as the challenge says it mirror - <code>SINJOHRUINS</code><p>Found that Sinjoh ruins is a place, It might be the correct flag and it is.<blockquote><p><code>Flag : UMDCTF{SINJOHRUINS}</code></blockquote><hr><h1 id=osint>OSINT</h1><h1 id=gone-missing-1>Gone Missing 1</h1><p><img alt=gone1 src=/assets/img/ctf_img/umd23/umdctf23_gone1.png><p>The link attached hosted this location image</p><img class=autoimg src=/assets/img/ctf_img/umd23/umdctf23_gone12.png><p>Again did a reverse image search search<p><a href="https://www.google.com/maps/place/The+Royal+Palace/@59.9182997,10.7273703,15.03zdata=!4m8!3m7!1s0x46416dd779ba357b:0x677038c9acc2591c!8m2!3d59.9170428!4d10.7273769!9m1!1b1!16zL20vMDU1ZDY4" target=_blank>Image reverse search result</a><p>Found that it is <a>Royal Palace, Oslo</a><p>Selected the Royal palace in the map given at the bottom right corner, got the flag.<blockquote><p><code>Flag : UMDCTF{I_b3t_rainbolt_c0uld_g3t_th1s_!n_thr33_s3c0nd5}</code></blockquote><hr><h1 id=web>Web</h1><h1 id=treps-ticket-system>Treps Ticket System</h1><p><img alt=tts src=/assets/img/ctf_img/umd23/umdctf23_tts.png><p>The attached URL hosted a form like this,<p><img alt=tts1 src=/assets/img/ctf_img/umd23/umdctf23_tts1.png><p>Inputed the Test creds name = test email = test@gmail.com<p>It loaded a ticket with the URL <code>https://tts.chall.lol/ticket?num=12</code><p><img alt=tts2 src=/assets/img/ctf_img/umd23/umdctf23_tts2.png><p>Tried <code>IDOR</code> in the URL. changed the <code>num=0</code> and recieved the flag.<blockquote><p><code>Flag : UMDCTF{d0nt_b3_@n_id0r_@lw@ys_s3cur3_ur_tick3ts}</code></blockquote><hr></section></article></main></div>
