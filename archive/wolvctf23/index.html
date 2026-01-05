@@ -1,0 +1,192 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><title>
+         Wolve CTF 2023
+        
+    </title><meta content="Wolve CTF 2023" property=og:title><link href=/favicons/favicon.ico rel=icon type=image/png><link href=https://themj0ln1r.github.io/fonts.css rel=stylesheet><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel=stylesheet><script async data-goatcounter=https://themj0ln1r.goatcounter.com/count src=https://themj0ln1r.github.io/js/count.js></script><noscript><img src="https://themj0ln1r.goatcounter.com//count?p=/archive/wolvctf23/&t=Wolve CTF 2023"></noscript><script src=https://themj0ln1r.github.io/js/codeblock.js></script><script src=https://themj0ln1r.github.io/js/toc.js></script><script src=https://themj0ln1r.github.io/js/note.js></script><script>MathJax = {
+              tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+              }
+            };</script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><link title="TheMj0ln1r Blog" href=https://themj0ln1r.github.io/atom.xml rel=alternate type=application/atom+xml><link href=https://themj0ln1r.github.io/theme/light.css rel=stylesheet><link href=https://themj0ln1r.github.io/theme/dark.css id=darkModeStyle rel=stylesheet><script src=https://themj0ln1r.github.io/js/themetoggle.js></script><script>setTheme(getSavedTheme());</script><link href=https://themj0ln1r.github.io/main.css media=screen rel=stylesheet><body><div class=content><header><div class=main><a href=https://themj0ln1r.github.io/><b>TheMj0ln1r Blog</b></a><div class=socials></div></div><nav><a href=https://themj0ln1r.github.io/cv style=margin-left:.5em><b>CV</b></a><a href=https://themj0ln1r.github.io/archive style=margin-left:.5em><b>Archive</b></a><a href=https://themj0ln1r.github.io/tags style=margin-left:.5em><b>Tags</b></a> |<a onclick="toggleTheme(); event.preventDefault();" href=# id=dark-mode-toggle> <img alt=Light id=sun-icon src=https://themj0ln1r.github.io/feather/sun.svg style=filter:invert()> <img alt=Dark id=moon-icon src=https://themj0ln1r.github.io/feather/moon.svg> </a><script>updateItemToggleTheme()</script></nav></header><main><article><div class=title><div class=page-header>Wolve CTF 2023</div><div class=meta>Posted on <time>2023-03-18</time><span class=tags-label> :: Tags:</span><span class=tags> <a class=post-tag href=https://themj0ln1r.github.io/tags/ctf/>ctf</a> </span></div></div><div class=toc-container><h5 class=toc-title>Table of Contents</h5><ul class=toc-list><li><a href=https://themj0ln1r.github.io/archive/wolvctf23/#charlotte-s-web>Charlotte's Web</a><li><a href=https://themj0ln1r.github.io/archive/wolvctf23/#baby-pwn>baby-pwn</a><li><a href=https://themj0ln1r.github.io/archive/wolvctf23/#baby-rev>baby-rev</a><li><a href=https://themj0ln1r.github.io/archive/wolvctf23/#we-will-rock-you>We Will Rock You</a><li><a href=https://themj0ln1r.github.io/archive/wolvctf23/#yowhatsthepassword>yowhatsthepassword</a><li><a href=https://themj0ln1r.github.io/archive/wolvctf23/#escaped>escaped</a><li><a href=https://themj0ln1r.github.io/archive/wolvctf23/#elytra>elytra</a><li><a href=https://themj0ln1r.github.io/archive/wolvctf23/#dino-trading>Dino Trading</a><li><a href=https://themj0ln1r.github.io/archive/wolvctf23/#wannaflag-i-an-introduction>WannaFlag I: An Introduction</a></ul></div><section class=body><p>I played <a href=https://wolvctf.io>WolvCTF 2023</a> with <a href=https://ctftime.org/team/217079>Invaders0x1</a> which is held on March 18, 2023. These are the writeups for the solved challenges.<h1 id=charlotte-s-web>Charlotte's Web</h1><p><img alt=Charlottes_web src=/assets/img/ctf_img/wolv23/wolv_charlotte.png><p><code>/src</code> is found in source code.<p><img alt=src src=/assets/img/ctf_img/wolv23/wolv_charlotte1.png><p><code>flag</code> will be opened when we resquest <code>/super-secret-route-nobody-will-guess</code> with a <code>PUT</code> method.<p><img alt=Flag src=/assets/img/ctf_img/wolv23/wolv_charlotte2.png><blockquote><p><code>Flag : wctf{y0u_h4v3_b33n_my_fr13nd___th4t_1n_1t53lf_1s_4_tr3m3nd0u5_th1ng}</code></blockquote><h1 id=baby-pwn>baby-pwn</h1><p><img alt="Baby pwn" src=/assets/img/ctf_img/wolv23/wolv_babypwn.png><p>Attached files <a download href=/assets/files/ctf_files/wolvctf23/baby-pwn.c>baby-pwn.c</a> and <a download href=/assets/files/ctf_files/wolvctf23/baby-pwn>baby-pwn.c</a><p>Function present in <code>baby-pwn.c</code><pre class=language-c data-lang=c style=color:#323232;background-color:#fff><code class=language-c data-lang=c><span style=color:#a71d5d;font-weight:700>void </span><span style=color:#795da3;font-weight:700>vuln</span><span>(</span><span style=color:#a71d5d;font-weight:700>void</span><span>)
+</span><span>{
+</span><span style=color:#a71d5d;font-weight:700>volatile int</span><span> a </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>0xdeadbeef</span><span>;
+</span><span style=color:#a71d5d;font-weight:700>char</span><span> buff[</span><span style=color:#0086b3>32</span><span>] </span><span style=color:#a71d5d;font-weight:700>= </span><span>{ </span><span style=color:#0086b3>0 </span><span>};
+</span><span style=color:#62a35c>printf</span><span>(</span><span style=color:#183691>"Gimme some input: "</span><span>);
+</span><span style=color:#62a35c>fgets</span><span>(buff, </span><span style=color:#0086b3>48</span><span>, stdin);
+</span><span style=color:#a71d5d;font-weight:700>if </span><span>(a </span><span style=color:#a71d5d;font-weight:700>!= </span><span style=color:#0086b3>0xdeadbeef</span><span>) {
+</span><span>    print_flag();
+</span><span>	}
+</span><span>}
+</span></code></pre><p>Trying bufferoverflow input string length of 48 in the remote server.<p><img alt="Flag " src=/assets/img/ctf_img/wolv23/wolv_babypwn1.png><blockquote><p><code>Flag : wctf{W3lc0me_t0_C0stc0_I_L0v3_Y0u!}</code></blockquote><h1 id=baby-rev>baby-rev</h1><p><img alt="Baby rev" src=/assets/img/ctf_img/wolv23/wolv_babyrev.png><p>Here is the challenge file <a download href=/assets/files/ctf_files/wolvctf23/baby-re>baby-rev</a><p>Simple <code>**strings**</code> did the thing.<p><img alt="Baby rev" src=/assets/img/ctf_img/wolv23/wolv_babyrev1.png><blockquote><p><code>Flag : wctf{Oh10_Stat3_1s_Smelly!}</code></blockquote><h1 id=we-will-rock-you>We Will Rock You</h1><p><img alt="We wil rock you" src=/assets/img/ctf_img/wolv23/wolv_rockyou.png><p>We have to crack password protected <a download href=/assets/files/ctf_files/wolvctf23/we_will_rock_you.zip>zip file</a><p>Creating hashes from zip file to make john understands it. <img alt="We will rock you" src=/assets/img/ctf_img/wolv23/wolv_rockyou1.png><p>Cracking the hashes with the john <img alt="We will rock you" src=/assets/img/ctf_img/wolv23/wolv_rockyou2.png><p>Password : michigan4ever<p>After extracting zip with the password we can find a flag.txt<blockquote><p><code>Flag : wctf{m1cH1g4n_4_3v3R}</code></blockquote><h1 id=yowhatsthepassword>yowhatsthepassword</h1><p><img alt=yowhatsathepassword src=/assets/img/ctf_img/wolv23/wolv_yowhats.png><p><a download href=/assets/files/ctf_files/wolvctf23/main.py>main.py</a><p>Content of <code>main.py</code><pre class=language-python data-lang=python style=color:#323232;background-color:#fff><code class=language-python data-lang=python><span style=color:#969896;font-style:italic># I'm thinking of a number from 0 to 2^32 - 1
+</span><span style=color:#969896;font-style:italic># Can you guess it?
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>import </span><span>random
+</span><span style=color:#a71d5d;font-weight:700>import </span><span>base64
+</span><span style=color:#a71d5d;font-weight:700>def </span><span style=color:#323232;font-weight:700>generate</span><span>(seed):
+</span><span>  random.seed(seed)
+</span><span>  c </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>0
+</span><span>  </span><span style=color:#a71d5d;font-weight:700>while </span><span>c </span><span style=color:#a71d5d;font-weight:700>!= </span><span style=color:#62a35c>ord</span><span>(</span><span style=color:#183691>'}'</span><span>):
+</span><span>    c </span><span style=color:#a71d5d;font-weight:700>= </span><span>random.randint(</span><span style=color:#0086b3>97</span><span>, </span><span style=color:#0086b3>126</span><span>)
+</span><span>    </span><span style=color:#62a35c>print</span><span>(</span><span style=color:#62a35c>chr</span><span>(c), end</span><span style=color:#a71d5d;font-weight:700>=</span><span style=color:#183691>''</span><span>)
+</span><span>  </span><span style=color:#62a35c>print</span><span>()
+</span><span>
+</span><span>secret </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>'ly9ppw=='
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>import </span><span>base64
+</span><span>
+</span><span>s </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>int</span><span>(</span><span style=color:#62a35c>input</span><span>(</span><span style=color:#183691>"password? >>> "</span><span>))
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>if </span><span style=color:#0086b3>int</span><span>(base64.b64decode(secret).hex(), </span><span style=color:#0086b3>16</span><span>) </span><span style=color:#a71d5d;font-weight:700>== </span><span>s:
+</span><span>  generate(s)
+</span><span style=color:#a71d5d;font-weight:700>else</span><span>:
+</span><span>  </span><span style=color:#62a35c>print</span><span>(</span><span style=color:#183691>'nope'</span><span>)
+</span></code></pre><p>A simple condition check was done here. The password of should be <code>int(base64.b64decode(secret).hex(), 16)</code><p><img alt=yowhatsathepassword src=/assets/img/ctf_img/wolv23/wolv_yowhats1.png><p>So, the password is <code>2536466855</code><p><img alt=yowhatsathepassword src=/assets/img/ctf_img/wolv23/wolv_yowhats2.png><blockquote><p><code>Flag : wctf{ywtp}</code></blockquote><h1 id=escaped>escaped</h1><p><img alt=escaped src=/assets/img/ctf_img/wolv23/wolv_escaped.png><p>The challenge file <a download href=/assets/files/ctf_files/wolvctf23/jail.py>jail.py</a><p>Content of <code>jail.py</code><pre class=language-python data-lang=python style=color:#323232;background-color:#fff><code class=language-python data-lang=python><span style=color:#62a35c>print</span><span>(</span><span style=color:#183691>"Welcome to my `cat` program. Give me a string and I'll output it back."</span><span>)
+</span><span>code </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>input</span><span>(</span><span style=color:#183691>"Enter your string (with double quotes) >>> "</span><span>)
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>import </span><span>ast
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>if </span><span>code[</span><span style=color:#0086b3>0</span><span>] </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#183691>'"' </span><span style=color:#a71d5d;font-weight:700>and </span><span>code[</span><span style=color:#a71d5d;font-weight:700>-</span><span style=color:#0086b3>1</span><span>] </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#183691>'"' </span><span style=color:#a71d5d;font-weight:700>and </span><span style=color:#62a35c>all</span><span>(ch </span><span style=color:#a71d5d;font-weight:700>!= </span><span style=color:#183691>'"' </span><span style=color:#a71d5d;font-weight:700>for </span><span>ch </span><span style=color:#a71d5d;font-weight:700>in </span><span>code[</span><span style=color:#0086b3>1</span><span>:</span><span style=color:#a71d5d;font-weight:700>-</span><span style=color:#0086b3>1</span><span>]):
+</span><span>  compiled </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>compile</span><span>(</span><span style=color:#183691>'print("' </span><span style=color:#a71d5d;font-weight:700>+ </span><span style=color:#62a35c>eval</span><span>(code) </span><span style=color:#a71d5d;font-weight:700>+ </span><span style=color:#183691>'")'</span><span>, </span><span style=color:#183691>"out"</span><span>, mode </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>"exec"</span><span>)
+</span><span>  </span><span style=color:#62a35c>exec</span><span>(compiled)
+</span></code></pre><p><code>eval()</code> function is capable of evaluating the code what we pass to it. But the <code>print("' + eval(code) + '")</code> is generating the string not the execution of our input code.<p><img alt=escaped src=/assets/img/ctf_img/wolv23/wolv_escaped1.png><p>Now we have to escape the <code>"</code> in the <code>print()</code> to generate the executed output of the passed input.Out input shouldn’t contain <code>"</code> in the string except at the beginning and end.<p>The payload can be in this form<p><img alt=escaped src=/assets/img/ctf_img/wolv23/wolv_escaped2.png><p>The payload to get the flag is <code>"\x22,__import__('os').system('cat flag.txt'),\x22"</code>. Here <code>\x22</code> is interpreted as <code>"</code> this will become <code>print("",__import__('os').system('cat flag.txt'),""</code>. Therefore it will prints the flag.<p><img alt=escaped src=/assets/img/ctf_img/wolv23/wolv_escaped3.png><blockquote><p><code>Flag : wctf{m30w_uwu_:3}</code></blockquote><h1 id=elytra>elytra</h1><p><img alt=elytra src=/assets/img/ctf_img/wolv23/wolv_elytra.png><p>A text file is given <a download href=/assets/files/ctf_files/wolvctf23/iwon.txt>iwon.txt</a><p>When we view the contents of the file in raw format we encounter <code>0xa</code> and <code>0xd</code> repeatedly.<p><code>0xa</code> is "\n" and <code>0xd</code> is "\r"<p>When we process it with python we can observe <code>\r</code> in few lines only, so <code>\r</code> is forming a pattern here.<p>Marking the line as <code>1</code> in which <code>\r</code> is appeared if not as <code>0</code><p>This will generate a binary pattern then we can convert it into ascii to obtain the flag.<p><strong>Solution script</strong><pre class=language-python data-lang=python style=color:#323232;background-color:#fff><code class=language-python data-lang=python><span style=color:#a71d5d;font-weight:700>with </span><span style=color:#62a35c>open</span><span>(</span><span style=color:#183691>"iwon.txt"</span><span>,</span><span style=color:#183691>"rb"</span><span>) </span><span style=color:#a71d5d;font-weight:700>as </span><span>f:
+</span><span>	pattern </span><span style=color:#a71d5d;font-weight:700>= </span><span>[]
+</span><span>	</span><span style=color:#a71d5d;font-weight:700>for </span><span>i </span><span style=color:#a71d5d;font-weight:700>in </span><span>f:
+</span><span>		</span><span style=color:#a71d5d;font-weight:700>if b</span><span style=color:#183691>"</span><span style=color:#0086b3>\r</span><span style=color:#183691>" </span><span style=color:#a71d5d;font-weight:700>in </span><span>i:
+</span><span>			</span><span style=color:#62a35c>print</span><span>(i)
+</span><span>			pattern.append(</span><span style=color:#183691>"1"</span><span>)
+</span><span>		</span><span style=color:#a71d5d;font-weight:700>else</span><span>:
+</span><span>			pattern.append(</span><span style=color:#183691>"0"</span><span>)
+</span><span>binarystring </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#183691>""</span><span>.join(pattern)
+</span><span>
+</span><span>byte_list </span><span style=color:#a71d5d;font-weight:700>= </span><span>[</span><span style=color:#0086b3>int</span><span>(binarystring[i:i</span><span style=color:#a71d5d;font-weight:700>+</span><span style=color:#0086b3>8</span><span>], </span><span style=color:#0086b3>2</span><span>) </span><span style=color:#a71d5d;font-weight:700>for </span><span>i </span><span style=color:#a71d5d;font-weight:700>in </span><span style=color:#62a35c>range</span><span>(</span><span style=color:#0086b3>0</span><span>, </span><span style=color:#62a35c>len</span><span>(binarystring), </span><span style=color:#0086b3>8</span><span>)]
+</span><span style=color:#969896;font-style:italic># print(byte_list)
+</span><span style=color:#a71d5d;font-weight:700>for </span><span>i </span><span style=color:#a71d5d;font-weight:700>in </span><span>byte_list:
+</span><span>	</span><span style=color:#62a35c>print</span><span>(</span><span style=color:#62a35c>chr</span><span>(i),end</span><span style=color:#a71d5d;font-weight:700>=</span><span style=color:#183691>""</span><span>)
+</span></code></pre><p><img alt=elytra src=/assets/img/ctf_img/wolv23/wolv_elytra1.png><blockquote><p><code>Flag : wctf{ggwp}</code></blockquote><h1 id=dino-trading>Dino Trading</h1><p><img alt="dino trading" src=/assets/img/ctf_img/wolv23/wolv_dino.png><p>This is from forensics category. A pcap file is provided <a download href=/assets/files/ctf_files/wolvctf23/download.pcapng>download.pcapng</a><p>Analysing traffic with Wireshark. If we follow TCP stream we can see that the parties shared a <code>epicfight.png</code> file.<p><img alt="dino trading" src=/assets/img/ctf_img/wolv23/wolv_dino1.png><p>Exporting FTP-DATA of the packet in which the file has been shared as <code>png</code><p><img alt="dino trading" src=/assets/img/ctf_img/wolv23/wolv_dino2.png><p><img alt="dino trading" src=/assets/img/ctf_img/wolv23/wolv_dino3.png><p>This is the image which was shared on network.<p><img alt="dino trading" src=/assets/img/ctf_img/wolv23/wolv_dino4.png><p>Extracting data from image with <code>steghide</code><p><img alt="dino trading" src=/assets/img/ctf_img/wolv23/wolv_dino5.png><p>Reading <code>hidden.txt</code> and decoding it from <code>base64</code><p><img alt="dino trading" src=/assets/img/ctf_img/wolv23/wolv_dino6.png><blockquote><p><code>Flag : wctf{an_1mage_in_a_peecap_b64}</code></blockquote><h1 id=wannaflag-i-an-introduction>WannaFlag I: An Introduction</h1><p><img alt=wannaflag src=/assets/img/ctf_img/wolv23/wolv_wannaflag-1.png><p>This challenge is from OSINT challenge series WannaFlag. The given image <img alt=wannaflag src=/assets/img/ctf_img/wolv23/wolv_wannaflag-11.png><p>Reverse image search on google.<p><img alt=wannaflag src=/assets/img/ctf_img/wolv23/wolv_wannaflag-12.png><p>As the challenge says "read the reviews on google maps". Reading reviews of image <a href="https://www.google.com/search?q=The+Cube&kgmid=/g/1yg6ngznr&hl=en-GB&gl=GB#lrd=0x883cae3897494825:0xb2adec7980125508,1,,,,">https://www.google.com/search?q=The+Cube&kgmid=/g/1yg6ngznr&hl=en-GB&gl=GB#lrd=0x883cae3897494825:0xb2adec7980125508,1,,,,</a><p><img alt=wannaflag src=/assets/img/ctf_img/wolv23/wolv_wannaflag-13.png><p><code>netcat wanna-flag-i dot wolvctf dot io one three three seven</code> can be converted as <code>nc wanna-flag-i.wolvctf.io 1337</code>.<p>By connecting to this address we got the first part of the flag. <code>wctf{sp1n</code><pre class=language-bash data-lang=bash style=color:#323232;background-color:#fff><code class=language-bash data-lang=bash><span>$ nc wanna-flag-i.wolvctf.io 1337
+</span><span style=color:#a71d5d;font-weight:700>=</span><span style=color:#183691>= </span><span>proof-of-work: disabled ==
+</span><span>Good job finding the Cube! It</span><span style=color:#183691>'s a favorite destination among UofM students!
+</span><span style=color:#183691>Anyways here is the flag:
+</span><span style=color:#183691>wctf{sp1n
+</span><span style=color:#183691>Huh???? Where did the rest of the flag g
+</span><span style=color:#183691>                       ______
+</span><span style=color:#183691>                    .-"      "-.
+</span><span style=color:#183691>                   /            \
+</span><span style=color:#183691>       _          |              |          _
+</span><span style=color:#183691>      ( \         |,  .-.  .-.  ,|         / )
+</span><span style=color:#183691>       > "=._     | )(__/  \__)( |     _.=" &lt;
+</span><span style=color:#183691>      (_/"=._"=._ |/     /\     \| _.="_.="\_)
+</span><span style=color:#183691>             "=._ (_     ^^     _)"_.="
+</span><span style=color:#183691>                 "=\__|IIIIII|__/="")
+</span><span style=color:#183691>                _.="| \IIIIII/ |"=._
+</span><span style=color:#183691>      _     _.="_.="\          /"=._"=._     _
+</span><span style=color:#183691>     ( \_.="_.="     `--------`     "=._"=._/ )
+</span><span style=color:#183691>      > _.="                            "=._ &lt;
+</span><span style=color:#183691>     (_/                                    \_)
+</span><span style=color:#183691>                       ______
+</span><span style=color:#183691>                    .-"      "-.
+</span><span style=color:#183691>                   /            \
+</span><span style=color:#183691>       _          |              |          _
+</span><span style=color:#183691>      ( \         |,  .-.  .-.  ,|         / )
+</span><span style=color:#183691>       > "=._     | )(__/  \__)( |     _.=" &lt;
+</span><span style=color:#183691>      (_/"=._"=._ |/     /\     \| _.="_.="\_)
+</span><span style=color:#183691>             "=._ (_     ^^     _)"_.="
+</span><span style=color:#183691>                 "=\__|IIIIII|__/="")
+</span><span style=color:#183691>                _.="| \IIIIII/ |"=._
+</span><span style=color:#183691>      _     _.="_.="\          /"=._"=._     _
+</span><span style=color:#183691>     ( \_.="_.="     `--------`     "=._"=._/ )
+</span><span style=color:#183691>      > _.="                            "=._ &lt;
+</span><span style=color:#183691>     (_/                                    \_)
+</span><span style=color:#183691>                       ______
+</span><span style=color:#183691>                    .-"      "-.
+</span><span style=color:#183691>                   /            \
+</span><span style=color:#183691>       _          |              |          _
+</span><span style=color:#183691>      ( \         |,  .-.  .-.  ,|         / )
+</span><span style=color:#183691>       > "=._     | )(__/  \__)( |     _.=" &lt;
+</span><span style=color:#183691>      (_/"=._"=._ |/     /\     \| _.="_.="\_)
+</span><span style=color:#183691>             "=._ (_     ^^     _)"_.="
+</span><span style=color:#183691>                 "=\__|IIIIII|__/="")
+</span><span style=color:#183691>                _.="| \IIIIII/ |"=._
+</span><span style=color:#183691>      _     _.="_.="\          /"=._"=._     _
+</span><span style=color:#183691>     ( \_.="_.="     `--------`     "=._"=._/ )
+</span><span style=color:#183691>      > _.="                            "=._ &lt;
+</span><span style=color:#183691>     (_/                                    \_)
+</span><span style=color:#183691>██╗    ██╗ █████╗ ███╗   ██╗███╗   ██╗ █████╗ ███████╗██╗      █████╗  ██████╗
+</span><span style=color:#183691>██║    ██║██╔══██╗████╗  ██║████╗  ██║██╔══██╗██╔════╝██║     ██╔══██╗██╔════╝
+</span><span style=color:#183691>██║ █╗ ██║███████║██╔██╗ ██║██╔██╗ ██║███████║█████╗  ██║     ███████║██║  ███╗
+</span><span style=color:#183691>██║███╗██║██╔══██║██║╚██╗██║██║╚██╗██║██╔══██║██╔══╝  ██║     ██╔══██║██║   ██║
+</span><span style=color:#183691>╚███╔███╔╝██║  ██║██║ ╚████║██║ ╚████║██║  ██║██║     ███████╗██║  ██║╚██████╔╝
+</span><span style=color:#183691> ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝ ╚═════╝
+</span><span style=color:#183691>HAHAHHAHAHHAHA Ohhhhh man what an easy CTF to pwn
+</span><span style=color:#183691>
+</span><span style=color:#183691>And I mean also really?? At least make a geo-osint KIND of difficult
+</span><span style=color:#183691>The CTF is HOSTED by UofM where else would that dumb cube be????
+</span><span style=color:#183691>
+</span><span style=color:#183691>Oh man ok well organizers if you want your "challenge" back or flags or whatever send 500,000 Goerli here:
+</span><span style=color:#183691>0x08f5AF98610aE4B93cD0A856682E6319bF1be8a6
+</span><span style=color:#183691>
+</span><span style=color:#183691>Who knows maybe we'</span><span>ll take more flags if you don</span><span style=color:#183691>'t pay in time >:)
+</span><span style=color:#183691>#YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs
+</span><span style=color:#183691>#YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs
+</span><span style=color:#183691>#YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs #YourFlagsBelongToUs
+</span><span style=color:#183691>                       ______
+</span><span style=color:#183691>                    .-"      "-.
+</span><span style=color:#183691>                   /            \
+</span><span style=color:#183691>       _          |              |          _
+</span><span style=color:#183691>      ( \         |,  .-.  .-.  ,|         / )
+</span><span style=color:#183691>       > "=._     | )(__/  \__)( |     _.=" &lt;
+</span><span style=color:#183691>      (_/"=._"=._ |/     /\     \| _.="_.="\_)
+</span><span style=color:#183691>             "=._ (_     ^^     _)"_.="
+</span><span style=color:#183691>                 "=\__|IIIIII|__/="")
+</span><span style=color:#183691>                _.="| \IIIIII/ |"=._
+</span><span style=color:#183691>      _     _.="_.="\          /"=._"=._     _
+</span><span style=color:#183691>     ( \_.="_.="     `--------`     "=._"=._/ )
+</span><span style=color:#183691>      > _.="                            "=._ &lt;
+</span><span style=color:#183691>     (_/                                    \_)
+</span><span style=color:#183691>                       ______
+</span><span style=color:#183691>                    .-"      "-.
+</span><span style=color:#183691>                   /            \
+</span><span style=color:#183691>       _          |              |          _
+</span><span style=color:#183691>      ( \         |,  .-.  .-.  ,|         / )
+</span><span style=color:#183691>       > "=._     | )(__/  \__)( |     _.=" &lt;
+</span><span style=color:#183691>      (_/"=._"=._ |/     /\     \| _.="_.="\_)
+</span><span style=color:#183691>             "=._ (_     ^^     _)"_.="
+</span><span style=color:#183691>                 "=\__|IIIIII|__/="")
+</span><span style=color:#183691>                _.="| \IIIIII/ |"=._
+</span><span style=color:#183691>      _     _.="_.="\          /"=._"=._     _
+</span><span style=color:#183691>     ( \_.="_.="     `--------`     "=._"=._/ )
+</span><span style=color:#183691>      > _.="                            "=._ &lt;
+</span><span style=color:#183691>     (_/                                    \_)
+</span><span style=color:#183691>                       ______
+</span><span style=color:#183691>                    .-"      "-.
+</span><span style=color:#183691>                   /            \
+</span><span style=color:#183691>       _          |              |          _
+</span><span style=color:#183691>      ( \         |,  .-.  .-.  ,|         / )
+</span><span style=color:#183691>       > "=._     | )(__/  \__)( |     _.=" &lt;
+</span><span style=color:#183691>      (_/"=._"=._ |/     /\     \| _.="_.="\_)
+</span><span style=color:#183691>             "=._ (_     ^^     _)"_.="
+</span><span style=color:#183691>                 "=\__|IIIIII|__/="")
+</span><span style=color:#183691>                _.="| \IIIIII/ |"=._
+</span><span style=color:#183691>      _     _.="_.="\          /"=._"=._     _
+</span><span style=color:#183691>     ( \_.="_.="     `--------`     "=._"=._/ )
+</span><span style=color:#183691>      > _.="                            "=._ &lt;
+</span><span style=color:#183691>     (_/                                    \_)
+</span><span style=color:#183691>██╗    ██╗ █████╗ ███╗   ██╗███╗   ██╗ █████╗ ███████╗██╗      █████╗  ██████╗
+</span><span style=color:#183691>██║    ██║██╔══██╗████╗  ██║████╗  ██║██╔══██╗██╔════╝██║     ██╔══██╗██╔════╝
+</span><span style=color:#183691>██║ █╗ ██║███████║██╔██╗ ██║██╔██╗ ██║███████║█████╗  ██║     ███████║██║  ███╗
+</span><span style=color:#183691>██║███╗██║██╔══██║██║╚██╗██║██║╚██╗██║██╔══██║██╔══╝  ██║     ██╔══██║██║   ██║
+</span><span style=color:#183691>╚███╔███╔╝██║  ██║██║ ╚████║██║ ╚████║██║  ██║██║     ███████╗██║  ██║╚██████╔╝
+</span><span style=color:#183691> ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝ ╚═════╝
+</span><span style=color:#183691>██╗    ██╗ █████╗ ███╗   ██╗███╗   ██╗ █████╗ ███████╗██╗      █████╗  ██████╗
+</span><span style=color:#183691>██║    ██║██╔══██╗████╗  ██║████╗  ██║██╔══██╗██╔════╝██║     ██╔══██╗██╔════╝
+</span><span style=color:#183691>██║ █╗ ██║███████║██╔██╗ ██║██╔██╗ ██║███████║█████╗  ██║     ███████║██║  ███╗
+</span><span style=color:#183691>██║███╗██║██╔══██║██║╚██╗██║██║╚██╗██║██╔══██║██╔══╝  ██║     ██╔══██║██║   ██║
+</span><span style=color:#183691>╚███╔███╔╝██║  ██║██║ ╚████║██║ ╚████║██║  ██║██║     ███████╗██║  ██║╚██████╔╝
+</span><span style=color:#183691> ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝ ╚═════╝
+</span><span style=color:#183691>██╗    ██╗ █████╗ ███╗   ██╗███╗   ██╗ █████╗ ███████╗██╗      █████╗  ██████╗
+</span><span style=color:#183691>██║    ██║██╔══██╗████╗  ██║████╗  ██║██╔══██╗██╔════╝██║     ██╔══██╗██╔════╝
+</span><span style=color:#183691>██║ █╗ ██║███████║██╔██╗ ██║██╔██╗ ██║███████║█████╗  ██║     ███████║██║  ███╗
+</span><span style=color:#183691>██║███╗██║██╔══██║██║╚██╗██║██║╚██╗██║██╔══██║██╔══╝  ██║     ██╔══██║██║   ██║
+</span><span style=color:#183691>╚███╔███╔╝██║  ██║██║ ╚████║██║ ╚████║██║  ██║██║     ███████╗██║  ██║╚██████╔╝
+</span><span style=color:#183691> ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝ ╚═════╝
+</span><span style=color:#183691>Also all of you John OSINTs on twitter need to leave us alone
+</span></code></pre><p>In the output they asked to pay pay 500,000 Goerli to the wallet <code>0x08f5AF98610aE4B93cD0A856682E6319bF1be8a6</code>. I cannot dooo itt..So, i ignored it :).<p>When we scroll to the last we have <code>John OSINTs on twitter</code> and <code>#YourFlagsBelongToUs</code>. I did a quick twitter search,<p><img alt=wannaflag src=/assets/img/ctf_img/wolv23/wolv_wannaflag-14.png><p>Decoding from <code>base64</code> will give us flag.<pre class=language-bash data-lang=bash style=color:#323232;background-color:#fff><code class=language-bash data-lang=bash><span>$ echo </span><span style=color:#183691>"d2N0Znt1aGhoX3doM3IzX2QxZF80bGxfMHVyX2ZsNGdzX2cwP30=" </span><span style=color:#a71d5d;font-weight:700>| </span><span>base64 -d
+</span><span>wctf{uhhh_wh3r3_d1d_4ll_0ur_fl4gs_g0?}
+</span></code></pre><blockquote><p><code>Flag : wctf{uhhh_wh3r3_d1d_4ll_0ur_fl4gs_g0?}</code></blockquote><hr></section></article></main></div>

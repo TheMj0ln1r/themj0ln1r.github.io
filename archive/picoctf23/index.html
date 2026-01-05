@@ -1,0 +1,90 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><title>
+         Pico CTF 2023
+        
+    </title><meta content="Pico CTF 2023" property=og:title><link href=/favicons/favicon.ico rel=icon type=image/png><link href=https://themj0ln1r.github.io/fonts.css rel=stylesheet><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel=stylesheet><script async data-goatcounter=https://themj0ln1r.goatcounter.com/count src=https://themj0ln1r.github.io/js/count.js></script><noscript><img src="https://themj0ln1r.goatcounter.com//count?p=/archive/picoctf23/&t=Pico CTF 2023"></noscript><script src=https://themj0ln1r.github.io/js/codeblock.js></script><script src=https://themj0ln1r.github.io/js/toc.js></script><script src=https://themj0ln1r.github.io/js/note.js></script><script>MathJax = {
+              tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+              }
+            };</script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><link title="TheMj0ln1r Blog" href=https://themj0ln1r.github.io/atom.xml rel=alternate type=application/atom+xml><link href=https://themj0ln1r.github.io/theme/light.css rel=stylesheet><link href=https://themj0ln1r.github.io/theme/dark.css id=darkModeStyle rel=stylesheet><script src=https://themj0ln1r.github.io/js/themetoggle.js></script><script>setTheme(getSavedTheme());</script><link href=https://themj0ln1r.github.io/main.css media=screen rel=stylesheet><body><div class=content><header><div class=main><a href=https://themj0ln1r.github.io/><b>TheMj0ln1r Blog</b></a><div class=socials></div></div><nav><a href=https://themj0ln1r.github.io/cv style=margin-left:.5em><b>CV</b></a><a href=https://themj0ln1r.github.io/archive style=margin-left:.5em><b>Archive</b></a><a href=https://themj0ln1r.github.io/tags style=margin-left:.5em><b>Tags</b></a> |<a onclick="toggleTheme(); event.preventDefault();" href=# id=dark-mode-toggle> <img alt=Light id=sun-icon src=https://themj0ln1r.github.io/feather/sun.svg style=filter:invert()> <img alt=Dark id=moon-icon src=https://themj0ln1r.github.io/feather/moon.svg> </a><script>updateItemToggleTheme()</script></nav></header><main><article><div class=title><div class=page-header>Pico CTF 2023</div><div class=meta>Posted on <time>2023-04-02</time><span class=tags-label> :: Tags:</span><span class=tags> <a class=post-tag href=https://themj0ln1r.github.io/tags/ctf/>ctf</a> </span></div></div><div class=toc-container><h5 class=toc-title>Table of Contents</h5><ul class=toc-list><li><a href=https://themj0ln1r.github.io/archive/picoctf23/#general-skills>General Skills</a><li><a href=https://themj0ln1r.github.io/archive/picoctf23/#forensics>Forensics</a><li><a href=https://themj0ln1r.github.io/archive/picoctf23/#reverse-engineering>Reverse Engineering</a><li><a href=https://themj0ln1r.github.io/archive/picoctf23/#web-exploitation>Web Exploitation</a><li><a href=https://themj0ln1r.github.io/archive/picoctf23/#cryptography>Cryptography</a><li><a href=https://themj0ln1r.github.io/archive/picoctf23/#binary-exploitation>Binary Exploitation</a><li><a href=https://themj0ln1r.github.io/archive/picoctf23/#special>Special</a><li><a href=https://themj0ln1r.github.io/archive/picoctf23/#specialer>Specialer</a><li><a href=https://themj0ln1r.github.io/archive/picoctf23/#two-sum>two-sum</a></ul></div><section class=body><p>Hello guys! I played <a href=https://play.picoctf.org/events/72 target=_blank>picoCTF 2023</a> competition ("picoCTF 2023" or the "Competition") organized by Carnegie Mellon University ("CMU"). I scored 3000+ points in this CTF. These are the challenges i solved during the CTF.<ul><li><h3 id=general-skills>General Skills</h3> <ul><li>chrono<li>money-ware<li>permissions<li>repitiotions<li>useless<li>special<li>specialer</ul><li><h3 id=forensics>Forensics</h3> <ul><li>hideme<li>PcapPoisoning<li>who is it<li>FindAndOpen<li>MSB</ul><li><h3 id=reverse-engineering>Reverse Engineering</h3> <ul><li>Ready Gladiator 0<li>Reverse<li>Safe Opener 2<li>timer</ul><li><h3 id=web-exploitation>Web Exploitation</h3> <ul><li>FindMe<li>MatchTheRegex<li>SOAP<li>More SQLi</ul><li><h3 id=cryptography>Cryptography</h3> <ul><li>HideToSee<li>ReadMyCert<li>Rotation<li>SRA</ul><li><h3 id=binary-exploitation>Binary Exploitation</h3> <ul><li>two-sum<li>VNE</ul></ul><p>Most of these are basic challenges, so I would like to explain few challenges which are interested me.<h1 id=special>Special</h1><p><img alt=Special src=/assets/img/ctf_img/pico23/pico23_special.png><p>As suggested i used ssh to login to the special machine. And i tried some commands there but those are spell checked by the machine and it results an error to execute the commands. I tries piping technique together with cat command to find the flag location and print out.<pre style=color:#323232;background-color:#fff><code><span>Special$ ls
+</span><span>Is 
+</span><span>sh: 1: Is: not found
+</span><span>Special$ cat *
+</span><span>Cat * 
+</span><span>sh: 1: Cat: not found
+</span><span>Special$ cat | cat *
+</span><span>Cat | cat * 
+</span><span>sh: 1: Cat: not found
+</span><span>cat: blargh: Is a directory
+</span><span>Special$ cat | cat blargh/*
+</span><span>Cat | cat blargh/* 
+</span><span>sh: 1: Cat: not found
+</span><span>picoCTF{5p311ch3ck_15_7h3_w0r57_6a2763f6}
+</span></code></pre><blockquote><p><code>Flag : picoCTF{5p311ch3ck_15_7h3_w0r57_6a2763f6}</code></blockquote><hr><h1 id=specialer>Specialer</h1><p><img alt=Special src=/assets/img/ctf_img/pico23/pico23_specialer.png><p>It is similar to the special challenge. Logged into challenge machine and tried few commands to execute.<pre style=color:#323232;background-color:#fff><code><span>ctf-player@saturn.picoctf.net's password: 
+</span><span>Specialer$ ls
+</span><span>-bash: ls: command not found
+</span><span>Specialer$ echo *
+</span><span>abra ala sim
+</span><span>Specialer$ echo abra/*     
+</span><span>abra/cadabra.txt abra/cadaniel.txt
+</span><span>Specialer$ echo ala/*
+</span><span>ala/kazam.txt ala/mode.txt
+</span><span>Specialer$ echo sim/*
+</span><span>sim/city.txt sim/salabim.txt
+</span><span>Specialer$ 
+</span></code></pre><p>Using echo I discovered the files present in the machine. Tried to read abra/cadabra.txt with echo. It is not the flag, and the flag is present in the ala/kazam.txt.<pre style=color:#323232;background-color:#fff><code><span>Specialer$ echo "$(&lt;abra/cadabra.txt)"
+</span><span>Nothing up my sleeve!
+</span><span>Specialer$ echo "$(&lt;ala/kazam.txt)"
+</span><span>return 0 picoCTF{y0u_d0n7_4ppr3c1473_wh47_w3r3_d01ng_h3r3_38f5cc78}
+</span><span>Specialer$ 
+</span></code></pre><blockquote><p><code>Flag : picoCTF{y0u_d0n7_4ppr3c1473_wh47_w3r3_d01ng_h3r3_38f5cc78}</code></blockquote><hr><h1 id=two-sum>two-sum</h1><p><img alt=two-sum src=/assets/img/ctf_img/pico23/pico23_twosum.png><p>The source code of the challenge:<pre class=language-c data-lang=c style=color:#323232;background-color:#fff><code class=language-c data-lang=c><span style=color:#a71d5d;font-weight:700>#include </span><span style=color:#183691>&lt;stdio.h>
+</span><span style=color:#a71d5d;font-weight:700>#include </span><span style=color:#183691>&lt;stdlib.h>
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>static int </span><span style=color:#795da3;font-weight:700>addIntOvf</span><span>(</span><span style=color:#a71d5d;font-weight:700>int </span><span>result, </span><span style=color:#a71d5d;font-weight:700>int </span><span>a, </span><span style=color:#a71d5d;font-weight:700>int </span><span>b) {
+</span><span>    result </span><span style=color:#a71d5d;font-weight:700>=</span><span> a </span><span style=color:#a71d5d;font-weight:700>+</span><span> b;
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>if</span><span>(a </span><span style=color:#a71d5d;font-weight:700>> </span><span style=color:#0086b3>0 </span><span style=color:#a71d5d;font-weight:700>&&</span><span> b </span><span style=color:#a71d5d;font-weight:700>> </span><span style=color:#0086b3>0 </span><span style=color:#a71d5d;font-weight:700>&&</span><span> result </span><span style=color:#a71d5d;font-weight:700>&lt; </span><span style=color:#0086b3>0</span><span>)
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>return -</span><span style=color:#0086b3>1</span><span>;
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>if</span><span>(a </span><span style=color:#a71d5d;font-weight:700>&lt; </span><span style=color:#0086b3>0 </span><span style=color:#a71d5d;font-weight:700>&&</span><span> b </span><span style=color:#a71d5d;font-weight:700>&lt; </span><span style=color:#0086b3>0 </span><span style=color:#a71d5d;font-weight:700>&&</span><span> result </span><span style=color:#a71d5d;font-weight:700>> </span><span style=color:#0086b3>0</span><span>)
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>return -</span><span style=color:#0086b3>1</span><span>;
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>return </span><span style=color:#0086b3>0</span><span>;
+</span><span>}
+</span><span>
+</span><span style=color:#a71d5d;font-weight:700>int </span><span style=color:#795da3;font-weight:700>main</span><span>() {
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>int</span><span> num1, num2, sum;
+</span><span>    FILE </span><span style=color:#a71d5d;font-weight:700>*</span><span>flag;
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>char</span><span> c;
+</span><span>
+</span><span>    </span><span style=color:#62a35c>printf</span><span>(</span><span style=color:#183691>"n1 > n1 + n2 OR n2 > n1 + n2 </span><span style=color:#0086b3>\n</span><span style=color:#183691>"</span><span>);
+</span><span>    </span><span style=color:#62a35c>fflush</span><span>(stdout);
+</span><span>    </span><span style=color:#62a35c>printf</span><span>(</span><span style=color:#183691>"What two positive numbers can make this possible: </span><span style=color:#0086b3>\n</span><span style=color:#183691>"</span><span>);
+</span><span>    </span><span style=color:#62a35c>fflush</span><span>(stdout);
+</span><span>    
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>if </span><span>(</span><span style=color:#62a35c>scanf</span><span>(</span><span style=color:#183691>"</span><span style=color:#0086b3>%d</span><span style=color:#183691>"</span><span>, </span><span style=color:#a71d5d;font-weight:700>&</span><span>num1) </span><span style=color:#a71d5d;font-weight:700>&& </span><span style=color:#62a35c>scanf</span><span>(</span><span style=color:#183691>"</span><span style=color:#0086b3>%d</span><span style=color:#183691>"</span><span>, </span><span style=color:#a71d5d;font-weight:700>&</span><span>num2)) {
+</span><span>        </span><span style=color:#62a35c>printf</span><span>(</span><span style=color:#183691>"You entered </span><span style=color:#0086b3>%d</span><span style=color:#183691> and </span><span style=color:#0086b3>%d\n</span><span style=color:#183691>"</span><span>, num1, num2);
+</span><span>        </span><span style=color:#62a35c>fflush</span><span>(stdout);
+</span><span>        sum </span><span style=color:#a71d5d;font-weight:700>=</span><span> num1 </span><span style=color:#a71d5d;font-weight:700>+</span><span> num2;
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>if </span><span>(addIntOvf(sum, num1, num2) </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#0086b3>0</span><span>) {
+</span><span>            </span><span style=color:#62a35c>printf</span><span>(</span><span style=color:#183691>"No overflow</span><span style=color:#0086b3>\n</span><span style=color:#183691>"</span><span>);
+</span><span>            </span><span style=color:#62a35c>fflush</span><span>(stdout);
+</span><span>            </span><span style=color:#62a35c>exit</span><span>(</span><span style=color:#0086b3>0</span><span>);
+</span><span>        } </span><span style=color:#a71d5d;font-weight:700>else if </span><span>(addIntOvf(sum, num1, num2) </span><span style=color:#a71d5d;font-weight:700>== -</span><span style=color:#0086b3>1</span><span>) {
+</span><span>            </span><span style=color:#62a35c>printf</span><span>(</span><span style=color:#183691>"You have an integer overflow</span><span style=color:#0086b3>\n</span><span style=color:#183691>"</span><span>);
+</span><span>            </span><span style=color:#62a35c>fflush</span><span>(stdout);
+</span><span>        }
+</span><span>
+</span><span>        </span><span style=color:#a71d5d;font-weight:700>if </span><span>(num1 </span><span style=color:#a71d5d;font-weight:700>> </span><span style=color:#0086b3>0 </span><span style=color:#a71d5d;font-weight:700>||</span><span> num2 </span><span style=color:#a71d5d;font-weight:700>> </span><span style=color:#0086b3>0</span><span>) {
+</span><span>            flag </span><span style=color:#a71d5d;font-weight:700>= </span><span style=color:#62a35c>fopen</span><span>(</span><span style=color:#183691>"flag.txt"</span><span>,</span><span style=color:#183691>"r"</span><span>);
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>if</span><span>(flag </span><span style=color:#a71d5d;font-weight:700>== </span><span style=color:#0086b3>NULL</span><span>){
+</span><span>                </span><span style=color:#62a35c>printf</span><span>(</span><span style=color:#183691>"flag not found: please run this on the server</span><span style=color:#0086b3>\n</span><span style=color:#183691>"</span><span>);
+</span><span>                </span><span style=color:#62a35c>fflush</span><span>(stdout);
+</span><span>                </span><span style=color:#62a35c>exit</span><span>(</span><span style=color:#0086b3>0</span><span>);
+</span><span>            }
+</span><span>            </span><span style=color:#a71d5d;font-weight:700>char</span><span> buf[</span><span style=color:#0086b3>60</span><span>];
+</span><span>            </span><span style=color:#62a35c>fgets</span><span>(buf, </span><span style=color:#0086b3>59</span><span>, flag);
+</span><span>            </span><span style=color:#62a35c>printf</span><span>(</span><span style=color:#183691>"YOUR FLAG IS: </span><span style=color:#0086b3>%s\n</span><span style=color:#183691>"</span><span>, buf);
+</span><span>            </span><span style=color:#62a35c>fflush</span><span>(stdout);
+</span><span>            </span><span style=color:#62a35c>exit</span><span>(</span><span style=color:#0086b3>0</span><span>);
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style=color:#a71d5d;font-weight:700>return </span><span style=color:#0086b3>0</span><span>;
+</span><span>}
+</span></code></pre><p>We have to input <code>n1 and n2</code> those satisfies <code>n1 > n1 + n2 OR n2 > n1 + n2</code>. Mathematically this is not possible. But in computer memory its possible.<p>This can be done with simple integer overflow.<p>The <code>n1</code> and <code>n2</code> are declared as signed integers.<p>Signed int range for<p>2 bytes(-32,768 to 32,767) 4 bytes(-2,147,483,648 to 2,147,483,647)<p>If we store <code>2,147,483,648</code> in a signed 4 byte integer it will become <code>-2,147,483,648</code>.<p>Take <code>n1 = 2,147,483,648</code> <code>n2 = 2,147,483,649</code><p>Here <code>n1</code> becomes <code>-2,147,483,648</code> <code>n2</code> becomes <code>-2,147,483,647</code><p>Therefore, <code>n1 + n2 = -2,147,483,648 + (-2,147,483,647)</code><p><img alt=two-sum src=/assets/img/ctf_img/pico23/pico23_twosum1.png><p>But here, <code>n1>0 and n2>0</code> not satisfied. We only get the flag if it does.<p>So, we can select two numbers whose sum is <code>2147483648.</code> Then the result will be <code>-2147483648</code>.<p>Take <code>n1 = 2147483640 and n2 = 8</code><p>Then <code>n1 + n2 = 2147483648</code> , it will be stored as <code>-2147483648</code><p><img alt=two-sum src=/assets/img/ctf_img/pico23/pico23_twosum2.png><blockquote><p><code>Flag : picoCTF{Tw0_Sum_Integer_Bu773R_0v3rfl0w_fe14e9e9}</code></blockquote><hr><p>For all the solved challenges <a href=/assets/files/ctf_files/picoctf2023.pdf>click here</a><hr></section></article></main></div>
