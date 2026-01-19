@@ -9,7 +9,7 @@ taxonomies = [{ name = "tags" }]
 
 [markdown.highlighting]
 enabled = true
-theme = "inspired-github"
+theme = "github-light"
 extra_syntaxes = ["syntaxes"]
 
 [extra]
