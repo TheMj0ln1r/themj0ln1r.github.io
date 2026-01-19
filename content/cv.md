@@ -12,11 +12,11 @@ template = "cv.html"
 
 ## Work Experience
 
-### [Phoenix Labs](https://www.phoenixlabs.dev/) 
+### Phoenix Labs
 **Blockchain Engineer** *Jan 2026 - Present*
 - Contributing to [Spark.fi](https://spark.fi/)
 
-### [Supra](https://supra.com/)
+### Supra
 **Lead Blockchain Engineer** *Apr 2025 - Jan 2026*
 - Led the SupraNova technical team of up to 8 engineers as Technical Lead, overseeing architecture and implementation
 - Architected the SupraNova bridge protocol, including bidirectional EVM to Supra bridge design with smart contracts, off-chain relayers, and monitoring services
