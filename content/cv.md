@@ -85,7 +85,7 @@ template = "cv.html"
 
 ## Achievements
 
-- Prototyped Hyperloop, a non-interactive multisig bridge for research publication
+- Contributed to [Hyperloop](https://eprint.iacr.org/2025/176), a non-interactive multisig bridge research paper
 
 - Contributed to open-source [Interoperability-Protocol-Security-Checklist](https://github.com/windhustler/Interoperability-Protocol-Security-Checklist/blob/main/audit-checklists/Wormhole.md)
 
