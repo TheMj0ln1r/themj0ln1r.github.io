@@ -13,7 +13,7 @@ template = "cv.html"
 ## Work Experience
 
 ### Phoenix Labs
-**Blockchain Engineer** *Jan 2026 - Present*
+**Smart contract engineer** *Jan 2026 - Present*
 - Contributing to [Spark.fi](https://spark.fi/)
 
 ### Supra
