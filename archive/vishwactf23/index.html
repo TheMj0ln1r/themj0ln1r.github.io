@@ -1,0 +1,331 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><title>
+         Vishwa CTF 2023
+        
+    </title><meta content="Vishwa CTF 2023" property=og:title><link href=/favicons/favicon.ico rel=icon type=image/png><link href=https://themj0ln1r.github.io/fonts.css rel=stylesheet><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel=stylesheet><script async data-goatcounter=https://themj0ln1r.goatcounter.com/count src=https://themj0ln1r.github.io/js/count.js></script><noscript><img src="https://themj0ln1r.goatcounter.com//count?p=/archive/vishwactf23/&t=Vishwa CTF 2023"></noscript><script src=https://themj0ln1r.github.io/js/codeblock.js></script><script src=https://themj0ln1r.github.io/js/toc.js></script><script src=https://themj0ln1r.github.io/js/note.js></script><script>MathJax = {
+              tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+              }
+            };</script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><link title="TheMj0ln1r Blog" href=https://themj0ln1r.github.io/atom.xml rel=alternate type=application/atom+xml><link href=https://themj0ln1r.github.io/theme/light.css rel=stylesheet><link href=https://themj0ln1r.github.io/theme/dark.css id=darkModeStyle rel=stylesheet><script src=https://themj0ln1r.github.io/js/themetoggle.js></script><script>setTheme(getSavedTheme());</script><link href=https://themj0ln1r.github.io/main.css media=screen rel=stylesheet><body><div class=content><header><div class=main><a href=https://themj0ln1r.github.io/><b>TheMj0ln1r Blog</b></a><div class=socials></div></div><nav><a href=https://themj0ln1r.github.io/cv style=margin-left:.5em><b>CV</b></a><a href=https://themj0ln1r.github.io/archive style=margin-left:.5em><b>Archive</b></a><a href=https://themj0ln1r.github.io/tags style=margin-left:.5em><b>Tags</b></a> |<a onclick="toggleTheme(); event.preventDefault();" href=# id=dark-mode-toggle> <img alt=Light id=sun-icon src=https://themj0ln1r.github.io/feather/sun.svg style=filter:invert()> <img alt=Dark id=moon-icon src=https://themj0ln1r.github.io/feather/moon.svg> </a><script>updateItemToggleTheme()</script></nav></header><main><article><div class=title><div class=page-header>Vishwa CTF 2023</div><div class=meta>Posted on <time>2023-04-03</time><span class=tags-label> :: Tags:</span><span class=tags> <a class=post-tag href=https://themj0ln1r.github.io/tags/ctf/>ctf</a> </span></div></div><div class=toc-container><h5 class=toc-title>Table of Contents</h5><ul class=toc-list><li><a href=https://themj0ln1r.github.io/archive/vishwactf23/#web-eeezzy>WEB-Eeezzy</a><li><a href=https://themj0ln1r.github.io/archive/vishwactf23/#steganography-guatemala>Steganography-Guatemala</a><li><a href=https://themj0ln1r.github.io/archive/vishwactf23/#steganography-can-you-see-me>Steganography-Can you see me?</a><li><a href=https://themj0ln1r.github.io/archive/vishwactf23/#forensics-the-sender-conundrum>Forensics - The Sender Conundrum</a><li><a href=https://themj0ln1r.github.io/archive/vishwactf23/#rev-phi-calculator>REV-Phi-Calculator</a><li><a href=https://themj0ln1r.github.io/archive/vishwactf23/#web-alive>WEB-aLive</a><li><a href=https://themj0ln1r.github.io/archive/vishwactf23/#crypto-indecipherable-cipher>Crypto-Indecipherable Cipher</a></ul></div><section class=body><p>Hello mates! I played <a href=https://ctftime.org/event/1904/ target=_blank>VishwaCTF 2023</a> which was happened from 31 Mar to 3 Apr. I played it with the team <a href=https://ctftime.org/team/217079 rel=external>Invaders0x1</a>. These are the challenges i have solved during CTF.<p><img alt=Progess src=/assets/img/ctf_img/vishwa23/vishwa_progress.png><h1 id=web-eeezzy>WEB-Eeezzy</h1><p><img alt=Eeezzy src=/assets/img/ctf_img/vishwa23/vishwa_eezzy1.png><p>The challenge is at <strong>https://ch41272110703.ch.eng.run.</strong> It is a login page with fields username and password.<p>First, I did <code>ctrl+u</code> 😉. It shows a <code>view.php</code> in onclick function.<p><img alt="Eeezzy src" src=/assets/img/ctf_img/vishwa23/vishwa_eezzy2.png><p>Visiting <strong>https://ch41272110703.ch.eng.run/view.php</strong> results the following code<pre class=giallo style=color:#24292e;background-color:#fff><code data-lang=php><span class=giallo-l><span style=color:#d73a49>&lt;?</span><span style=color:#005cc5>php</span></span>
+<span class=giallo-l><span style=color:#005cc5>    session_start</span><span>();</span></span>
+<span class=giallo-l><span>    $_SESSION[</span><span style=color:#032f62>'status'</span><span>]</span><span style=color:#d73a49>=</span><span style=color:#005cc5>null</span><span>;</span></span>
+<span class=giallo-l><span>    $flag</span><span style=color:#d73a49>=</span><span style=color:#032f62>""</span><span>;</span></span>
+<span class=giallo-l><span style=color:#d73a49>    try</span><span> {</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> (</span><span style=color:#005cc5>isset</span><span>($_GET[</span><span style=color:#032f62>'username'</span><span>])</span><span style=color:#d73a49> &&</span><span style=color:#005cc5> isset</span><span>($_GET[</span><span style=color:#032f62>'password'</span><span>])) {</span></span>
+<span class=giallo-l><span style=color:#d73a49>            if</span><span> (</span><span style=color:#005cc5>strcmp</span><span>($_GET[</span><span style=color:#032f62>'username'</span><span>], $flag)</span><span style=color:#d73a49>==</span><span style=color:#005cc5>0</span><span style=color:#d73a49> &&</span><span style=color:#005cc5> strcmp</span><span>($_GET[</span><span style=color:#032f62>'password'</span><span>], $flag)</span><span style=color:#d73a49>==</span><span style=color:#005cc5>0</span><span>)</span></span>
+<span class=giallo-l><span>                $_SESSION[</span><span style=color:#032f62>'status'</span><span>]</span><span style=color:#d73a49>=</span><span>$flag;</span></span>
+<span class=giallo-l><span style=color:#d73a49>            else</span></span>
+<span class=giallo-l><span>                $_SESSION[</span><span style=color:#032f62>'status'</span><span>]</span><span style=color:#d73a49>=</span><span style=color:#032f62>"Invalid username or password"</span><span>;</span></span>
+<span class=giallo-l><span>        }</span></span>
+<span class=giallo-l><span>    }</span><span style=color:#d73a49> catch</span><span> (</span><span style=color:#005cc5>Throwable</span><span> $th) {</span></span>
+<span class=giallo-l><span>        $_SESSION[</span><span style=color:#032f62>'status'</span><span>]</span><span style=color:#d73a49>=</span><span>$flag;</span></span>
+<span class=giallo-l><span>    }</span></span>
+<span class=giallo-l><span style=color:#d73a49>?></span></span></code></pre><p>This php code is checking for the username and password parameters which are entered in the login page. The username and flag are compared using <code>strcmp()</code> and similarly password and flag. If the condition satisfied we can get the flag.<p>Exploiting strcmp() vulnerabilities.<p>If I set <code>$_GET['password']</code> equal to an empty array, then strcmp would return a NULL. Due to some inherent weaknesses in PHP's comparisons, NULL == 0 will return true.<p>Tried by inputing some default credentials in the login page. It says incorrect details, then i captured the request headers. I found that this <code>https://ch41272110703.ch.eng.run/view.php?username=admin&password=1234&submit=Login</code> has been sent to the server for the authentication.<p>The payload would be : <code>?username=admin&password[]=34&submit=Login</code><p><strong>https://ch41272110703.ch.eng.run/view.php??username=admin&password[]=34&submit=Login</strong> returns an error in the login page with the flag.<p><img alt="Eeezzy flag" src=/assets/img/ctf_img/vishwa23/vishwa_eezzy3.png><blockquote><p><code>Flag : VishwaCTF{5t0p_c0mp4r1ng}</code></blockquote><hr><h1 id=steganography-guatemala>Steganography-Guatemala</h1><p><img alt="Eeezzy flag" src=/assets/img/ctf_img/vishwa23/vishwa_guate1.png><p>Attached files : a gif file named <a href=/assets/files/ctf_files/vishwactf23/AV>AV</a><p>I tried exiftool to view metadata of the gif.<pre class=giallo style=color:#24292e;background-color:#fff><code data-lang=shellscript><span class=giallo-l><span style=color:#6f42c1>┌─[intruder@parrot]─[/Guatemala]</span></span>
+<span class=giallo-l><span style=color:#6f42c1>└──╼</span><span> $exiftool</span><span style=color:#032f62> AV</span></span>
+<span class=giallo-l><span style=color:#6f42c1>ExifTool</span><span style=color:#032f62> Version Number         :</span><span style=color:#005cc5> 12.16</span></span>
+<span class=giallo-l><span style=color:#6f42c1>File</span><span style=color:#032f62> Name                       : AV</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Directory</span><span style=color:#032f62>                       : .</span></span>
+<span class=giallo-l><span style=color:#6f42c1>File</span><span style=color:#032f62> Size                       :</span><span style=color:#005cc5> 1086</span><span style=color:#032f62> KiB</span></span>
+<span class=giallo-l><span style=color:#6f42c1>File</span><span style=color:#032f62> Modification Date/Time     : 2023:03:31 17:17:04+05:30</span></span>
+<span class=giallo-l><span style=color:#6f42c1>File</span><span style=color:#032f62> Access Date/Time           : 2023:04:04 10:58:55+05:30</span></span>
+<span class=giallo-l><span style=color:#6f42c1>File</span><span style=color:#032f62> Inode Change Date/Time     : 2023:04:04 10:58:51+05:30</span></span>
+<span class=giallo-l><span style=color:#6f42c1>File</span><span style=color:#032f62> Permissions                : rwxrwx---</span></span>
+<span class=giallo-l><span style=color:#6f42c1>File</span><span style=color:#032f62> Type                       : GIF</span></span>
+<span class=giallo-l><span style=color:#6f42c1>File</span><span style=color:#032f62> Type Extension             : gif</span></span>
+<span class=giallo-l><span style=color:#6f42c1>MIME</span><span style=color:#032f62> Type                       : image/gif</span></span>
+<span class=giallo-l><span style=color:#6f42c1>GIF</span><span style=color:#032f62> Version                     : 89a</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Image</span><span style=color:#032f62> Width                     :</span><span style=color:#005cc5> 498</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Image</span><span style=color:#032f62> Height                    :</span><span style=color:#005cc5> 498</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Has</span><span style=color:#032f62> Color Map                   : Yes</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Color</span><span style=color:#032f62> Resolution Depth          :</span><span style=color:#005cc5> 8</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Bits</span><span style=color:#032f62> Per Pixel                  :</span><span style=color:#005cc5> 8</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Background</span><span style=color:#032f62> Color                :</span><span style=color:#005cc5> 0</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Animation</span><span style=color:#032f62> Iterations            : Infinite</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Comment</span><span style=color:#032f62>                         : dmlzaHdhQ1RGe3ByMDczYzdfdXJfM1gxRn0=</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Frame</span><span style=color:#032f62> Count                     :</span><span style=color:#005cc5> 17</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Duration</span><span style=color:#032f62>                        :</span><span style=color:#005cc5> 2.04</span><span style=color:#032f62> s</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Image</span><span style=color:#032f62> Size                      : 498x498</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Megapixels</span><span style=color:#032f62>                      :</span><span style=color:#005cc5> 0.248</span></span></code></pre><p>It looks there is a base64 encoded text in the comments. By decoding it we can get the flag.<pre class=giallo style=color:#24292e;background-color:#fff><code data-lang=shellscript><span class=giallo-l><span style=color:#6f42c1>┌─[intruder@parrot]─[/Guatemala]</span></span>
+<span class=giallo-l><span style=color:#6f42c1>└──╼</span><span> $echo</span><span style=color:#032f62> "dmlzaHdhQ1RGe3ByMDczYzdfdXJfM1gxRn0="</span><span style=color:#d73a49> |</span><span style=color:#6f42c1> base64</span><span style=color:#005cc5> -d</span></span>
+<span class=giallo-l><span style=color:#6f42c1>vishwaCTF</span><span style=color:#032f62>{pr073c7_ur_3X1F}</span></span></code></pre><blockquote><p><code>Flag : vishwaCTF{pr073c7_ur_3X1F}</code></blockquote><hr><h1 id=steganography-can-you-see-me>Steganography-Can you see me?</h1><p><img alt="can you see me" src=/assets/img/ctf_img/vishwa23/vishwa_canyousee1.png><p>Attached files : <a href=/assets/files/ctf_files/vishwactf23/havealook.jpg>havealook.jpg</a><p>First of all, lets try to extract if any data is present in the image using steghide.<pre class=giallo style=color:#24292e;background-color:#fff><code data-lang=shellscript><span class=giallo-l><span style=color:#6f42c1>┌─[✗]─[intruder@parrot]─[/canyouseeme]</span></span>
+<span class=giallo-l><span style=color:#6f42c1>└──╼</span><span> $steghide</span><span style=color:#032f62> extract</span><span style=color:#005cc5> -sf</span><span style=color:#032f62> havealook.jpg</span><span> </span></span>
+<span class=giallo-l><span style=color:#6f42c1>Enter</span><span style=color:#032f62> passphrase:</span><span> </span></span>
+<span class=giallo-l><span style=color:#6f42c1>steghide:</span><span style=color:#032f62> could not extract any data with that passphrase!</span></span></code></pre><p>Okay, we dont have password. Lets use unzip if we can extract data out of it without password.<pre class=giallo style=color:#24292e;background-color:#fff><code data-lang=shellscript><span class=giallo-l><span style=color:#6f42c1>┌─[intruder@parrot]─[/canyouseeme]</span></span>
+<span class=giallo-l><span style=color:#6f42c1>└──╼</span><span> $unzip</span><span style=color:#032f62> havealook.jpg</span></span>
+<span class=giallo-l><span style=color:#6f42c1>Archive:</span><span style=color:#032f62>  havealook.jpg</span></span>
+<span class=giallo-l><span style=color:#6f42c1>warning</span><span> [havealook.jpg]:  134855 extra bytes at beginning or within zipfile</span></span>
+<span class=giallo-l><span>  (</span><span style=color:#6f42c1>attempting</span><span style=color:#032f62> to process anyway</span><span>)</span></span>
+<span class=giallo-l><span style=color:#6f42c1>  inflating:</span><span style=color:#032f62> hereissomething.wav</span><span>     </span></span></code></pre><p>Yes, we got an audio file <a href=/assets/files/ctf_files/vishwactf23/hereissomething.wav>hereissomething.wav</a>. The audio is not understandable by the humans. It seems to be a morsecode. Then i used <a href=https://morsecode.world/ target=_blank>this site </a> to decode the morse code. In the sonic visualizer i found the flag.<p><img alt=Flag src=/assets/img/ctf_img/vishwa23/vishwa_canyousee2.png><blockquote><p><code>Flag : vishwaCTF{n0w_y0u_533_m3}</code></blockquote><hr><h1 id=forensics-the-sender-conundrum>Forensics - The Sender Conundrum</h1><p><img alt="The Sender Conundrum" src=/assets/img/ctf_img/vishwa23/vishwa_conundrum1.png><p>Attached files : <a href=/assets/files/ctf_files/vishwactf23/TheEmail.eml>TheEmail.eml</a> and <a href=/assets/files/ctf_files/vishwactf23/unzipme.zip> unzipme.zip</a><p>The zip file is password protected. So, lets analyze email raw data for the password.<p>There is a riddle sent by the sender.<pre class=giallo style=color:#24292e;background-color:#fff><code data-lang=html><span class=giallo-l><span>&lt;</span><span style=color:#22863a>p</span><span>>&lt;/</span><span style=color:#22863a>p</span><span>>Hello Marcus Cooper,&lt;</span><span style=color:#22863a>br</span><span>></span></span>
+<span class=giallo-l><span> You are one step behind from finding your flag. &lt;</span><span style=color:#22863a>br</span><span>></span></span>
+<span class=giallo-l><span> Here is a Riddle: &lt;</span><span style=color:#22863a>br</span><span>></span></span>
+<span class=giallo-l><span> I am a noun and not a verb or an adverb.&lt;</span><span style=color:#22863a>br</span><span>></span></span>
+<span class=giallo-l><span> I am given to you at birth and never taken away,&lt;</span><span style=color:#22863a>br</span><span>></span></span>
+<span class=giallo-l><span> You keep me until you die, come what may.&lt;</span><span style=color:#22863a>br</span><span>></span></span>
+<span class=giallo-l><span> What am I?&lt;</span><span style=color:#22863a>br</span><span>></span></span></code></pre><p>I am too bad to solve riddles, so I found a solution on google as <code>Name</code><p>Tried <strong>Name</strong> as the password to extract zip file. Its the wrong password. Then i tried few names present in the eml file. I found the correct name on this line <strong>Return-Path: BrandonLee@anonymousemail.me</strong>. I extracted the flag file from the zip with the password <strong>BrandonLee</strong>.<pre class=giallo style=color:#24292e;background-color:#fff><code data-lang=shellscript><span class=giallo-l><span style=color:#6f42c1>┌─[intruder@parrot]─[thesenderconundrum]</span></span>
+<span class=giallo-l><span style=color:#6f42c1>└──╼</span><span> $unzip</span><span style=color:#032f62> unzipme.zip</span><span> </span></span>
+<span class=giallo-l><span style=color:#6f42c1>Archive:</span><span style=color:#032f62>  unzipme.zip</span></span>
+<span class=giallo-l><span style=color:#6f42c1>   creating:</span><span style=color:#032f62> unzipme/</span></span>
+<span class=giallo-l><span>[unzipme.zip] unzipme/flag.txt password: </span></span>
+<span class=giallo-l><span style=color:#6f42c1> extracting:</span><span style=color:#032f62> unzipme/flag.txt</span><span>        </span></span>
+<span class=giallo-l><span style=color:#6f42c1>┌─[intruder@parrot]─[/thesenderconundrum]</span></span>
+<span class=giallo-l><span style=color:#6f42c1>└──╼</span><span> $cat</span><span style=color:#032f62> unzipme/flag.txt</span></span>
+<span class=giallo-l><span style=color:#6f42c1>vishwaCTF</span><span style=color:#032f62>{1d3n7i7y_7h3f7_is_n0t_4_j0k3}</span></span></code></pre><blockquote><p><code>Flag : vishwaCTF{1d3n7i7y_7h3f7_is_n0t_4_j0k3}</code></blockquote><hr><h1 id=rev-phi-calculator>REV-Phi-Calculator</h1><p><img alt="Phi - calc" src=/assets/img/ctf_img/vishwa23/vishwa_phi1.png><p>Attached files : <a href=/assets/files/ctf_files/vishwactf23/Phi_Calculator.py> Phi_Calculator.py</a><pre class=giallo style=color:#24292e;background-color:#fff><code data-lang=python><span class=giallo-l><span style=color:#6a737d>#============================================================================#</span></span>
+<span class=giallo-l><span style=color:#6a737d>#============================Phi CALCULATOR===============================#</span></span>
+<span class=giallo-l><span style=color:#6a737d>#============================================================================#</span></span>
+<span class=giallo-l><span style=color:#d73a49>import</span><span> hashlib</span></span>
+<span class=giallo-l><span style=color:#d73a49>from</span><span> cryptography.fernet</span><span style=color:#d73a49> import</span><span> Fernet</span></span>
+<span class=giallo-l><span style=color:#d73a49>import</span><span> base64</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#6a737d># GLOBALS --v</span></span>
+<span class=giallo-l><span>arcane_loop_trial</span><span style=color:#d73a49> =</span><span style=color:#005cc5> True</span></span>
+<span class=giallo-l><span>jump_into_full</span><span style=color:#d73a49> =</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span>full_version_code</span><span style=color:#d73a49> =</span><span style=color:#032f62> ""</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>username_trial</span><span style=color:#d73a49> =</span><span style=color:#032f62> "vishwaCTF"</span></span>
+<span class=giallo-l><span>bUsername_trial</span><span style=color:#d73a49> = b</span><span style=color:#032f62>"vishwaCTF"</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>key_part_static1_trial</span><span style=color:#d73a49> =</span><span style=color:#032f62> "VishwaCTF{m4k3_it_possibl3_"</span></span>
+<span class=giallo-l><span>key_part_dynamic1_trial</span><span style=color:#d73a49> =</span><span style=color:#032f62> "xxxxxxxx"</span></span>
+<span class=giallo-l><span>key_part_static2_trial</span><span style=color:#d73a49> =</span><span style=color:#032f62> "}"</span></span>
+<span class=giallo-l><span>key_full_template_trial</span><span style=color:#d73a49> =</span><span> key_part_static1_trial</span><span style=color:#d73a49> +</span><span> key_part_dynamic1_trial</span><span style=color:#d73a49> +</span><span> key_part_static2_trial</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#005cc5>print</span><span>(</span><span style=color:#005cc5>len</span><span>(key_full_template_trial))</span></span>
+<span class=giallo-l><span>star_db_trial</span><span style=color:#d73a49> =</span><span> {</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Sharuk Khan"</span><span>:</span><span style=color:#005cc5> 4.38</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Bollywood Star"</span><span>:</span><span style=color:#005cc5> 5.95</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Rohan 16"</span><span>:</span><span style=color:#005cc5> 6.57</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "WISH 0855-0714"</span><span>:</span><span style=color:#005cc5> 7.17</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Tiger 007"</span><span>:</span><span style=color:#005cc5> 7.78</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Lalande 21185"</span><span>:</span><span style=color:#005cc5> 8.29</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "UV Ceti"</span><span>:</span><span style=color:#005cc5> 8.58</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Sirius"</span><span>:</span><span style=color:#005cc5> 8.59</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Boss 154"</span><span>:</span><span style=color:#005cc5> 9.69</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Yin Sector CL-Y d127"</span><span>:</span><span style=color:#005cc5> 9.86</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Duamta"</span><span>:</span><span style=color:#005cc5> 9.88</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Ross 248"</span><span>:</span><span style=color:#005cc5> 10.37</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "WISE 1506+7027"</span><span>:</span><span style=color:#005cc5> 10.52</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Epsilon Eridani"</span><span>:</span><span style=color:#005cc5> 10.52</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Lacaille 9352"</span><span>:</span><span style=color:#005cc5> 10.69</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Ross 128"</span><span>:</span><span style=color:#005cc5> 10.94</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "EZ Aquarii"</span><span>:</span><span style=color:#005cc5> 11.10</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "61 Cygni"</span><span>:</span><span style=color:#005cc5> 11.37</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Procyon"</span><span>:</span><span style=color:#005cc5> 11.41</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Struve 2398"</span><span>:</span><span style=color:#005cc5> 11.64</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Groombridge 34"</span><span>:</span><span style=color:#005cc5> 11.73</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Epsilon Indi"</span><span>:</span><span style=color:#005cc5> 11.80</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "SPF-LF 1"</span><span>:</span><span style=color:#005cc5> 11.82</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Tau Ceti"</span><span>:</span><span style=color:#005cc5> 11.94</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "YZ Ceti"</span><span>:</span><span style=color:#005cc5> 12.07</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "WISE 0350-5658"</span><span>:</span><span style=color:#005cc5> 12.09</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Luyten's Star"</span><span>:</span><span style=color:#005cc5> 12.39</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Teegarden's Star"</span><span>:</span><span style=color:#005cc5> 12.43</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Kapteyn's Star"</span><span>:</span><span style=color:#005cc5> 12.76</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Talta"</span><span>:</span><span style=color:#005cc5> 12.83</span><span>,</span></span>
+<span class=giallo-l><span style=color:#032f62>  "Lacaille 8760"</span><span>:</span><span style=color:#005cc5> 12.88</span></span>
+<span class=giallo-l><span>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#d73a49>def</span><span style=color:#6f42c1> intro_trial</span><span>():</span></span>
+<span class=giallo-l><span style=color:#005cc5>    print</span><span>(</span><span style=color:#032f62>"</span><span style=color:#005cc5>\n</span><span style=color:#032f62>===============================================</span><span style=color:#005cc5>\n\</span></span>
+<span class=giallo-l><span style=color:#032f62>Welcome to the Phi Calculator, "</span><span style=color:#d73a49> +</span><span> username_trial</span><span style=color:#d73a49> +</span><span style=color:#032f62> "!</span><span style=color:#005cc5>\n</span><span style=color:#032f62>"</span><span>)    </span></span>
+<span class=giallo-l><span style=color:#005cc5>    print</span><span>(</span><span style=color:#032f62>"This is the trial version of Phi Calculator."</span><span>)</span></span>
+<span class=giallo-l><span style=color:#005cc5>    print</span><span>(</span><span style=color:#032f62>"The full version may be purchased in person near</span><span style=color:#005cc5>\n\</span></span>
+<span class=giallo-l><span style=color:#032f62>the galactic center of the Milky Way galaxy. </span><span style=color:#005cc5>\n\</span></span>
+<span class=giallo-l><span style=color:#032f62>Available while supplies last!</span><span style=color:#005cc5>\n\</span></span>
+<span class=giallo-l><span style=color:#032f62>=====================================================</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>"</span><span>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#d73a49>def</span><span style=color:#6f42c1> menu_trial</span><span>():</span></span>
+<span class=giallo-l><span style=color:#005cc5>    print</span><span>(</span><span style=color:#032f62>"___Phi Calculator___</span><span style=color:#005cc5>\n\n\</span></span>
+<span class=giallo-l><span style=color:#032f62>Menu:</span><span style=color:#005cc5>\n\</span></span>
+<span class=giallo-l><span style=color:#032f62>(1) Estimate Projection Burn</span><span style=color:#005cc5>\n\</span></span>
+<span class=giallo-l><span style=color:#032f62>(2) [LOCKED] Estimate  Slingshot Approach Vector</span><span style=color:#005cc5>\n\</span></span>
+<span class=giallo-l><span style=color:#032f62>(3) Enter License Key</span><span style=color:#005cc5>\n\</span></span>
+<span class=giallo-l><span style=color:#032f62>(4) Exit Phi Calculator"</span><span>)</span></span>
+<span class=giallo-l><span>    choice</span><span style=color:#d73a49> =</span><span style=color:#005cc5> input</span><span>(</span><span style=color:#032f62>"What would you like to do, "</span><span style=color:#d73a49>+</span><span> username_trial</span><span style=color:#d73a49> +</span><span style=color:#032f62>" (1/2/3/4)? "</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>    if not</span><span> validate_choice(choice):</span></span>
+<span class=giallo-l><span style=color:#005cc5>        print</span><span>(</span><span style=color:#032f62>"</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>Invalid choice!</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>"</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>        return</span></span>
+<span class=giallo-l><span style=color:#d73a49>    if</span><span> choice</span><span style=color:#d73a49> ==</span><span style=color:#032f62> "1"</span><span>:</span></span>
+<span class=giallo-l><span>        estimate_burn()</span></span>
+<span class=giallo-l><span style=color:#d73a49>    elif</span><span> choice</span><span style=color:#d73a49> ==</span><span style=color:#032f62> "2"</span><span>:</span></span>
+<span class=giallo-l><span>        locked_estimate_vector()</span></span>
+<span class=giallo-l><span style=color:#d73a49>    elif</span><span> choice</span><span style=color:#d73a49> ==</span><span style=color:#032f62> "3"</span><span>:</span></span>
+<span class=giallo-l><span>        enter_license()</span></span>
+<span class=giallo-l><span style=color:#d73a49>    elif</span><span> choice</span><span style=color:#d73a49> ==</span><span style=color:#032f62> "4"</span><span>:</span></span>
+<span class=giallo-l><span style=color:#d73a49>        global</span><span> arcane_loop_trial</span></span>
+<span class=giallo-l><span>        arcane_loop_trial</span><span style=color:#d73a49> =</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#005cc5>        print</span><span>(</span><span style=color:#032f62>"Bye!"</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>    else</span><span>:</span></span>
+<span class=giallo-l><span style=color:#005cc5>        print</span><span>(</span><span style=color:#032f62>"That choice is not valid. Please enter a single, valid </span><span style=color:#005cc5>\</span></span>
+<span class=giallo-l><span style=color:#032f62>lowercase letter choice (1/2/3/4)."</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>def</span><span style=color:#6f42c1> validate_choice</span><span>(menu_choice):</span></span>
+<span class=giallo-l><span style=color:#d73a49>    if</span><span> menu_choice</span><span style=color:#d73a49> ==</span><span style=color:#032f62> "1"</span><span style=color:#d73a49> or</span><span> \</span></span>
+<span class=giallo-l><span>       menu_choice</span><span style=color:#d73a49> ==</span><span style=color:#032f62> "2"</span><span style=color:#d73a49> or</span><span> \</span></span>
+<span class=giallo-l><span>       menu_choice</span><span style=color:#d73a49> ==</span><span style=color:#032f62> "3"</span><span style=color:#d73a49> or</span><span> \</span></span>
+<span class=giallo-l><span>       menu_choice</span><span style=color:#d73a49> ==</span><span style=color:#032f62> "4"</span><span>:</span></span>
+<span class=giallo-l><span style=color:#d73a49>        return</span><span style=color:#005cc5> True</span></span>
+<span class=giallo-l><span style=color:#d73a49>    else</span><span>:</span></span>
+<span class=giallo-l><span style=color:#d73a49>        return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>def</span><span style=color:#6f42c1> estimate_burn</span><span>():</span></span>
+<span class=giallo-l><span style=color:#005cc5>  print</span><span>(</span><span style=color:#032f62>"</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>SOL is detected as your nearest star."</span><span>)</span></span>
+<span class=giallo-l><span>  target_system</span><span style=color:#d73a49> =</span><span style=color:#005cc5> input</span><span>(</span><span style=color:#032f62>"To which system do you want to travel? "</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>  if</span><span> target_system</span><span style=color:#d73a49> in</span><span> star_db_trial:</span></span>
+<span class=giallo-l><span>      ly</span><span style=color:#d73a49> =</span><span> star_db_trial[target_system]</span></span>
+<span class=giallo-l><span>      mana_cost_low</span><span style=color:#d73a49> =</span><span> ly</span><span style=color:#d73a49>**</span><span style=color:#005cc5>2</span></span>
+<span class=giallo-l><span>      mana_cost_high</span><span style=color:#d73a49> =</span><span> ly</span><span style=color:#d73a49>**</span><span style=color:#005cc5>3</span></span>
+<span class=giallo-l><span style=color:#005cc5>      print</span><span>(</span><span style=color:#032f62>"</span><span style=color:#005cc5>\n</span><span style=color:#032f62>"</span><span style=color:#d73a49>+</span><span> target_system</span><span style=color:#d73a49> +</span><span style=color:#032f62>" will cost between "</span><span style=color:#d73a49>+</span><span style=color:#005cc5> str</span><span>(mana_cost_low) \</span></span>
+<span class=giallo-l><span style=color:#d73a49>+</span><span style=color:#032f62>" and "</span><span style=color:#d73a49>+</span><span style=color:#005cc5> str</span><span>(mana_cost_high)</span><span style=color:#d73a49> +</span><span style=color:#032f62>" stone(s) to project to</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>"</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>  else</span><span>:</span></span>
+<span class=giallo-l><span style=color:#6a737d>      #</span><span style=color:#d73a49> TODO</span><span style=color:#6a737d> : could add option to list known stars</span></span>
+<span class=giallo-l><span style=color:#005cc5>      print</span><span>(</span><span style=color:#032f62>"</span><span style=color:#005cc5>\n</span><span style=color:#032f62>Star not found.</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>"</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>def</span><span style=color:#6f42c1> locked_estimate_vector</span><span>():</span></span>
+<span class=giallo-l><span style=color:#005cc5>    print</span><span>(</span><span style=color:#032f62>"</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>You must buy the full version of this software to use this </span><span style=color:#005cc5>\</span></span>
+<span class=giallo-l><span style=color:#032f62>feature!</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>"</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>def</span><span style=color:#6f42c1> enter_license</span><span>():</span></span>
+<span class=giallo-l><span>    user_key</span><span style=color:#d73a49> =</span><span style=color:#005cc5> input</span><span>(</span><span style=color:#032f62>"</span><span style=color:#005cc5>\n</span><span style=color:#032f62>Enter your license key: "</span><span>)</span></span>
+<span class=giallo-l><span>    user_key</span><span style=color:#d73a49> =</span><span> user_key.strip()</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span style=color:#d73a49>    global</span><span> bUsername_trial</span></span>
+<span class=giallo-l><span>    </span></span>
+<span class=giallo-l><span style=color:#d73a49>    if</span><span> check_key(user_key, bUsername_trial):</span></span>
+<span class=giallo-l><span>        decrypt_full_version(user_key)</span></span>
+<span class=giallo-l><span style=color:#d73a49>    else</span><span>:</span></span>
+<span class=giallo-l><span style=color:#005cc5>        print</span><span>(</span><span style=color:#032f62>"</span><span style=color:#005cc5>\n</span><span style=color:#032f62>Key is NOT VALID. Check your data entry.</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>"</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>def</span><span style=color:#6f42c1> check_key</span><span>(key, username_trial):</span></span>
+<span class=giallo-l><span style=color:#d73a49>    global</span><span> key_full_template_trial</span></span>
+<span class=giallo-l><span style=color:#d73a49>    if</span><span style=color:#005cc5> len</span><span>(key)</span><span style=color:#d73a49> !=</span><span style=color:#005cc5> len</span><span>(key_full_template_trial):</span></span>
+<span class=giallo-l><span style=color:#d73a49>        return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>    else</span><span>:</span></span>
+<span class=giallo-l><span style=color:#6a737d>        # Check static base key part --v</span></span>
+<span class=giallo-l><span>        i</span><span style=color:#d73a49> =</span><span style=color:#005cc5> 0</span></span>
+<span class=giallo-l><span style=color:#d73a49>        for</span><span> c</span><span style=color:#d73a49> in</span><span> key_part_static1_trial:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> c:</span></span>
+<span class=giallo-l><span style=color:#d73a49>                return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#6a737d>        #</span><span style=color:#d73a49> TODO</span><span style=color:#6a737d> : test performance on toolbox container</span></span>
+<span class=giallo-l><span style=color:#6a737d>        # Check dynamic part --v</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>4</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>5</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>3</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>6</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>2</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>7</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>1</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>8</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        return</span><span style=color:#005cc5> True</span></span>
+<span class=giallo-l><span style=color:#d73a49>def</span><span style=color:#6f42c1> decrypt_full_version</span><span>(key_str):</span></span>
+<span class=giallo-l><span>    key_base64</span><span style=color:#d73a49> =</span><span> base64.b64encode(key_str.encode())</span></span>
+<span class=giallo-l><span>    f</span><span style=color:#d73a49> =</span><span> Fernet(key_base64)</span></span>
+<span class=giallo-l><span style=color:#d73a49>    try</span><span>:</span></span>
+<span class=giallo-l><span style=color:#d73a49>        with</span><span style=color:#005cc5> open</span><span>(</span><span style=color:#032f62>"keygenme.py"</span><span>,</span><span style=color:#032f62> "w"</span><span>)</span><span style=color:#d73a49> as</span><span> fout:</span></span>
+<span class=giallo-l><span style=color:#d73a49>          global</span><span> full_version</span></span>
+<span class=giallo-l><span style=color:#d73a49>          global</span><span> full_version_code</span></span>
+<span class=giallo-l><span>          full_version_code</span><span style=color:#d73a49> =</span><span> f.decrypt(full_version)</span></span>
+<span class=giallo-l><span>          fout.write(full_version_code.decode())</span></span>
+<span class=giallo-l><span style=color:#d73a49>          global</span><span> arcane_loop_trial</span></span>
+<span class=giallo-l><span>          arcane_loop_trial</span><span style=color:#d73a49> =</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>          global</span><span> jump_into_full</span></span>
+<span class=giallo-l><span>          jump_into_full</span><span style=color:#d73a49> =</span><span style=color:#005cc5> True</span></span>
+<span class=giallo-l><span style=color:#005cc5>          print</span><span>(</span><span style=color:#032f62>"</span><span style=color:#005cc5>\n</span><span style=color:#032f62>Full version written to 'keygenme.py'.</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>"</span><span style=color:#d73a49>+</span><span> \</span></span>
+<span class=giallo-l><span style=color:#032f62>                 "Exiting trial version..."</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>    except</span><span style=color:#005cc5> FileExistsError</span><span>:</span></span>
+<span class=giallo-l><span>        sys.stderr.write(</span><span style=color:#032f62>"Full version of keygenme NOT written to disk, "</span><span style=color:#d73a49>+</span><span> \</span></span>
+<span class=giallo-l><span style=color:#032f62>                      "ERROR: 'keygenme.py' file already exists.</span><span style=color:#005cc5>\n\n</span><span style=color:#032f62>"</span><span style=color:#d73a49>+</span><span> \</span></span>
+<span class=giallo-l><span style=color:#032f62>              "ADVICE: If this existing file is not valid, "</span><span style=color:#d73a49>+</span><span> \</span></span>
+<span class=giallo-l><span style=color:#032f62>              "you may try deleting it and entering the "</span><span style=color:#d73a49>+</span><span> \</span></span>
+<span class=giallo-l><span style=color:#032f62>              "license key again. Good luck"</span><span>)</span></span>
+<span class=giallo-l><span style=color:#d73a49>def</span><span style=color:#6f42c1> ui_flow</span><span>():</span></span>
+<span class=giallo-l><span>    intro_trial()</span></span>
+<span class=giallo-l><span style=color:#d73a49>    while</span><span> arcane_loop_trial:</span></span>
+<span class=giallo-l><span>        menu_trial()</span></span>
+<span class=giallo-l><span style=color:#6a737d># Encrypted blob of full version</span></span>
+<span class=giallo-l><span>full_version</span><span style=color:#d73a49> =</span><span> \</span></span>
+<span class=giallo-l><span style=color:#d73a49>b</span><span style=color:#032f62>"""</span></span>
+<span class=giallo-l><span style=color:#032f62>gAAAAABgT_nvHAwPaWal_64Giubfb7I87ML4ANp4g-eUbMTqsc4asWygnpXcaJ5FLahXXDcul9xPDqIPPytiZ9aMm25S6dgfi4ZPvM5IUSnnNjk6dxYAKsX5Yd72BV4ERrqdNNn2jZrphzlV4a4gY-XV_0ZHovFlHhEpPQnTtG_5RTETId0xAD5K5iActkI9a3P4sx6ExBQ082EuPFlnWtUGl0dsEDHher3xT_lZe9JP5UAcOJsoC9AJ7N3Y1KjWXATzaBkXw6XTnzqDHu9Ycffw-i-GfQP-16hF_f2WBE9nQqniFu6THNuAvqwg0XBnsfvV0Fo3MTpON6HpeI3eIXqd4tLtsfhNcPa99ugrucf0l19Z5eFvrtMMgmfW_9lgvO7UcCft79ShvQWEHjhVeiDKBZo7TgTJ-1wpB92obH_bFGJpMcsp1w42tDEJmavnRSKXl39ph9-cgVXUKTfsjUbJCgtZfR8yj28JFCdmETu2kkt_dW4aLN8BTeRHLUpCEod9xBUFxzQJZNxey6ISn2j-PTR-yxCXrC2_A3TCBcqwUJYviP6emLKPSBRJB8dkRlWmylnMH4aYd6YXPnY457tk6UpGO6Ezw4K4DEhFtMSO4Vq2UhAS85j8kokc9_GG2v315uqVZ-TY7nU7xkhsrtEFK0h-0jiiLbTKLvOb3zpXq0ELdX9_WEK681LsIuFErhsvvPmmXx1K7IDlmjIWkYw--7lqpXPVrl9LalI-7npOF4MYet3jlH9v5Y83K3VDCrNZjH8uqK4pTKo0_I4HOmEtfe8pghAYDldmQ8wvphHRh4UEM34QcgCJa3VH1XAu2MRDwbEWcnXxumt_xL2wXBTFAPZWxrnioRunzw5HnrqW6Nzi871XiJ0OHQzt_ulvgxDmFMxAiSpzm9YJoxspTG1hpSqLe5IUICBXEhofgTAhHePGff-Qi20rDYQMQio8zoyV2ZPRjKVk8YDGZdhuSQaKLx-DRdvKBzmAYqjbvmbC_4Tt3_amXlqxeLRLA9YP7vtxv9Y65WZ-8DeGdZTinUgjh6xqJH0xJvfEhXITOEiFGZseX2kPPG4pX1nDCZ8R9ksgHxkpnW24sQSVGmx5DP0xGihfmABc98bag-qrs-QIb7YqwJqK0-0N0t7hFKF671doX07XWcIGLJuFZ0MHxPOIjVIWN8Xb7mKJiL7goQH8xuy9FcE6w8_GVw5N9nfWUCFdZKENYJ5WY3iX20OtJgiYTwvCTetf-wDWj_FH6z_hpufI1sDh9lO9EnAhxpoNo4jMjC3eZUKPkkUf_gfvjWmnA89Gvsuxj70lzwZ1650isi0_JPtDIWKaksprzIW8YN-MeuBYy_f3JJOtU4cCg5sInTM3YW5GupJMO4h6Y6vk1QPxWYM5Nr5_cB7i2FSyt7DY72L_ede8YNJxcRCBkf3eD-3aO6KmPAbbf_48aaM3L1axNVKwubW9Mec6YRoV0JwgJM0Km3YAGL_ybtYX5JeoPQzoOQBw_Vue2k8PsnbO6n2p3acaY8Y-6ZhKnrSBaeuACSZtTqJT4_WXYslQyX-Pgl-ljcq84H0AAPNnJ9AlNZwvGL6fKbdcxpcQ7RN8fdoU6bJ2q2XecXred2XfE2UHK-QTacm-amF5Mt4WrNlF8RGRuCagny7o6XyEYO_-xyowpUYsOA9c5j6u8qpju0donhdr0OWWKHpIWvOsDdzX-YEcQvfdXfLdDLDSDqGJUyB5giQK3IVqUeBAN2ZHdKyFAACUog4U0RJLJ3tEedF_PLZ5eqHyo_jwfBmqRi_bK2cwuYU_psxTBB6o2a2o1vx-nprP4QFVxdWD7by4VTFKCVW2yAGkL1OHPAc6hcoVhysAIMQhhqJF0SXXdqeXzFrM7pexr3sV9uL_R_CcknOk28VE0IyrvJLMj1sI-MkXqRFTdwjump6fneQizBHAy2Kk7GgU7JLwSvgUVGBS581ITxuQ-jeZW5od1m9z6xYLMKXNSV-EUZXhGPOz4kd87gTRxDMd9S5pkSqfiBQgrIrEuNtaDYJsc22r5MAGNpe-ouGhE_QRMPDaEVP8CibNu0wnjgrt_4Qf8M6ZURy6fzssBsqIjfFymJDe8uSmz5yosvTuRfsjcC_mhyeVFrjiHSzH5OEfNS0ihPMI6H9j4vdid0Wk3ewjfT3rpsadbuHBJTRxPcBN-dc8vaLvLzcJehyGQhvEVwmiycjAJ16pgOT5-rR0-ZLKoiaaa3OHcs8RB3ZXLe9LkJHsqCvjGeI4qqlkLfAhG08gNsAxtcbYAEVzKDvNDPdbWOsioIX3lKKiiGNztZMruThMwycUQ1zRN_5sRC5DTQDv0l3ka0OELW2U04Og5Sj5x1u2rdWSBa9nEI6LJ7nnp-pLTGo-C7tsq1boTz4WdHNMvAP2GWv99NFN37pa8UY6mjmdMAg0Ppw9rfxeGKq60jh-VcBuY3Yvu1g2_Ntv1e8CeK1jNXl06zLGLBO35hLwix4UcQmU_9M0v1QsYfjYBRW5sUnjcB3lGF8KJg6PYGbHcvAEDlqw12ZtITFOaIqhkpvSzbfG1LQF7e_NfhXijgBMhJBug9tTayv0g5U2CPuZ-B4z_SkmEvN_eU5G1rht3Zv0ygTuOXW0Iig0XxFO02QugZSqIRg7fGRj6fxDVWXvQT6k3zXlXxN6LrHYHbcW7Irs0pLxm7pfAPBYlnFwRTHXI4HhnMUsPiK3v0oPU7IB67y4XCUMncMcGstRB4zqnaZI7dR8YPQfAZQ0CUjT5Z_H52Qp9ek5H_G48vb0DFC1qzgpNlfHcXrBLuhf_Gcc_1dzn9E4ZwoiF16aJhHPHSAGhOwclLy7xxy22ZenZVeKXcXrA7jUbPGcS-SWmUjF1IPe_Pkpfcgi5rIaxUhCWX5jK0c_n0_q2UAv9KAKJBaWstjcYBxtuUtHTFJD0ky9VDOqVJx1-V6tD1lNsnF1FfNrfIpB9YkoCxRIXDuBiCSagiwa830S6-1bREZMZug-etzjr1Wf7cO1PTDd61JSM252DWqHVVLQs8yYKmhzsZxfeI_uV5G7Y8fvwIYBB4krFRjpFR4-fGwF4Vma-xZlr6y9ziILNUyqz2u4FBmMjc1V8YgeqqXsLIuSHF6GDhvGXq-mEqLTWnxSAE-G_zeX7qPDAlsSv_dRLByQ0ZekBEQ1YbCpmnbZIPTJ_IyZLX0ZBOz3oc0ju5mFUFAzN8sJlwuZFH2GQeC9T2GJO8lJEhn4NqiudzmXVMerdRaL1C9ZbJfGSEkuEKQL2I2NeW5Nm7d4MStHdtZhO190_lXP2PQ8Tuz5BrPlYKgGf76NZshAU0XKXglyTWQKzONVv6251qh4wpMgWWFm8Va_zGlXNFd8QmQWpbhkWTLmo9ixI4W92hkw4oheJVE5n9LB1HWz50oSajV_2jJW_5Bd5Gtz6S3Q2X_xfA_TgRyeT0DXgbQ8mYx_N_43S_D94ud66-NnRA_A1KG-uu31KH5btUg6f3-oxoO4waPW8-hM0arNlGjREg0_LhAMALknhfJlno2VnQo2ExgXj6v-kaBlTuh4jt5vbhepD5EgtGvbXT4mypQbS49LA3SxCxEq7vDSxHfnLKWI84IlAeU8NQE6drQd9IGQ9lRWZDzHgvz7dO6Og4pIt7Q6UA2NEIc6ZNDTsghtKFVep19d7nGJDt-4-UCFJSHWBhTKeqb_A34XO4T5U7x-CXqphsBwIdMoPXHrWxhoFYaP6lPJVOryz8TEYDLsHbVdmhYJtA0bPgMPC1rNI-SqcyUqvZFGpIJwDcGghTTS1u8XjMlRkxOxuEMDO364AdLtruslkXjpd2NuUBUFwNWbQbfYIC5mePqxc_PhcaVxMXHYrFh2CLqXX7UhcZxHT9C8RQ==</span></span>
+<span class=giallo-l><span style=color:#032f62>"""</span></span>
+<span class=giallo-l><span style=color:#6a737d># Enter main loop</span></span>
+<span class=giallo-l><span>ui_flow()</span></span>
+<span class=giallo-l><span style=color:#d73a49>if</span><span> jump_into_full:</span></span>
+<span class=giallo-l><span style=color:#005cc5>    exec</span><span>(full_version_code)</span></span></code></pre><p>By looking at the challenge code. The first part of the flag is present in the code as plaintext. <code>key_part_static1_trial = "VishwaCTF{m4k3_it_possibl3_"</code><p>The remaining part of the flag is stored in <code>key_part_dynamic1_trial</code>. The full version of the flag is in <code>key_full_template_trial = key_part_static1_trial + key_part_dynamic1_trial + key_part_static2_trial</code>. We have the full version and the initial part of the flag.<p>Lets look at the decryption function. This is going to print the decrypted full version if we enter the license which is the middle part of the flag.<p>Okay, lets see how the key/license has been validated here.<pre class=giallo style=color:#24292e;background-color:#fff><code data-lang=python><span class=giallo-l><span style=color:#d73a49>def</span><span style=color:#6f42c1> check_key</span><span>(key, username_trial):</span></span>
+<span class=giallo-l><span style=color:#d73a49>    global</span><span> key_full_template_trial</span></span>
+<span class=giallo-l><span style=color:#d73a49>    if</span><span style=color:#005cc5> len</span><span>(key)</span><span style=color:#d73a49> !=</span><span style=color:#005cc5> len</span><span>(key_full_template_trial):</span></span>
+<span class=giallo-l><span style=color:#d73a49>        return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>    else</span><span>:</span></span>
+<span class=giallo-l><span style=color:#6a737d>        # Check static base key part --v</span></span>
+<span class=giallo-l><span>        i</span><span style=color:#d73a49> =</span><span style=color:#005cc5> 0</span></span>
+<span class=giallo-l><span style=color:#d73a49>        for</span><span> c</span><span style=color:#d73a49> in</span><span> key_part_static1_trial:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> c:</span></span>
+<span class=giallo-l><span style=color:#d73a49>                return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#6a737d>        #</span><span style=color:#d73a49> TODO</span><span style=color:#6a737d> : test performance on toolbox container</span></span>
+<span class=giallo-l><span style=color:#6a737d>        # Check dynamic part --v</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>4</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>5</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>3</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>6</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>2</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>7</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>1</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        else</span><span>:</span></span>
+<span class=giallo-l><span>            i</span><span style=color:#d73a49> +=</span><span style=color:#005cc5> 1</span></span>
+<span class=giallo-l><span style=color:#d73a49>        if</span><span> key[i]</span><span style=color:#d73a49> !=</span><span> hashlib.sha256(username_trial).hexdigest()[</span><span style=color:#005cc5>8</span><span>]:</span></span>
+<span class=giallo-l><span style=color:#d73a49>            return</span><span style=color:#005cc5> False</span></span>
+<span class=giallo-l><span style=color:#d73a49>        return</span><span style=color:#005cc5> True</span></span></code></pre><p>The key/license characters are compared with the hash characters of the <code>username_trail</code>.<p><code>username_trail = username_trial = b"vishwaCTF" hashlib.sha256(username_trial).hexdigest() = a1ccb7d574518024795268ab284efdd93787b7cb741038437f24bff749a7aa0c </code> Now the <code>key[0] = hashlib.sha256(username_trial).hexdigest()[4] = b</code><p>So, i wrote this script to print the flag rather than doing it manually.<pre class=giallo style=color:#24292e;background-color:#fff><code data-lang=python><span class=giallo-l><span style=color:#d73a49>import</span><span> hashlib</span></span>
+<span class=giallo-l><span style=color:#d73a49>from</span><span> cryptography.fernet</span><span style=color:#d73a49> import</span><span> Fernet</span></span>
+<span class=giallo-l><span style=color:#d73a49>import</span><span> base64</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>username_trial</span><span style=color:#d73a49> = b</span><span style=color:#032f62>"vishwaCTF"</span></span>
+<span class=giallo-l><span>key_part_static1_trial</span><span style=color:#d73a49> =</span><span style=color:#032f62> "VishwaCTF{m4k3_it_possibl3_"</span></span>
+<span class=giallo-l><span>key_part_dynamic1_trial</span><span style=color:#d73a49> =</span><span style=color:#032f62> "xxxxxxxx"</span></span>
+<span class=giallo-l><span>key_part_static2_trial</span><span style=color:#d73a49> =</span><span style=color:#032f62> "}"</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>key</span><span style=color:#d73a49> =</span><span>[]</span></span>
+<span class=giallo-l><span>index</span><span style=color:#d73a49> =</span><span> [</span><span style=color:#005cc5>4</span><span>,</span><span style=color:#005cc5>5</span><span>,</span><span style=color:#005cc5>3</span><span>,</span><span style=color:#005cc5>6</span><span>,</span><span style=color:#005cc5>2</span><span>,</span><span style=color:#005cc5>7</span><span>,</span><span style=color:#005cc5>1</span><span>,</span><span style=color:#005cc5>8</span><span>]</span></span>
+<span class=giallo-l><span style=color:#d73a49>for</span><span> i</span><span style=color:#d73a49> in</span><span> index:</span></span>
+<span class=giallo-l><span>    key.append(hashlib.sha256(username_trial).hexdigest()[i])</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>key_part_dynamic1_trial</span><span style=color:#d73a49> =</span><span style=color:#032f62> ""</span><span>.join(key)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>key_full_template_trial</span><span style=color:#d73a49> =</span><span> key_part_static1_trial</span><span style=color:#d73a49> +</span><span> key_part_dynamic1_trial</span><span style=color:#d73a49> +</span><span> key_part_static2_trial</span></span>
+<span class=giallo-l><span style=color:#005cc5>print</span><span>(key_full_template_trial)</span></span>
+<span class=giallo-l><span style=color:#6a737d>#output</span></span>
+<span class=giallo-l><span style=color:#6a737d>#VishwaCTF{m4k3_it_possibl3_b7cdc517}</span></span></code></pre><blockquote><p><code>Flag : VishwaCTF{m4k3_it_possibl3_b7cdc517}</code></blockquote><hr><h1 id=web-alive>WEB-aLive</h1><p><img alt=Alive src=/assets/img/ctf_img/vishwa23/vishwa_alive1.png><p>The website that is given in challenge is checking the live hosts.<p>I tried to insert some html code in the input.<p><img alt=Alive src=/assets/img/ctf_img/vishwa23/vishwa_alive2.png><p>As i expected the site was processed the html code.<p><img alt=Alive src=/assets/img/ctf_img/vishwa23/vishwa_alive3.png><p>So , it seems to have a <code>Reflected XSS</code> vulnerability. I tried multiple payloads to done my work.<p><code>');&lt;/script>&lt;script>alert(document.cookie)&lt;/script>&lt;b></code><p><code>',&lt;/script>&lt;script>x=new XMLHttpRequest; alert(this.responseText); x.open("GET","file:///etc/passwd"); x.send()&lt;/script>;</code><p>Sadly, They are not worked. But I just tried to access <code>/flag.txt</code> of the site from the searchbar. And surprisingly it returned the flag.<p><img alt=Alive src=/assets/img/ctf_img/vishwa23/vishwa_alive4.png><p>I dont know wheather it is intended or not, but many teams solved it in this way only!<blockquote><p><code>Flag : VishwaCTF{blinD_cmd-i}</code></blockquote><hr><h1 id=crypto-indecipherable-cipher>Crypto-Indecipherable Cipher</h1><p><img alt=Indecipherable src=/assets/img/ctf_img/vishwa23/vishwa_indecipher1.png><p>First, I used <a href=https://www.dcode.fr/cipher-identifier target=_blank>this site</a> to identify the cipher type. It shows that it is mostly a vigenere cipher. Then i used <a href=https://www.dcode.fr/vigenere-cipher target=_blank>this site</a> to decode the cipher.<p><img alt=Indecipherable src=/assets/img/ctf_img/vishwa23/vishwa_indecipher2.png> <img alt=Indecipherable src=/assets/img/ctf_img/vishwa23/vishwa_indecipher3.png><p>The flag is the decrypted text in format.<blockquote><p><code>Flag : VishwaCTF{friedrichwilhelmkasiskiwastheonewhodesignedtheaaakasiskiexaminationtodecodevignerecipher}</code></blockquote><hr></section></article></main></div>
