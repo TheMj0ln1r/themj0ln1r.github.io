@@ -12,9 +12,19 @@ template = "cv.html"
 
 ## Work Experience
 
-### Phoenix Labs
-**Smart contract engineer** *Jan 2026 - Present*
-- Contributing to [Spark.fi](https://spark.fi/)
+### Phoenix Labs (Spark)
+**Senior Smart Contract Engineer** *Jan 2026 - Present*
+- Contributing to [Spark](https://spark.fi/), a Sky-backed onchain capital allocator with ~$7B+ TVL across SparkLend, the Spark Liquidity Layer, and Spark Savings - SparkLend alone is one of the top 3 largest lending protocols in DeFi by TVL
+- Part of the team building [diamond-pau](https://github.com/sky-ecosystem/diamond-pau), the next-generation onchain allocator that replaces the original Spark Liquidity Layer allocator and is now live in production on Ethereum mainnet and Arbitrum, routing capital across Aave, Curve, Uniswap, Maple, Pendle, Morpho, and more
+- Review governance spells in [spark-spells](https://github.com/sparkdotfi/spark-spells), the repo that executes Spark's onchain governance proposals, which ship roughly every two weeks
+- Contribute to Spark's internal knowledge base, a central repository of config and invariant tests covering all of Spark's onchain protocols
+- Help build auxiliary contracts around [Spark Vaults](https://github.com/sparkdotfi/spark-vaults-v2), including Savings Intents and Boosted Vaults
+- Contribute to [SparkLend](https://github.com/sparkdotfi/sparklend-v1-core), Spark's core lending market, including work on a rounding bug fix and an accompanying refactor
+- Helped refactor the merkle tree generation pipeline behind Spark's rewards and points airdrop distributions
+- Write deployment and verification scripts for new contract rollouts, including diamond-pau, Savings Intents, and vaults
+- Write unit, integration, fork, fuzz, and invariant tests across Spark's Solidity codebases
+
+General activity: [sparkdotfi contributions](https://github.com/TheMj0ln1r?org=sparkdotfi&) · [sky-ecosystem contributions](https://github.com/TheMj0ln1r?org=sky-ecosystem&)
 
 ### Supra
 **Lead Blockchain Engineer** *Apr 2025 - Jan 2026*
