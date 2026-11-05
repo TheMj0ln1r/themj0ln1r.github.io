@@ -1,6 +1,60 @@
 {% extends "base.html" %}
 
-{% block main_content %}
-    {{ post_macros::content(page=page)}}
-{% endblock main_content %}
+{% block main_class %}container container-wide{% endblock main_class %}
 
+{% block main_content %}
+<article class="post{% if page.toc %} has-toc{% endif %}">
+    <header class="post-head">
+        {% set parent = get_section(path=page.ancestors | last, metadata_only=true) %}
+        <a class="eyebrow" href="{{ parent.permalink }}">{{ parent.title }}</a>
+        <h1 class="post-title">{{ page.title }}</h1>
+        <div class="post-meta">
+            {% if page.date %}<time datetime="{{ page.date }}">{{ page.date | date(format="%B %d, %Y") }}</time>{% endif %}
+            {% if page.updated %}<span>Updated {{ page.updated | date(format="%B %d, %Y") }}</span>{% endif %}
+            <span>{{ page.reading_time }} min read</span>
+            {% if page.draft %}<span class="draft">draft</span>{% endif %}
+        </div>
+        {% if page.taxonomies.tags %}
+        <div class="post-tags">
+            {% for tag in page.taxonomies.tags %}
+            <a class="tag" href="{{ get_taxonomy_url(kind='tags', name=tag) }}">{{ tag }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </header>
+
+    <div class="post-grid">
+        {% if page.toc %}
+        <details class="toc toc-inline">
+            <summary>Contents</summary>
+            {{ post_macros::toc_list(toc=page.toc) }}
+        </details>
+        {% endif %}
+
+        <div class="prose">
+            {% if page.extra.tldr %}
+            <p class="tldr"><strong>tl;dr</strong> {{ page.extra.tldr }}</p>
+            {% endif %}
+            {{ page.content | safe }}
+        </div>
+
+        {% if page.toc %}
+        <aside class="toc toc-side" aria-label="Table of contents">
+            <p class="toc-title">On this page</p>
+            {{ post_macros::toc_list(toc=page.toc) }}
+        </aside>
+        {% endif %}
+    </div>
+
+    {% if page.lower or page.higher %}
+    <nav class="post-nav" aria-label="More posts">
+        {% if page.higher %}
+        <a class="post-nav-link" href="{{ page.higher.permalink }}"><span>Older</span>{{ page.higher.title }}</a>
+        {% else %}<span></span>{% endif %}
+        {% if page.lower %}
+        <a class="post-nav-link next" href="{{ page.lower.permalink }}"><span>Newer</span>{{ page.lower.title }}</a>
+        {% endif %}
+    </nav>
+    {% endif %}
+</article>
+{% endblock main_content %}

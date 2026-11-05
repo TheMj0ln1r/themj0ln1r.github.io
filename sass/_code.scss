@@ -1,0 +1,93 @@
+code, kbd, samp, pre {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none; // keep =>, !=, >= literal in Solidity
+}
+
+/* Inline code */
+:not(pre) > code {
+  font-size: 0.86em;
+  padding: 0.15em 0.4em;
+  border-radius: 5px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-soft);
+  color: var(--text-strong);
+  white-space: break-spaces;
+  overflow-wrap: anywhere; // long hex addresses, hashes, paths
+}
+
+/* Blocks. giallo sets theme colors; we own layout and background. */
+pre.giallo, .prose pre {
+  position: relative;
+  font-size: 0.84rem;
+  line-height: 1.65;
+  background: var(--bg-code) !important;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  tab-size: 4;
+  scrollbar-width: thin;
+
+  code { display: block; min-width: max-content; }
+}
+
+// Let code run a bit wider than the text column where there is room.
+@media (min-width: 900px) {
+  .prose > pre.giallo { margin-inline: -1.1rem; }
+}
+
+/* Header bar injected by codeblock.js. The pre stops scrolling and the code scrolls instead, so the bar stays put. */
+pre.giallo.has-bar {
+  padding: 0;
+  overflow: hidden;
+  > code {
+    min-width: 0;
+    overflow-x: auto;
+    padding: 0.9rem 1.1rem 1rem;
+    scrollbar-width: thin;
+  }
+}
+
+.code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2.1rem;
+  padding: 0 0.4rem 0 1.1rem;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+.code-label { letter-spacing: 0.02em; }
+.code-copy {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.6rem;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  &:hover { background: var(--border-soft); color: var(--text-strong); }
+}
+
+/* giallo lines, line numbers and highlighted lines */
+.giallo-l { display: inline-block; min-width: 100%; }
+.giallo-ln {
+  display: inline-block;
+  width: 2.5em;
+  margin-right: 1.1em;
+  text-align: right;
+  user-select: none;
+  opacity: 0.7;
+}
+.giallo-l.z-hl {
+  margin-inline: -1.1rem;
+  padding-inline: 1.1rem;
+  min-width: calc(100% + 2.2rem);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* Notes inside notes or lists get tighter code */
+.note pre.giallo { font-size: 0.82rem; }

@@ -1,73 +1,8 @@
-@import "parts/_cards.scss";
-@import "parts/_code.scss";
-@import "parts/_header.scss";
-@import "parts/_image.scss";
-@import "parts/_toc.scss";
-@import "parts/_note.scss";
-@import "parts/_cv.scss";
-@import "parts/misc.scss";
-@import "parts/table.scss";
-@import "parts/tags.scss";
-
-:root {
-  /* Used for: block comment, hr, ... */
-  --border-color: var(--border-color);
-
-  /* Fonts */
-  --text-font: 'Inter', system-ui, sans-serif;
-  --header-font: 'Inter', system-ui, sans-serif;
-  --code-font: 'Inter', system-ui, sans-serif;
-}
-
-html {
-  background-color: var(--bg-0);
-  color: var(--text-0);
-  font-family: var(--text-font);
-  line-height: 1.8;
-}
-
-.content {
-  max-width: 750px;
-  margin: 0 auto;
-  padding: 15px 15px 40px 15px;
-  position: relative;
-  letter-spacing: .025em;
-  word-wrap: break-word;
-}
-
-@media only screen and (orientation: landscape) {
-  .post-link {
-    display: block;
-    font-size: 24px; }
-
-  .post-meta {
-    font-size: 14px;
-    color: #515151; }
-
-  .toc-category {
-    display: inline-block;
-    width: 100px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-right: 4px;
-    padding-left: 4px; }
-}
-
-@media only screen and (orientation: portrait) {
-  .post-link {
-    display: block; }
-  .post-meta {
-    font-size: 24px;
-    color: #515151; }
-  .post-list > li {
-    margin-bottom: 60px;
-   }
-
-  .toc-category {
-    display: inline-block;
-    width: 200px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    padding-right: 12px;
-    padding-left: 12px; }
-}
+@import "tokens";
+@import "base";
+@import "layout";
+@import "list";
+@import "prose";
+@import "code";
+@import "note";
+@import "cv";

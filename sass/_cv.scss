@@ -1,0 +1,39 @@
+.cv {
+  padding-top: clamp(2rem, 6vw, 3.5rem);
+
+  h1 {
+    font-size: var(--step-3);
+    border: 0;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.025em;
+  }
+  h1 + p { color: var(--muted); font-size: 0.92rem; }
+  h1 + p strong { color: inherit; font-weight: 500; }
+
+  h2 {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-top: 2.5rem;
+  }
+  h3 { margin: 1.75rem 0 0.15rem; font-size: 1.05rem; }
+  h3 + p { color: var(--muted); font-size: 0.92rem; margin-bottom: 0.6rem; }
+  h3 + p strong { color: var(--text); }
+  hr { margin: 1.5rem 0; }
+  ul { margin-bottom: 1rem; }
+  li { font-size: 0.95rem; }
+}
+
+@media print {
+  :root { @include light; }
+  body { font-size: 10.5pt; line-height: 1.5; }
+  .site-header, .site-footer, .skip-link, .code-copy, .toc, .post-nav { display: none !important; }
+  .container, .container-wide { max-width: none; padding: 0; }
+  .cv { padding-top: 0; }
+  .cv h2 { margin-top: 1.25rem; }
+  .cv h3 { break-after: avoid; }
+  a { color: inherit; }
+  pre.giallo { white-space: pre-wrap; }
+}

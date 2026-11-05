@@ -1,38 +1,17 @@
-<div class="note-container">
-  {% if clickable | default(value=false) %}
-    <button class="note-toggle">
-      {% if center | default(value=false) %}
-        <div class="note-center">
-        {{ header | markdown | safe }}
-        </div>
-      {% else %}
-        <div class="note-icon">
-        {{ header | markdown | safe }}
-        </div>
-      {% endif %}
-    </button>
-
-    {% if hidden | default(value=false) %}
-    <div class="note-content" style="display: none;">
-    {% else %}
-    <div class="note-content" style="display: block;">
-    {% endif %}
-    {{ body | markdown | safe }}
+{#- Same arguments as before: header, clickable, hidden, center. Collapsible notes use native <details>, no JS. -#}
+{%- set head = header | default(value="") | markdown(inline=true) -%}
+{%- if clickable | default(value=false) -%}
+<details class="note"{% if not hidden | default(value=false) %} open{% endif %}>
+    <summary class="note-head{% if center | default(value=false) %} center{% endif %}">{{ head | safe }}</summary>
+    <div class="note-body">
+{{ body | markdown | safe }}
     </div>
-  {% else %}
-    <div class="note-header">
-      {% if center | default(value=false) %}
-        <div class="note-center">
-        {{ header | markdown | safe }}
-        </div>
-      {% else %}
-        <div class="note-icon">
-        {{ header | markdown | safe }}
-        </div>
-      {% endif %}
+</details>
+{%- else -%}
+<aside class="note">
+    {% if head %}<div class="note-head{% if center | default(value=false) %} center{% endif %}">{{ head | safe }}</div>{% endif %}
+    <div class="note-body">
+{{ body | markdown | safe }}
     </div>
-    <div class="note-content">
-      {{ body | markdown | safe }}
-    </div>
-  {% endif %}
-</div>
+</aside>
+{%- endif -%}

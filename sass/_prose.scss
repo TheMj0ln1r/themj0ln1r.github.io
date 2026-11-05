@@ -1,0 +1,86 @@
+.prose {
+  overflow-wrap: break-word;
+
+  > :first-child { margin-top: 0; }
+
+  p, ul, ol, blockquote, table, figure, details, aside, pre { margin: 0 0 1.35rem; }
+
+  // Posts use "#" as their section level, so h1 inside the body is a section heading.
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-strong);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    font-weight: 650;
+    margin: 2.6rem 0 0.9rem;
+    text-wrap: balance;
+  }
+  h1 { font-size: var(--step-2); padding-bottom: 0.4rem; border-bottom: 1px solid var(--border-soft); }
+  h2 { font-size: var(--step-1); }
+  h3 { font-size: 1.05rem; }
+  h4, h5, h6 { font-size: 1rem; color: var(--muted); }
+  h1 + h2, h2 + h3 { margin-top: 1.25rem; }
+
+  strong { color: var(--text-strong); font-weight: 650; }
+
+  a {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    text-underline-offset: 3px;
+    &:hover { text-decoration-color: var(--accent); }
+  }
+
+  ul, ol { padding-left: 1.4rem; }
+  li { margin: 0.35rem 0; }
+  li::marker { color: var(--muted); }
+  li > ul, li > ol { margin: 0.35rem 0 0; }
+
+  blockquote {
+    margin-inline: 0;
+    padding: 0.2rem 0 0.2rem 1.1rem;
+    border-left: 3px solid var(--border);
+    color: var(--muted);
+    > :last-child { margin-bottom: 0; }
+  }
+
+  hr { border: 0; border-top: 1px solid var(--border-soft); margin: 3rem 0; }
+
+  img, video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.75rem auto;
+    border-radius: var(--radius);
+  }
+  :root[data-theme="dark"] & img { background: #f0f3f6; }
+
+  table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  th, td { padding: 0.55rem 0.85rem; border: 1px solid var(--border-soft); text-align: left; vertical-align: top; }
+  th { background: var(--bg-soft); color: var(--text-strong); font-weight: 600; }
+
+  // MathJax has no line breaking, so wide display equations scroll inside their own box.
+  mjx-container[display="true"] {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-block: 0.25rem;
+    scrollbar-width: thin;
+  }
+  mjx-container:not([display="true"]) { max-width: 100%; }
+
+  mark { background: var(--mark); color: inherit; padding: 0 0.15em; border-radius: 3px; }
+
+  .tldr {
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-soft);
+    border-radius: var(--radius);
+  }
+}

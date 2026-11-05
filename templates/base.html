@@ -1,26 +1,25 @@
 {% import "macros/macros.html" as post_macros %}
-
 <!DOCTYPE html>
 <html lang="en">
-<html class="dark light">
-
 {% include "partials/header.html" %}
-
 <body>
-    <div class="content">
-        {% include "partials/nav.html" %}
+    <a class="skip-link" href="#main">Skip to content</a>
+    {% include "partials/nav.html" %}
 
-        {# Post page is the default #}
-        {% block main_content %}
-            Nothing here?!
-        {% endblock main_content %}
+    <main id="main" class="{% block main_class %}container{% endblock main_class %}">
+        {% block main_content %}{% endblock main_content %}
+    </main>
 
-        {% if config.extra.comment | default(value=false) %}
-        <div class="giscus"></div>
-        {% include "_giscus_script.html" %}
-        {% endif %}
-
-    </div>
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <span>&copy; {{ now() | date(format="%Y") }} {{ config.extra.author }}</span>
+            <nav class="footer-links" aria-label="Elsewhere">
+                {% for social in config.extra.socials | default(value=[]) %}
+                <a href="{{ social.url }}" rel="me noopener" target="_blank">{{ social.name }}</a>
+                {% endfor %}
+                <a href="{{ get_url(path='atom.xml', trailing_slash=false) }}">RSS</a>
+            </nav>
+        </div>
+    </footer>
 </body>
-
 </html>

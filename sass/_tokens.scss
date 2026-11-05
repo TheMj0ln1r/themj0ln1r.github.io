@@ -1,0 +1,83 @@
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/v/inter-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/v/inter-italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/v/jetbrains-mono-normal.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/v/jetbrains-mono-italic.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@mixin light {
+  // Off-white page with near-black text (after trailofbits.com / seceureka.com); code sits on lighter cards.
+  --bg: #f2f2f0;
+  --bg-soft: #e7e7e4;
+  --bg-code: #fafaf9;
+  --text: #222222;
+  --text-strong: #111111;
+  --muted: #555555;
+  --border: #c9c9c5;
+  --border-soft: #dadad6;
+  --accent: #0a5fb4;
+  --accent-soft: #dbe7f4;
+  --note: #e9e9e6;
+  --mark: #fff8c5;
+  color-scheme: light;
+}
+
+@mixin dark {
+  --bg: #0d1117;
+  --bg-soft: #151b23;
+  --bg-code: #151b23;
+  --text: #d1d7e0;
+  --text-strong: #f0f6fc;
+  --muted: #9198a1;
+  --border: #3d444d;
+  --border-soft: #262c36;
+  --accent: #4493f8;
+  --accent-soft: #121d2f;
+  --note: #151b23;
+  --mark: #3b2e00;
+  color-scheme: dark;
+}
+
+:root {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --step--1: clamp(0.83rem, 0.81rem + 0.1vw, 0.88rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --step-1: clamp(1.15rem, 1.09rem + 0.3vw, 1.3rem);
+  --step-2: clamp(1.35rem, 1.24rem + 0.55vw, 1.65rem);
+  --step-3: clamp(1.75rem, 1.5rem + 1.2vw, 2.4rem);
+
+  --measure: 72ch;
+  --radius: 8px;
+  --gutter: 1.25rem;
+
+  @include light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { @include dark; }
+}
+:root[data-theme="dark"] { @include dark; }

@@ -1,8 +1,6 @@
-{% extends "page.html" %}
+{% extends "base.html" %}
 
 {% block main_content %}
-    <main class="centered-header">
-        {{ post_macros::page_header(title="404")}}
-        <span>Page not found :(</span>
-    </main>
+    {{ post_macros::page_header(title="404", subtitle="This page does not exist.") }}
+    <p><a href="{{ config.base_url }}">&larr; Back to writings</a></p>
 {% endblock main_content %}

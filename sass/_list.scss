@@ -1,0 +1,61 @@
+.post-list .year {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 2.25rem 0 0.25rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.posts { list-style: none; margin: 0; padding: 0; }
+
+.post-item {
+  display: grid;
+  grid-template-columns: 4.25rem 1fr;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px dashed var(--border-soft);
+  &:last-child { border-bottom: 0; }
+
+  time {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    padding-top: 0.2rem;
+    white-space: nowrap;
+  }
+}
+
+.post-item-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  color: var(--text-strong);
+  &:hover { color: var(--accent); text-decoration: none; }
+}
+
+.post-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  > span { margin-right: 0.35rem; }
+}
+
+@media (max-width: 480px) {
+  .post-item { grid-template-columns: 1fr; gap: 0.15rem; }
+}
+
+.tag-cloud {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  .tag { font-size: 0.85rem; padding: 0.45em 0.7em; }
+  .count { color: var(--muted); opacity: 0.75; font-size: 0.75em; }
+}
