@@ -1,29 +1,88 @@
+// CV hierarchy: name (h1) > section (h2) > company/project (h3) > role row > bullets.
+// Role rows are plain markdown lines like `**Role** *Jan 2024 – Present*`; :has() picks them out so cv.md stays simple.
 .cv {
   padding-top: clamp(2rem, 6vw, 3.5rem);
 
   h1 {
     font-size: var(--step-3);
     border: 0;
+    padding: 0;
     margin: 0 0 0.5rem;
     letter-spacing: -0.025em;
   }
   h1 + p { color: var(--muted); font-size: 0.92rem; }
   h1 + p strong { color: inherit; font-weight: 500; }
 
+  // Sections: Work Experience, Education, Technical Skills...
   h2 {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    margin-top: 2.5rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--text-strong);
+    margin: 2.75rem 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--border-soft);
   }
-  h3 { margin: 1.75rem 0 0.15rem; font-size: 1.05rem; }
-  h3 + p { color: var(--muted); font-size: 0.92rem; margin-bottom: 0.6rem; }
-  h3 + p strong { color: var(--text); }
+
+  // Companies and projects
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 650;
+    color: var(--text-strong);
+    margin: 1.75rem 0 0.35rem;
+  }
+  h2 + h3 { margin-top: 1rem; }
+
   hr { margin: 1.5rem 0; }
   ul { margin-bottom: 1rem; }
-  li { font-size: 0.95rem; }
+  li { font-size: 0.95rem; margin: 0.25rem 0; }
+  li > p { margin: 0; } // blank lines between bullets in cv.md shouldn't add gaps
+  ul + p { font-size: 0.95rem; }
+
+  // Role / degree / project rows: title on the left, date or detail pinned to one right-hand column.
+  p:has(> strong:first-child + em:last-child),
+  p:has(> em:first-child + em:last-child),
+  p:has(> em:first-child + strong:last-child) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    column-gap: 1.5rem;
+    margin: 1.1rem 0 0.4rem;
+    font-size: 1rem;
+
+    > :first-child { font-weight: 600; color: var(--text-strong); font-style: normal; }
+    > :last-child {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 500;
+      font-style: normal;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+  }
+  h3 + p:has(> :first-child + :last-child) { margin-top: 0.15rem; }
+  // Secondary rows (degree, project stack) read lighter than a job title.
+  p:has(> em:first-child + em:last-child) > :first-child,
+  p:has(> em:first-child + strong:last-child) > :first-child { font-weight: 400; color: var(--text); font-style: italic; }
+
+  // Skills: `**Category:** items` lines become a two-column grid with categories aligned.
+  p:has(> strong:only-child) {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    column-gap: 1rem;
+    margin: 0 0 0.6rem;
+    font-size: 0.95rem;
+    > strong { font-weight: 600; color: var(--text-strong); }
+  }
+}
+
+@media (max-width: 560px) {
+  .cv p:has(> strong:only-child) {
+    display: block;
+    > strong { display: block; }
+  }
 }
 
 @media print {

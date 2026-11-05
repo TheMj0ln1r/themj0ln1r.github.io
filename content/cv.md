@@ -6,14 +6,14 @@ template = "cv.html"
 # Charan Nomula
 
 **[Twitter](https://x.com/TheMj0ln1r/)** -
-**[Github](https://github.com/TheMj0ln1r/)** - **[Blog](https://themj0ln1r.github.io/)** - **[Linkedin](https://linkedin.com/in/mj0ln1r/)** - **playermj0ln1r@gmail.com** 
+**[Github](https://github.com/TheMj0ln1r/)** - **[Linkedin](https://linkedin.com/in/mj0ln1r/)**
 
 ---
 
 ## Work Experience
 
 ### Phoenix Labs (Spark)
-**Senior Smart Contract Engineer** *Jan 2026 - Present*
+**Senior Smart Contract Engineer** *Jan 2026 – Present*
 - Contributing to [Spark](https://spark.fi/), a Sky-backed onchain capital allocator with ~$7B+ TVL across SparkLend, the Spark Liquidity Layer, and Spark Savings - SparkLend alone is one of the top 3 largest lending protocols in DeFi by TVL
 - Part of the team building [diamond-pau](https://github.com/sky-ecosystem/diamond-pau), the next-generation onchain allocator that replaces the original Spark Liquidity Layer allocator and is now live in production on Ethereum mainnet and Arbitrum, routing capital across Aave, Curve, Uniswap, Maple, Pendle, Morpho, and more
 - Review governance spells in [spark-spells](https://github.com/sparkdotfi/spark-spells), the repo that executes Spark's onchain governance proposals, which ship roughly every two weeks
@@ -27,7 +27,7 @@ template = "cv.html"
 General activity: [sparkdotfi contributions](https://github.com/TheMj0ln1r?org=sparkdotfi&) · [sky-ecosystem contributions](https://github.com/TheMj0ln1r?org=sky-ecosystem&)
 
 ### Supra
-**Lead Blockchain Engineer** *Apr 2025 - Jan 2026*
+**Lead Blockchain Engineer** *Apr 2025 – Jan 2026*
 - Led the SupraNova technical team of up to 8 engineers as Technical Lead, overseeing architecture and implementation
 - Architected the SupraNova bridge protocol, including bidirectional EVM to Supra bridge design with smart contracts, off-chain relayers, and monitoring services
 - Designed and implemented a cross-chain dynamic fee calculation model with fuzz testing
@@ -39,14 +39,14 @@ General activity: [sparkdotfi contributions](https://github.com/TheMj0ln1r?org=s
 - Updated internal Ethereum full nodes and bridge codebase for compatibility with Fusaka hard fork
 - Established multisig admin accounts and secure private key management for off-chain infrastructure
 
-**Senior Blockchain Engineer** *August 2024 - February 2025*
+**Senior Blockchain Engineer** *Aug 2024 – Feb 2025*
 - Researched cross-chain interoperability solutions with deep analysis of Wormhole, deBridge, LayerZero, Hyperbridge, Hyperlane, Axelar, Telepathy, ZK Bridge, Circle CCTP, and Dexlyn
 - Architected Supra's interoperability solution based on research findings
 - Implemented novel algorithms in Solidity including sliding window and order-preserving mechanisms in non-interactive setups
 - Built trustless bridge smart contracts in Solidity and off-chain components including relayers and light clients in Rust
 - Conducted security reviews of bridge implementations
 
-**Blockchain Engineer** *Feb 2024 - July 2024*
+**Blockchain Engineer** *Feb 2024 – Jul 2024*
 - Prototyped Hyperloop, a non-interactive multisig cross-chain bridge for research publication
 - Studied Ethereum consensus specifications, sync-committee protocol, security models of trustless bridges, beacon chain architecture, full nodes, and light clients with focus on Helios
 - Updated internal Ethereum full nodes and bridge codebase for compatibility with Electra hard fork
@@ -110,8 +110,7 @@ General activity: [sparkdotfi contributions](https://github.com/TheMj0ln1r?org=s
 
 ## Domains of Interest
 
+- Smart Contract Development
 - Security Research
 - Blockchain Interoperability
 - Zero Knowledge Proofs
-- Smart Contract Auditing
-- Web3 Development
