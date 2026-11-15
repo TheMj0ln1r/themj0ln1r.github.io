@@ -1,0 +1,253 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="width=device-width,initial-scale=1.0" name=viewport><title>Google CTF 2023 | Charan Nomula</title><meta content="Google CTF 2023" property=og:title><meta content="Building smart contracts. Reviewing smart contracts." name=description><meta content="Building smart contracts. Reviewing smart contracts." property=og:description><meta content=https://themj0ln1r.com/ctf/googlectf23/ property=og:url><meta content=#ffffff name=theme-color><link href=/favicons/favicon.ico rel=icon><link as=font crossorigin href=https://themj0ln1r.com/fonts/v/source-serif-4-normal.woff2 rel=preload type=font/woff2><link as=font crossorigin href=https://themj0ln1r.com/fonts/v/inter-normal.woff2 rel=preload type=font/woff2><link href=https://themj0ln1r.com/main.css rel=stylesheet><script defer src=https://themj0ln1r.com/js/codeblock.js></script><script>MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script><script defer src=https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js></script><script async data-goatcounter=https://themj0ln1r.goatcounter.com/count src=https://themj0ln1r.com/js/count.js></script><body><a class=skip-link href=#main>Skip to content</a><header class=site-header><div class="container header-inner"><a class=brand href=https://themj0ln1r.com/>Charan Nomula</a><nav aria-label=Main class=site-nav><a href=https://themj0ln1r.com/writings/>Writing</a><a href=https://themj0ln1r.com/ctf/>CTF Writeups</a></nav></div></header><main class=container id=main><article class=post><header class=post-head><a class=eyebrow href=https://themj0ln1r.com/ctf/>CTF Writeups</a><h1>Google CTF 2023</h1><div class=meta><span>Charan Nomula</span><span><time datetime=2023-06-26>June 26, 2023</time></span><span>3 min read</span></div></header><div class=prose><p>Hello all! I played <a href=https://ctftime.org/event/1929 target=_blank>Google CTF 2023</a> which was happened from 24 June to 26 June.<h1 id=crypto-least-common-genominator>Crypto - LEAST COMMON GENOMINATOR?</h1><p><img alt=LCG src=/assets/img/ctf_img/googlectf23/googlectf23_lcg.png><p>Attached File : [generate.py,dump.txt,flag.txt,public.pem]<p><code>generate.py</code><pre class="giallo z-code"><code data-lang=python><span class=giallo-l><span class=z-keyword>from</span><span> secret</span><span class=z-keyword> import</span><span> config</span></span>
+<span class=giallo-l><span class=z-keyword>from</span><span> Crypto.PublicKey</span><span class=z-keyword> import</span><span class=z-constant> RSA</span></span>
+<span class=giallo-l><span class=z-keyword>from</span><span> Crypto.Util.number</span><span class=z-keyword> import</span><span> bytes_to_long, isPrime</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">class</span><span class="z-entity z-name"> LCG</span><span>:</span></span>
+<span class=giallo-l><span>    lcg_m</span><span class=z-keyword> =</span><span> config.m</span></span>
+<span class=giallo-l><span>    lcg_c</span><span class=z-keyword> =</span><span> config.c</span></span>
+<span class=giallo-l><span>    lcg_n</span><span class=z-keyword> =</span><span> config.n</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">    def</span><span class=z-support> __init__</span><span class="z-variable z-parameter z-function">(self, lcg_s):</span></span>
+<span class=giallo-l><span class="z-variable z-language">        self</span><span>.state</span><span class=z-keyword> =</span><span> lcg_s</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">    def</span><span class=z-support> next</span><span class="z-variable z-parameter z-function">(self):</span></span>
+<span class=giallo-l><span class="z-variable z-language">        self</span><span>.state</span><span class=z-keyword> =</span><span> (</span><span class="z-variable z-language">self</span><span>.state</span><span class=z-keyword> *</span><span class="z-variable z-language"> self</span><span>.lcg_m</span><span class=z-keyword> +</span><span class="z-variable z-language"> self</span><span>.lcg_c)</span><span class=z-keyword> %</span><span class="z-variable z-language"> self</span><span>.lcg_n</span></span>
+<span class=giallo-l><span class=z-keyword>        return</span><span class="z-variable z-language"> self</span><span>.state</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class=z-keyword>if</span><span class="z-support z-variable"> __name__</span><span class=z-keyword> ==</span><span class="z-punctuation z-definition z-string z-string"> '__main__'</span><span>:</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class=z-keyword>    assert</span><span class=z-constant> 4096</span><span class=z-keyword> %</span><span> config.it</span><span class=z-keyword> ==</span><span class=z-constant> 0</span></span>
+<span class=giallo-l><span class=z-keyword>    assert</span><span> config.it</span><span class=z-keyword> ==</span><span class=z-constant> 8</span></span>
+<span class=giallo-l><span class=z-keyword>    assert</span><span class=z-constant> 4096</span><span class=z-keyword> %</span><span> config.bits</span><span class=z-keyword> ==</span><span class=z-constant> 0</span></span>
+<span class=giallo-l><span class=z-keyword>    assert</span><span> config.bits</span><span class=z-keyword> ==</span><span class=z-constant> 512</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Find prime value of specified bits a specified amount of times</span></span>
+<span class=giallo-l><span>    seed</span><span class=z-keyword> =</span><span class=z-constant> 211286818345627549183608678726370412218029639873054513839005340650674982169404937862395980568550063504804783328450267566224937880641772833325018028629959635</span></span>
+<span class=giallo-l><span>    lcg</span><span class=z-keyword> =</span><span> LCG(seed)</span></span>
+<span class=giallo-l><span>    primes_arr</span><span class=z-keyword> =</span><span> []</span></span>
+<span class=giallo-l><span>    </span></span>
+<span class=giallo-l><span>    dump</span><span class=z-keyword> =</span><span class=z-constant> True</span></span>
+<span class=giallo-l><span>    items</span><span class=z-keyword> =</span><span class=z-constant> 0</span></span>
+<span class=giallo-l><span>    dump_file</span><span class=z-keyword> =</span><span class=z-support> open</span><span>(</span><span class="z-punctuation z-definition z-string z-string">"dump.txt"</span><span>,</span><span class="z-punctuation z-definition z-string z-string"> "w"</span><span>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>    primes_n</span><span class=z-keyword> =</span><span class=z-constant> 1</span></span>
+<span class=giallo-l><span class=z-keyword>    while</span><span class=z-constant> True</span><span>:</span></span>
+<span class=giallo-l><span class=z-keyword>        for</span><span> i</span><span class=z-keyword> in</span><span class=z-support> range</span><span>(config.it):</span></span>
+<span class=giallo-l><span class=z-keyword>            while</span><span class=z-constant> True</span><span>:</span></span>
+<span class=giallo-l><span>                prime_candidate</span><span class=z-keyword> =</span><span> lcg.next()</span></span>
+<span class=giallo-l><span class=z-keyword>                if</span><span> dump:</span></span>
+<span class=giallo-l><span>                    dump_file.write(</span><span class=z-support>str</span><span>(prime_candidate)</span><span class=z-keyword> +</span><span class="z-punctuation z-definition z-string"> '</span><span class=z-constant>\n</span><span class="z-punctuation z-definition z-string">'</span><span>)</span></span>
+<span class=giallo-l><span>                    items</span><span class=z-keyword> +=</span><span class=z-constant> 1</span></span>
+<span class=giallo-l><span class=z-keyword>                    if</span><span> items</span><span class=z-keyword> ==</span><span class=z-constant> 6</span><span>:</span></span>
+<span class=giallo-l><span>                        dump</span><span class=z-keyword> =</span><span class=z-constant> False</span></span>
+<span class=giallo-l><span>                        dump_file.close()</span></span>
+<span class=giallo-l><span class=z-keyword>                if not</span><span> isPrime(prime_candidate):</span></span>
+<span class=giallo-l><span class=z-keyword>                    continue</span></span>
+<span class=giallo-l><span class=z-keyword>                elif</span><span> prime_candidate.bit_length()</span><span class=z-keyword> !=</span><span> config.bits:</span></span>
+<span class=giallo-l><span class=z-keyword>                    continue</span></span>
+<span class=giallo-l><span class=z-keyword>                else</span><span>:</span></span>
+<span class=giallo-l><span>                    primes_n</span><span class=z-keyword> *=</span><span> prime_candidate</span></span>
+<span class=giallo-l><span>                    primes_arr.append(prime_candidate)</span></span>
+<span class=giallo-l><span class=z-keyword>                    break</span></span>
+<span class=giallo-l><span>        </span></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">        # Check bit length</span></span>
+<span class=giallo-l><span class=z-keyword>        if</span><span> primes_n.bit_length()</span><span class=z-keyword> ></span><span class=z-constant> 4096</span><span>:</span></span>
+<span class=giallo-l><span class=z-support>            print</span><span>(</span><span class="z-punctuation z-definition z-string z-string">"bit length"</span><span>, primes_n.bit_length())</span></span>
+<span class=giallo-l><span>            primes_arr.clear()</span></span>
+<span class=giallo-l><span>            primes_n</span><span class=z-keyword> =</span><span class=z-constant> 1</span></span>
+<span class=giallo-l><span class=z-keyword>            continue</span></span>
+<span class=giallo-l><span class=z-keyword>        else</span><span>:</span></span>
+<span class=giallo-l><span class=z-keyword>            break</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Create public key 'n'</span></span>
+<span class=giallo-l><span>    n</span><span class=z-keyword> =</span><span class=z-constant> 1</span></span>
+<span class=giallo-l><span class=z-keyword>    for</span><span> j</span><span class=z-keyword> in</span><span> primes_arr:</span></span>
+<span class=giallo-l><span>        n</span><span class=z-keyword> *=</span><span> j</span></span>
+<span class=giallo-l><span class=z-support>    print</span><span>(</span><span class="z-punctuation z-definition z-string z-string">"[+] Public Key: "</span><span>, n)</span></span>
+<span class=giallo-l><span class=z-support>    print</span><span>(</span><span class="z-punctuation z-definition z-string z-string">"[+] size: "</span><span>, n.bit_length(),</span><span class="z-punctuation z-definition z-string z-string"> "bits"</span><span>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Calculate totient 'Phi(n)'</span></span>
+<span class=giallo-l><span>    phi</span><span class=z-keyword> =</span><span class=z-constant> 1</span></span>
+<span class=giallo-l><span class=z-keyword>    for</span><span> k</span><span class=z-keyword> in</span><span> primes_arr:</span></span>
+<span class=giallo-l><span>        phi</span><span class=z-keyword> *=</span><span> (k</span><span class=z-keyword> -</span><span class=z-constant> 1</span><span>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Calculate private key 'd'</span></span>
+<span class=giallo-l><span>    d</span><span class=z-keyword> =</span><span class=z-support> pow</span><span>(config.e,</span><span class=z-keyword> -</span><span class=z-constant>1</span><span>, phi)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Generate Flag</span></span>
+<span class=giallo-l><span class=z-keyword>    assert</span><span> config.flag.startswith(</span><span class="z-storage z-type">b</span><span class="z-punctuation z-definition z-string z-string">"CTF{"</span><span>)</span></span>
+<span class=giallo-l><span class=z-keyword>    assert</span><span> config.flag.endswith(</span><span class="z-storage z-type">b</span><span class="z-punctuation z-definition z-string z-string">"}"</span><span>)</span></span>
+<span class=giallo-l><span>    enc_flag</span><span class=z-keyword> =</span><span> bytes_to_long(config.flag)</span></span>
+<span class=giallo-l><span class=z-keyword>    assert</span><span> enc_flag</span><span class=z-keyword> &lt;</span><span> n</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Encrypt Flag</span></span>
+<span class=giallo-l><span>    _enc</span><span class=z-keyword> =</span><span class=z-support> pow</span><span>(enc_flag, config.e, n)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class=z-keyword>    with</span><span class=z-support> open</span><span> (</span><span class="z-punctuation z-definition z-string z-string">"flag.txt"</span><span>,</span><span class="z-punctuation z-definition z-string z-string"> "wb"</span><span>)</span><span class=z-keyword> as</span><span> flag_file:</span></span>
+<span class=giallo-l><span>        flag_file.write(_enc.to_bytes(n.bit_length(),</span><span class="z-punctuation z-definition z-string z-string"> "little"</span><span>))</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Export RSA Key</span></span>
+<span class=giallo-l><span>    rsa</span><span class=z-keyword> =</span><span class=z-constant> RSA</span><span>.construct((n, config.e))</span></span>
+<span class=giallo-l><span class=z-keyword>    with</span><span class=z-support> open</span><span> (</span><span class="z-punctuation z-definition z-string z-string">"public.pem"</span><span>,</span><span class="z-punctuation z-definition z-string z-string"> "w"</span><span>)</span><span class=z-keyword> as</span><span> pub_file:</span></span>
+<span class=giallo-l><span>        pub_file.write(rsa.exportKey().decode())</span></span></code></pre><p><code>dump.txt</code><pre class="giallo z-code"><code data-lang=plain><span class=giallo-l><span>2166771675595184069339107365908377157701164485820981409993925279512199123418374034275465590004848135946671454084220731645099286746251308323653144363063385</span></span>
+<span class=giallo-l><span>6729272950467625456298454678219613090467254824679318993052294587570153424935267364971827277137521929202783621553421958533761123653824135472378133765236115</span></span>
+<span class=giallo-l><span>2230396903302352921484704122705539403201050490164649102182798059926343096511158288867301614648471516723052092761312105117735046752506523136197227936190287</span></span>
+<span class=giallo-l><span>4578847787736143756850823407168519112175260092601476810539830792656568747136604250146858111418705054138266193348169239751046779010474924367072989895377792</span></span>
+<span class=giallo-l><span>7578332979479086546637469036948482551151240099803812235949997147892871097982293017256475189504447955147399405791875395450814297264039908361472603256921612</span></span>
+<span class=giallo-l><span>2550420443270381003007873520763042837493244197616666667768397146110589301602119884836605418664463550865399026934848289084292975494312467018767881691302197</span></span></code></pre><p>And the <code>flag.txt</code> is an encrypted flag.<p>Observations:<pre class="giallo z-code"><code data-lang=plain><span class=giallo-l><span>1. The actual flag was encrypted with the RSA</span></span>
+<span class=giallo-l><span>2. The primes are generated using a Linear Congruential Generator</span></span>
+<span class=giallo-l><span>3. The seed is known</span></span>
+<span class=giallo-l><span>4. First 6 generated random values of LCG are known</span></span></code></pre><p>The LCG works on equation :<p>$$ X_{n+1} = (a \times X_{n}+c) mod p $$<p>Where,<ul><li>$$X(n)$$ is a sequence of pseudo random values.<li>$$p$$ is modulo defined as $$0 &lt; p$$<li>$$a$$ is the multiplier defined as $$0 &lt; a &lt; p$$<li>$$c$$ is the increment $$0 &lt;= c &lt; p$$ ( if $$c = 0$$ the LCG is called Multiplicative Congruential Generator)</ul><p>We can see the generate.py implementation.<p><code>lcg_m = a lcg_c = c lcg_n = p</code><p>We have total generated values of lcg including seed.<p>We can find the <code>n(modulus)</code> by making the 4 $$2 \times 2$$ matrices from $$ X_1,X_2,X_3,X_4,X_5,X_6,X_7$$ and finding the GCD of the determinant values of these 7 values.<p>The 4 $$2 \times 2$$ matrices, $$ \begin{bmatrix} X_1 - X_0 & X_2 - X_1\ X_2 - X_0 & X_3 - X_1 \end{bmatrix} \begin{bmatrix} X_2 - X_0 & X_3 - X_1\ X_3 - X_0 & X_4 - X_1 \end{bmatrix}$$<p>$$ \begin{bmatrix} X_3 - X_0 & X_4 - X_1\ X_4 - X_0 & X_5 - X_1 \end{bmatrix}, \begin{bmatrix} X_4 - X_0 & X_5 - X_1\ X_5 - X_0 & X_6 - X_1 \end{bmatrix} $$<p>Finding determinant of these all and then finding the GCD of them will give us the modulus(n) used in lcg.<p>With $$n$$ we can find $$a$$ by solving these equations.<p>$$ X_1 = (a \times X_0+c) mod p\ X_2 = (a \times X_1+c) mod p\ $$<p>$$ X_2 - X_1 = (a \times X_1+c - (X_0 \times a+c)) mod p\ X_2 - X_1 = (a \times X_1 - (X_0 \times a)) mod p\ X_2 - X_1 = (X_1 - X_0) \times a mod p\ \frac{X_2 - X_1}{X_1 - X_0} = a mod p \ a = \frac{X_2 - X_1}{X_1 - X_0} mod p\ a = ((X_2 - X_1)) \times InverseMod(X_1 - X_0,p) mod p\ $$<p>Lets solve for $$c$$,<p>$$ X_1 = (a \times X_0+c) mod p\ X_1 - c = (a \times X_0) mod p\ -c = (a \times X_0 - X_1) mod p\ c = (X_1 - a \times X_0) mod p $$<p>So, with <code>n,c,m</code> we can generate entire series which is used to generate primes in the encryption.<p>The python implementation to find <code>n,c,m</code><pre class="giallo z-code"><code data-lang=python><span class=giallo-l><span class=z-keyword>import</span><span> math</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">def</span><span class="z-entity z-name"> calc_det</span><span class="z-variable z-parameter z-function">(i, j, X):</span></span>
+<span class=giallo-l><span>    a1</span><span class=z-keyword> =</span><span> X[i]</span><span class=z-keyword> -</span><span> X[</span><span class=z-constant>0</span><span>]</span></span>
+<span class=giallo-l><span>    b1</span><span class=z-keyword> =</span><span> X[i</span><span class=z-keyword> +</span><span class=z-constant> 1</span><span>]</span><span class=z-keyword> -</span><span> X[</span><span class=z-constant>1</span><span>]</span></span>
+<span class=giallo-l><span>    a2</span><span class=z-keyword> =</span><span> X[j]</span><span class=z-keyword> -</span><span> X[</span><span class=z-constant>0</span><span>]</span></span>
+<span class=giallo-l><span>    b2</span><span class=z-keyword> =</span><span> X[j</span><span class=z-keyword> +</span><span class=z-constant> 1</span><span>]</span><span class=z-keyword> -</span><span> X[</span><span class=z-constant>1</span><span>]</span></span>
+<span class=giallo-l><span>    det</span><span class=z-keyword> =</span><span> a1</span><span class=z-keyword> *</span><span> b2</span><span class=z-keyword> -</span><span> a2</span><span class=z-keyword> *</span><span> b1</span></span>
+<span class=giallo-l><span class=z-keyword>    return</span><span class=z-support> abs</span><span>(det)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">def</span><span class="z-entity z-name"> GCD</span><span class="z-variable z-parameter z-function">(a, b):</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>    a</span><span class=z-keyword> =</span><span class=z-support> abs</span><span>(a)</span></span>
+<span class=giallo-l><span>    b</span><span class=z-keyword> =</span><span class=z-support> abs</span><span>(b)</span></span>
+<span class=giallo-l><span class=z-keyword>    while</span><span> a:</span></span>
+<span class=giallo-l><span>        a, b</span><span class=z-keyword> =</span><span> b</span><span class=z-keyword> %</span><span> a, a</span></span>
+<span class=giallo-l><span class=z-keyword>    return</span><span> b</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">def</span><span class="z-entity z-name"> modInverse</span><span class="z-variable z-parameter z-function">(a, m):</span></span>
+<span class=giallo-l><span class=z-keyword>    if</span><span> GCD(a, m)</span><span class=z-keyword> !=</span><span class=z-constant> 1</span><span>:</span></span>
+<span class=giallo-l><span class=z-keyword>        return</span><span class=z-constant> None</span><span class="z-punctuation z-definition z-comment z-comment">  #if not releatively prime no modinv</span></span>
+<span class=giallo-l><span>    u1, u2, u3</span><span class=z-keyword> =</span><span class=z-constant> 1</span><span>,</span><span class=z-constant> 0</span><span>, a</span></span>
+<span class=giallo-l><span>    v1, v2, v3</span><span class=z-keyword> =</span><span class=z-constant> 0</span><span>,</span><span class=z-constant> 1</span><span>, m</span></span>
+<span class=giallo-l><span class=z-keyword>    while</span><span> v3</span><span class=z-keyword> !=</span><span class=z-constant> 0</span><span>:</span></span>
+<span class=giallo-l><span>        q</span><span class=z-keyword> =</span><span> u3</span><span class=z-keyword> //</span><span> v3 </span></span>
+<span class=giallo-l><span>        v1, v2, v3, u1, u2, u3</span><span class=z-keyword> =</span><span> (</span></span>
+<span class=giallo-l><span>            u1</span><span class=z-keyword> -</span><span> q</span><span class=z-keyword> *</span><span> v1,</span></span>
+<span class=giallo-l><span>            u2</span><span class=z-keyword> -</span><span> q</span><span class=z-keyword> *</span><span> v2,</span></span>
+<span class=giallo-l><span>            u3</span><span class=z-keyword> -</span><span> q</span><span class=z-keyword> *</span><span> v3,</span></span>
+<span class=giallo-l><span>            v1,</span></span>
+<span class=giallo-l><span>            v2,</span></span>
+<span class=giallo-l><span>            v3,</span></span>
+<span class=giallo-l><span>        )</span></span>
+<span class=giallo-l><span class=z-keyword>    return</span><span> u1</span><span class=z-keyword> %</span><span> m</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">def</span><span class="z-entity z-name"> main</span><span>():</span></span>
+<span class=giallo-l><span class=z-keyword>    while</span><span class=z-constant> True</span><span>:</span></span>
+<span class=giallo-l><span class=z-keyword>        try</span><span>:</span></span>
+<span class=giallo-l><span>            X</span><span class=z-keyword> =</span><span> [</span></span>
+<span class=giallo-l><span class=z-constant>                211286818345627549183608678726370412218029639873054513839005340650674982169404937862395980568550063504804783328450267566224937880641772833325018028629959635</span><span>,</span></span>
+<span class=giallo-l><span class=z-constant>                2166771675595184069339107365908377157701164485820981409993925279512199123418374034275465590004848135946671454084220731645099286746251308323653144363063385</span><span>,</span></span>
+<span class=giallo-l><span class=z-constant>                6729272950467625456298454678219613090467254824679318993052294587570153424935267364971827277137521929202783621553421958533761123653824135472378133765236115</span><span>,</span></span>
+<span class=giallo-l><span class=z-constant>                2230396903302352921484704122705539403201050490164649102182798059926343096511158288867301614648471516723052092761312105117735046752506523136197227936190287</span><span>,</span></span>
+<span class=giallo-l><span class=z-constant>                4578847787736143756850823407168519112175260092601476810539830792656568747136604250146858111418705054138266193348169239751046779010474924367072989895377792</span><span>,</span></span>
+<span class=giallo-l><span class=z-constant>                7578332979479086546637469036948482551151240099803812235949997147892871097982293017256475189504447955147399405791875395450814297264039908361472603256921612</span><span>,</span></span>
+<span class=giallo-l><span class=z-constant>                2550420443270381003007873520763042837493244197616666667768397146110589301602119884836605418664463550865399026934848289084292975494312467018767881691302197</span><span>,</span></span>
+<span class=giallo-l><span>            ]</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>            Det_X</span><span class=z-keyword> =</span><span> []</span></span>
+<span class=giallo-l><span>            Det_X.append(calc_det(</span><span class=z-constant>1</span><span>,</span><span class=z-constant> 2</span><span>, X))</span></span>
+<span class=giallo-l><span>            Det_X.append(calc_det(</span><span class=z-constant>2</span><span>,</span><span class=z-constant> 3</span><span>, X))</span></span>
+<span class=giallo-l><span>            Det_X.append(calc_det(</span><span class=z-constant>3</span><span>,</span><span class=z-constant> 4</span><span>, X))</span></span>
+<span class=giallo-l><span>            Det_X.append(calc_det(</span><span class=z-constant>4</span><span>,</span><span class=z-constant> 5</span><span>, X))</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>            found_p</span><span class=z-keyword> =</span><span> math.gcd(math.gcd(Det_X[</span><span class=z-constant>0</span><span>], Det_X[</span><span class=z-constant>1</span><span>]), math.gcd(Det_X[</span><span class=z-constant>2</span><span>], Det_X[</span><span class=z-constant>3</span><span>]))</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">            # To find 'a' and 'c' we need to solve the </span></span>
+<span class=giallo-l><span>            mod_inv_a</span><span class=z-keyword> =</span><span> modInverse((X[</span><span class=z-constant>2</span><span>]</span><span class=z-keyword> -</span><span> X[</span><span class=z-constant>3</span><span>]), found_p) </span></span>
+<span class=giallo-l><span>            found_a</span><span class=z-keyword> =</span><span> ((X[</span><span class=z-constant>3</span><span>]</span><span class=z-keyword> -</span><span> X[</span><span class=z-constant>4</span><span>])</span><span class=z-keyword> *</span><span> mod_inv_a)</span><span class=z-keyword> %</span><span> found_p</span></span>
+<span class=giallo-l><span>            </span></span>
+<span class=giallo-l><span>            found_c</span><span class=z-keyword> =</span><span> (X[</span><span class=z-constant>4</span><span>]</span><span class=z-keyword> -</span><span> found_a</span><span class=z-keyword> *</span><span> X[</span><span class=z-constant>3</span><span>])</span><span class=z-keyword> %</span><span> found_p</span></span>
+<span class=giallo-l><span>           </span></span>
+<span class=giallo-l><span class=z-support>            print</span><span>(</span><span class="z-punctuation z-definition z-string z-string">"n = </span><span class=z-constant>%d\n</span><span class=z-string>m = </span><span class=z-constant>%d\n</span><span class=z-string>c = </span><span class=z-constant>%d\n</span><span class="z-punctuation z-definition z-string">"</span><span class=z-keyword> %</span><span> (found_p, found_a, found_c))</span></span>
+<span class=giallo-l><span class=z-keyword>            break</span></span>
+<span class=giallo-l><span class=z-keyword>        except</span><span class=z-support> TypeError</span><span>:</span></span>
+<span class=giallo-l><span class=z-keyword>            pass</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class=z-keyword>if</span><span class="z-support z-variable"> __name__</span><span class=z-keyword> ==</span><span class="z-punctuation z-definition z-string z-string"> "__main__"</span><span>:</span></span>
+<span class=giallo-l><span>    main()</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">#Output</span></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment"># n = 8311271273016946265169120092240227882013893131681882078655426814178920681968884651437107918874328518499850252591810409558783335118823692585959490215446923</span></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment"># m = 99470802153294399618017402366955844921383026244330401927153381788409087864090915476376417542092444282980114205684938728578475547514901286372129860608477</span></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment"># c = 3910539794193409979886870049869456815685040868312878537393070815966881265118275755165613835833103526090552456472867019296386475520134783987251699999776365</span></span></code></pre><p>With these values as input we can find the modulus used in the encryption, <code>n</code>, <code>phi</code> and followed by <code>d</code>.<p>Or we can just import the <code>public.pem</code> to find <code>e,n</code> used in the encryption.<p>Here is the final solution script to get the flag.<pre class="giallo z-code"><code data-lang=python><span class=giallo-l><span class=z-keyword>from</span><span> Crypto.PublicKey</span><span class=z-keyword> import</span><span class=z-constant> RSA</span></span>
+<span class=giallo-l><span class=z-keyword>from</span><span> Crypto.Util.number</span><span class=z-keyword> import</span><span> bytes_to_long, isPrime,long_to_bytes</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">class</span><span class="z-entity z-name"> LCG</span><span>:</span></span>
+<span class=giallo-l><span>    lcg_m</span><span class=z-keyword> =</span><span class=z-constant> 99470802153294399618017402366955844921383026244330401927153381788409087864090915476376417542092444282980114205684938728578475547514901286372129860608477</span></span>
+<span class=giallo-l><span>    lcg_c</span><span class=z-keyword> =</span><span class=z-constant> 3910539794193409979886870049869456815685040868312878537393070815966881265118275755165613835833103526090552456472867019296386475520134783987251699999776365</span></span>
+<span class=giallo-l><span>    lcg_n</span><span class=z-keyword> =</span><span class=z-constant> 8311271273016946265169120092240227882013893131681882078655426814178920681968884651437107918874328518499850252591810409558783335118823692585959490215446923</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">    def</span><span class=z-support> __init__</span><span class="z-variable z-parameter z-function">(self, lcg_s):</span></span>
+<span class=giallo-l><span class="z-variable z-language">        self</span><span>.state</span><span class=z-keyword> =</span><span> lcg_s</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">    def</span><span class=z-support> next</span><span class="z-variable z-parameter z-function">(self):</span></span>
+<span class=giallo-l><span class="z-variable z-language">        self</span><span>.state</span><span class=z-keyword> =</span><span> (</span><span class="z-variable z-language">self</span><span>.state</span><span class=z-keyword> *</span><span class="z-variable z-language"> self</span><span>.lcg_m</span><span class=z-keyword> +</span><span class="z-variable z-language"> self</span><span>.lcg_c)</span><span class=z-keyword> %</span><span class="z-variable z-language"> self</span><span>.lcg_n</span></span>
+<span class=giallo-l><span class=z-keyword>        return</span><span class="z-variable z-language"> self</span><span>.state</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class=z-keyword>if</span><span class="z-support z-variable"> __name__</span><span class=z-keyword> ==</span><span class="z-punctuation z-definition z-string z-string"> '__main__'</span><span>:</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>    it</span><span class=z-keyword> =</span><span class=z-constant> 8</span></span>
+<span class=giallo-l><span>    bits</span><span class=z-keyword> =</span><span class=z-constant> 512</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Find prime value of specified bits a specified amount of times</span></span>
+<span class=giallo-l><span>    seed</span><span class=z-keyword> =</span><span class=z-constant> 211286818345627549183608678726370412218029639873054513839005340650674982169404937862395980568550063504804783328450267566224937880641772833325018028629959635</span></span>
+<span class=giallo-l><span>    lcg</span><span class=z-keyword> =</span><span> LCG(seed)</span></span>
+<span class=giallo-l><span>    primes_arr</span><span class=z-keyword> =</span><span> []</span></span>
+<span class=giallo-l><span>    </span></span>
+<span class=giallo-l><span>    dump</span><span class=z-keyword> =</span><span class=z-constant> True</span></span>
+<span class=giallo-l><span>    items</span><span class=z-keyword> =</span><span class=z-constant> 0</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>    primes_n</span><span class=z-keyword> =</span><span class=z-constant> 1</span></span>
+<span class=giallo-l><span class=z-keyword>    while</span><span class=z-constant> True</span><span>:</span></span>
+<span class=giallo-l><span class=z-keyword>        for</span><span> i</span><span class=z-keyword> in</span><span class=z-support> range</span><span>(it):</span></span>
+<span class=giallo-l><span class=z-keyword>            while</span><span class=z-constant> True</span><span>:</span></span>
+<span class=giallo-l><span>                prime_candidate</span><span class=z-keyword> =</span><span> lcg.next()</span></span>
+<span class=giallo-l><span class=z-keyword>                if not</span><span> isPrime(prime_candidate):</span></span>
+<span class=giallo-l><span class=z-keyword>                    continue</span></span>
+<span class=giallo-l><span class=z-keyword>                elif</span><span> prime_candidate.bit_length()</span><span class=z-keyword> !=</span><span> bits:</span></span>
+<span class=giallo-l><span class=z-keyword>                    continue</span></span>
+<span class=giallo-l><span class=z-keyword>                else</span><span>:</span></span>
+<span class=giallo-l><span>                    primes_n</span><span class=z-keyword> *=</span><span> prime_candidate</span></span>
+<span class=giallo-l><span>                    primes_arr.append(prime_candidate)</span></span>
+<span class=giallo-l><span class=z-keyword>                    break</span></span>
+<span class=giallo-l><span>        </span></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">        # Check bit length</span></span>
+<span class=giallo-l><span class=z-keyword>        if</span><span> primes_n.bit_length()</span><span class=z-keyword> ></span><span class=z-constant> 4096</span><span>:</span></span>
+<span class=giallo-l><span class=z-support>            print</span><span>(</span><span class="z-punctuation z-definition z-string z-string">"bit length"</span><span>, primes_n.bit_length())</span></span>
+<span class=giallo-l><span>            primes_arr.clear()</span></span>
+<span class=giallo-l><span>            primes_n</span><span class=z-keyword> =</span><span class=z-constant> 1</span></span>
+<span class=giallo-l><span class=z-keyword>            continue</span></span>
+<span class=giallo-l><span class=z-keyword>        else</span><span>:</span></span>
+<span class=giallo-l><span class=z-keyword>            break</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Create public key 'n'</span></span>
+<span class=giallo-l><span>    n</span><span class=z-keyword> =</span><span class=z-constant> 1</span></span>
+<span class=giallo-l><span class=z-keyword>    for</span><span> j</span><span class=z-keyword> in</span><span> primes_arr:</span></span>
+<span class=giallo-l><span>        n</span><span class=z-keyword> *=</span><span> j</span></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Calculate totient 'Phi(n)'</span></span>
+<span class=giallo-l><span>    phi</span><span class=z-keyword> =</span><span class=z-constant> 1</span></span>
+<span class=giallo-l><span class=z-keyword>    for</span><span> k</span><span class=z-keyword> in</span><span> primes_arr:</span></span>
+<span class=giallo-l><span>        phi</span><span class=z-keyword> *=</span><span> (k</span><span class=z-keyword> -</span><span class=z-constant> 1</span><span>)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Read the public key from the "public.pem" file</span></span>
+<span class=giallo-l><span class=z-keyword>    with</span><span class=z-support> open</span><span>(</span><span class="z-punctuation z-definition z-string z-string">"public.pem"</span><span>,</span><span class="z-punctuation z-definition z-string z-string"> "rb"</span><span>)</span><span class=z-keyword> as</span><span> pub_file:</span></span>
+<span class=giallo-l><span>        rsa_key</span><span class=z-keyword> =</span><span class=z-constant> RSA</span><span>.import_key(pub_file.read())</span></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Extract the values of e and n from the RSA key</span></span>
+<span class=giallo-l><span>    e</span><span class=z-keyword> =</span><span> rsa_key.e</span></span>
+<span class=giallo-l><span>    n</span><span class=z-keyword> =</span><span> rsa_key.n</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # Calculate private key 'd'</span></span>
+<span class=giallo-l><span>    d</span><span class=z-keyword> =</span><span class=z-support> pow</span><span>(e,</span><span class=z-keyword> -</span><span class=z-constant>1</span><span>, phi)</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class=z-keyword>    with</span><span class=z-support> open</span><span>(</span><span class="z-punctuation z-definition z-string z-string">"flag.txt"</span><span>,</span><span class="z-punctuation z-definition z-string z-string"> "rb"</span><span>)</span><span class=z-keyword> as</span><span> flag_file:</span></span>
+<span class=giallo-l><span>        flag_data</span><span class=z-keyword> =</span><span> flag_file.read()</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>    _enc</span><span class=z-keyword> =</span><span class=z-support> int</span><span>.from_bytes(flag_data,</span><span class="z-punctuation z-definition z-string z-string"> "little"</span><span>)</span></span>
+<span class=giallo-l><span>   </span></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment">    # decrypt flag</span></span>
+<span class=giallo-l><span>    flag</span><span class=z-keyword> =</span><span class=z-support> pow</span><span>(_enc,d,n)</span></span>
+<span class=giallo-l><span class=z-support>    print</span><span>(long_to_bytes(flag))</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-punctuation z-definition z-comment z-comment"># b'CTF{C0nGr@tz_RiV35t_5h4MiR_nD_Ad13MaN_W0ulD_b_h@pPy}'</span></span>
+<span class=giallo-l></span></code></pre><blockquote><p><code>Flag : CTF{C0nGr@tz_RiV35t_5h4MiR_nD_Ad13MaN_W0ulD_b_h@pPy}</code></blockquote><hr><p>Reference : <a href=https://teamrocketist.github.io/2019/03/31/Crypto-VolgaCtf2019-LG/ target=_blank>https://teamrocketist.github.io/2019/03/31/Crypto-VolgaCtf2019-LG/</a></div><nav aria-label="More posts" class=post-nav><a href=https://themj0ln1r.com/ctf/nahamconctf23/><span>Older</span>Nahamcon CTF 2023</a><a class=next href=https://themj0ln1r.com/ctf/nullconhackimctf23/><span>Newer</span>Nullcon Hackim CTF 2023</a></nav></article></main><footer class=site-footer><div class="container footer-inner"><span>© 2026 Charan Nomula</span><nav aria-label=Elsewhere><a rel="me noopener" href=https://github.com/TheMj0ln1r/ target=_blank>GitHub</a><a rel="me noopener" href=https://x.com/TheMj0ln1r/ target=_blank>X</a><a rel="me noopener" href=https://linkedin.com/in/mj0ln1r/ target=_blank>LinkedIn</a></nav></div></footer>

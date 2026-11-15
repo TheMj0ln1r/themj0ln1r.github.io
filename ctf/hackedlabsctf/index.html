@@ -1,0 +1,111 @@
+<!doctype html><html lang=en><head><meta charset=UTF-8><meta content="width=device-width,initial-scale=1.0" name=viewport><title>Hacked Labs x Osec CTF 2023 | Charan Nomula</title><meta content="Hacked Labs x Osec CTF 2023" property=og:title><meta content="Building smart contracts. Reviewing smart contracts." name=description><meta content="Building smart contracts. Reviewing smart contracts." property=og:description><meta content=https://themj0ln1r.com/ctf/hackedlabsctf/ property=og:url><meta content=#ffffff name=theme-color><link href=/favicons/favicon.ico rel=icon><link as=font crossorigin href=https://themj0ln1r.com/fonts/v/source-serif-4-normal.woff2 rel=preload type=font/woff2><link as=font crossorigin href=https://themj0ln1r.com/fonts/v/inter-normal.woff2 rel=preload type=font/woff2><link href=https://themj0ln1r.com/main.css rel=stylesheet><script defer src=https://themj0ln1r.com/js/codeblock.js></script><script async data-goatcounter=https://themj0ln1r.goatcounter.com/count src=https://themj0ln1r.com/js/count.js></script><body><a class=skip-link href=#main>Skip to content</a><header class=site-header><div class="container header-inner"><a class=brand href=https://themj0ln1r.com/>Charan Nomula</a><nav aria-label=Main class=site-nav><a href=https://themj0ln1r.com/writings/>Writing</a><a href=https://themj0ln1r.com/ctf/>CTF Writeups</a></nav></div></header><main class=container id=main><article class=post><header class=post-head><a class=eyebrow href=https://themj0ln1r.com/ctf/>CTF Writeups</a><h1>Hacked Labs x Osec CTF 2023</h1><div class=meta><span>Charan Nomula</span><span><time datetime=2023-10-02>October 2, 2023</time></span><span>4 min read</span></div></header><div class=prose><p>Hello peers, I participated in a blockchain ctf conducted by 0xHacked Labs and OtterSec. These are the challenge writeups which i solved. We dont submit any flag to solve the challenge, we need to generate the ZK Proof of our exploit then that ZK Proof should be submitted to solve the challenge.<h1 id=babyotter>BabyOtter</h1><pre class="giallo z-code"><code data-lang=plain><span class=giallo-l><span>As easy as 1, 2, 1337..</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>rpc: http://18.207.142.64:38545</span></span>
+<span class=giallo-l><span>contract: 0x4e309C767Acc9f9366d75C186454ed205d5Eeee3</span></span>
+<span class=giallo-l><span>block_number: 3</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>Attached Files : [ https://github.com/0xHackedLabs/ctf/tree/main/src/BabyOtter/BabyOtter.sol ]</span></span></code></pre><p><code>BabyOtter.sol</code><pre class="giallo z-code"><code data-lang=solidity><span class=giallo-l><span class=z-comment>// SPDX-License-Identifier: UNLICENSED</span></span>
+<span class=giallo-l><span class=z-keyword>pragma</span><span class="z-entity z-name z-tag"> solidity</span><span class=z-constant> ^0.8.13</span><span>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">contract</span><span class="z-entity z-name"> BabyOtter</span><span> {</span></span>
+<span class=giallo-l><span class=z-support>    bool</span><span class="z-storage z-type"> public</span><span> solved </span><span class=z-keyword>=</span><span class=z-constant> false</span><span>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> solve</span><span>(</span><span class=z-support>uint</span><span class=z-variable> x</span><span>)</span><span class="z-storage z-type"> public</span><span> {</span></span>
+<span class=giallo-l><span class=z-keyword>        unchecked</span><span> {</span></span>
+<span class=giallo-l><span class=z-keyword>            assert</span><span>(x </span><span class=z-keyword>*</span><span class=z-constant> 0x1337</span><span class=z-keyword> ==</span><span class=z-constant> 1</span><span>);</span></span>
+<span class=giallo-l><span>        }</span></span>
+<span class=giallo-l><span>        solved </span><span class=z-keyword>=</span><span class=z-constant> true</span><span>;</span></span>
+<span class=giallo-l><span>    }</span></span>
+<span class=giallo-l><span>}</span></span></code></pre><p>The observation is that the contract uses <code>unchecked</code> block. unchecked block wont check for overflow of integer arithmetic. That means a <code>uint256</code> variable can store values less than <code>2**256-1</code>. If we tried to store values more than this value the value will be wrapped to mod <code>2**256</code>.<p>Simply, <code>uint256 x = 2**256 + 1</code> will become <code>0</code>. <code>uint256 x = 2**256 + 2</code> will be <code>1</code>.<p>So, we need to find value of <code>x</code> such that which can satisfy the equation <code>x * 0x1337 = 1</code>. We can think of this as a modular multiplicative inverse.<p><code>x = pow(0x1337, -1, 2**256)</code><p>In solidity we can find this as <code>x  =  0x1337 ** (2**254 -1)</code>. So, simply calling solve function with this value with the x value to solve the chalenge.<p><code>Exploit.sol</code><pre class="giallo z-code"><code data-lang=solidity><span class=giallo-l><span class=z-comment>// SPDX-License-Identifier: UNLICENSED</span></span>
+<span class=giallo-l><span class=z-keyword>pragma</span><span class="z-entity z-name z-tag"> solidity</span><span class=z-constant> ^0.8.13</span><span>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">interface</span><span class="z-entity z-name"> IBabyOtter</span><span> {</span></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> solve</span><span>(</span><span class=z-support>uint</span><span class=z-variable> x</span><span>)</span><span class="z-storage z-type"> external</span><span>;</span></span>
+<span class=giallo-l><span>}</span></span>
+<span class=giallo-l><span class="z-storage z-type">contract</span><span class="z-entity z-name"> Exploit</span><span> {</span></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> exploit</span><span>()</span><span class="z-storage z-type"> public</span><span> {</span></span>
+<span class=giallo-l><span class=z-comment>        // write code here</span></span>
+<span class=giallo-l><span class=z-support>        address</span><span> target </span><span class=z-keyword>=</span><span class=z-constant> 0x4e309C767Acc9f9366d75C186454ed205d5Eeee3</span><span>;</span></span>
+<span class=giallo-l><span class=z-support>        uint</span><span> leet </span><span class=z-keyword>=</span><span class=z-constant> 0x1337</span><span>;</span></span>
+<span class=giallo-l><span class=z-support>        uint</span><span> x;</span></span>
+<span class=giallo-l><span class=z-keyword>        unchecked</span><span>{x  </span><span class=z-keyword>=</span><span>  leet </span><span class=z-keyword>**</span><span> (</span><span class=z-constant>2</span><span class=z-keyword>**</span><span class=z-constant>254</span><span class=z-keyword> -</span><span class=z-constant>1</span><span>);}</span></span>
+<span class=giallo-l><span class="z-entity z-name">        IBabyOtter</span><span>(target).</span><span class="z-entity z-name">solve</span><span>(x);</span></span>
+<span class=giallo-l><span>    }</span></span>
+<span class=giallo-l><span>}</span></span></code></pre><p>We can test this challenge with foundry test script.<p><code>Exploit.t.sol</code><pre class="giallo z-code"><code data-lang=solidity><span class=giallo-l><span class=z-comment>// SPDX-License-Identifier: UNLICENSED</span></span>
+<span class=giallo-l><span class=z-keyword>pragma</span><span class="z-entity z-name z-tag"> solidity</span><span class=z-constant> ^0.8.13</span><span>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class=z-keyword>import</span><span> {</span><span class="z-entity z-name">Exploit as BoE</span><span>}</span><span class=z-keyword> from</span><span class=z-string> "../src/BabyOtter/Exploit.sol"</span><span>;</span></span>
+<span class=giallo-l><span class="z-storage z-type">interface</span><span class="z-entity z-name"> IChallenge</span><span> {</span></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> solved</span><span>()</span><span class="z-storage z-type z-keyword"> external returns</span><span>(</span><span class=z-support>bool</span><span>);</span></span>
+<span class=giallo-l><span>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">contract</span><span class="z-entity z-name"> ExploitTest</span><span class=z-storage> is</span><span class="z-entity z-name"> Test</span><span> {</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> setUp</span><span>()</span><span class="z-storage z-type"> public</span><span> {</span></span>
+<span class=giallo-l><span class=z-comment>        // fork the ctf chain</span></span>
+<span class=giallo-l><span>        vm.</span><span class="z-entity z-name">createSelectFork</span><span>(</span><span class=z-string>"http://18.207.142.64:38545"</span><span>,</span><span class=z-constant> 3</span><span>);</span></span>
+<span class=giallo-l><span>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> test_babyotter</span><span>()</span><span class="z-storage z-type"> public</span><span> {</span></span>
+<span class=giallo-l><span class=z-support>        address</span><span> target </span><span class=z-keyword>=</span><span class=z-constant> 0x4e309C767Acc9f9366d75C186454ed205d5Eeee3</span><span>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>        BoE exp </span><span class=z-keyword>= new</span><span class="z-entity z-name"> BoE</span><span>();</span></span>
+<span class=giallo-l><span>        exp.</span><span class="z-entity z-name">exploit</span><span>();</span></span>
+<span class=giallo-l><span class="z-entity z-name">        assertTrue</span><span>(</span><span class="z-entity z-name">IChallenge</span><span>(target).</span><span class="z-entity z-name">solved</span><span>());</span></span>
+<span class=giallo-l><span>    }</span></span>
+<span class=giallo-l><span>}</span></span></code></pre><p><code>forge test --match-test test_babyotter -vv</code> will confirm the challenge is solved. Submitting the exploit ZK Proof will credit some points in CTF.<h1 id=childotter>ChildOtter</h1><pre class="giallo z-code"><code data-lang=plain><span class=giallo-l><span>rpc: http://18.207.142.64:38545</span></span>
+<span class=giallo-l><span>contract: 0x63461D5b5b83bD9BA102fF21d8533b3aad172116</span></span>
+<span class=giallo-l><span>block_number: 3</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>Attached Files : [ https://github.com/0xHackedLabs/ctf/tree/main/src/ChildOtter/ChildOtter.sol ]</span></span></code></pre><pre class="giallo z-code"><code data-lang=solidity><span class=giallo-l><span class=z-comment>// SPDX-License-Identifier: UNLICENSED</span></span>
+<span class=giallo-l><span class=z-keyword>pragma</span><span class="z-entity z-name z-tag"> solidity</span><span class=z-constant> ^0.8.13</span><span>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">contract</span><span class="z-entity z-name"> ChildOtter</span><span> {</span></span>
+<span class=giallo-l><span class="z-storage z-type">    mapping</span><span>(</span><span class=z-support>uint</span><span class="z-keyword z-storage z-type"> => mapping</span><span>(</span><span class=z-support>uint</span><span class=z-keyword> =></span><span class=z-support> uint</span><span>)) val;</span></span>
+<span class=giallo-l><span class=z-support>    bool</span><span class="z-storage z-type"> public</span><span> solved </span><span class=z-keyword>=</span><span class=z-constant> false</span><span>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> solve</span><span>(</span><span class=z-support>uint</span><span class=z-variable> x</span><span>)</span><span class="z-storage z-type"> public</span><span> { </span></span>
+<span class=giallo-l><span class=z-support>      uint</span><span> target;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span>      val[</span><span class=z-constant>0</span><span>][</span><span class=z-constant>0</span><span>]</span><span class=z-keyword> =</span><span> x;</span></span>
+<span class=giallo-l><span class=z-keyword>      assembly</span><span> {</span></span>
+<span class=giallo-l><span>        target </span><span class=z-keyword>:=</span><span class="z-entity z-name"> mload</span><span>(</span><span class=z-constant>32</span><span>)</span></span>
+<span class=giallo-l><span>      }</span></span>
+<span class=giallo-l><span class=z-keyword>      assert</span><span>(target </span><span class=z-keyword>==</span><span> x);</span></span>
+<span class=giallo-l><span>      solved </span><span class=z-keyword>=</span><span class=z-constant> true</span><span>;</span></span>
+<span class=giallo-l><span>    }</span></span>
+<span class=giallo-l><span>}</span></span></code></pre><p>This is the challenge for which I learned a lot of new things. To solve this I revised entire EVM internals from many sources(see references).<p>The challenge goal is to call the solve function with the value which is store at the EVM memory 32 bytes to 64 bytes. That is what actually <code>mload(32)</code> is doing.<p>Solidity reserves four 32-byte slots, with specific byte ranges (inclusive of endpoints) being used as follows:<p><code>0x00 - 0x3f</code> (64 bytes): scratch space for hashing methods<p><code>0x40 - 0x5f</code> (32 bytes): currently allocated memory size (aka. free memory pointer)<p><code>0x60 - 0x7f</code> (32 bytes): zero slot<p>Scratch space can be used between statements (i.e. within inline assembly). The zero slot is used as initial value for dynamic memory arrays and should never be written to (the free memory pointer points to 0x80 initially).<p>The challenge contract defines a nested mapping and stored a value in the mapping at <code>key [0][0]</code>.<p>The variable <code>val</code> is assigned to storage slot 0 (simply because it is the first one). But the mapped elements are elsewhere.<p>To compute the storage slot or location of the mapped elements, the following is used :<p><code>slot = keccak256([key, mappingSlot]) // concatenate key and mapping slot</code><p>So, when storing values in a mapping EVM will compute keccak256 hash of the key and mapping slot. EVM will use <code>scratch space</code> to perform hashing. So, that means <code>0x00-0x3f</code>(0 - 64 bytes) will store the <code>keccak256([0,0])</code>.<p>The actual <code>value[0][0] = x</code> will be stored at <code>storage</code> slot <code>uint(keccak256([0,keccak256([0,0]))))</code>. In memory from <code>32 bytes to 64 bytes</code> are used to store the <code>keccak256([0,0])</code>.<p>Lets confirm this with remix debugger.</p><img alt="childOtter remix" class=autoimg src=/assets/img/ctf_img/hackedlabs23/hackedlabsctf_1.png><p>Calling solve function with this value will solve the challenge.<p><code>Exploit.sol</code><pre class="giallo z-code"><code data-lang=solidity><span class=giallo-l><span class=z-comment>// SPDX-License-Identifier: UNLICENSED</span></span>
+<span class=giallo-l><span class=z-keyword>pragma</span><span class="z-entity z-name z-tag"> solidity</span><span class=z-constant> ^0.8.13</span><span>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">interface</span><span class="z-entity z-name"> IChildOtter</span><span> {</span></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> solve</span><span>(</span><span class=z-support>uint</span><span class=z-variable> x</span><span>)</span><span class="z-storage z-type"> external</span><span>;</span></span>
+<span class=giallo-l><span>}</span></span>
+<span class=giallo-l><span class="z-storage z-type">contract</span><span class="z-entity z-name"> Exploit</span><span> {</span></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> exploit</span><span>()</span><span class="z-storage z-type"> public</span><span> {</span></span>
+<span class=giallo-l><span class=z-comment>        // write code here</span></span>
+<span class=giallo-l><span class=z-support>        address</span><span> target </span><span class=z-keyword>=</span><span class=z-constant> 0x63461D5b5b83bD9BA102fF21d8533b3aad172116</span><span>;</span></span>
+<span class=giallo-l><span class=z-support>        uint</span><span> x </span><span class=z-keyword>=</span><span class=z-support> uint</span><span>(</span><span class=z-support>keccak256</span><span>(</span><span class="z-variable z-language">abi</span><span>.</span><span class="z-entity z-name">encode</span><span>(</span><span class=z-constant>0</span><span>,</span><span class=z-constant>0</span><span>)));</span><span class=z-comment> // slot 0, key 0</span></span>
+<span class=giallo-l><span class="z-entity z-name">        IChildOtter</span><span>(target).</span><span class="z-entity z-name">solve</span><span>(x);</span></span>
+<span class=giallo-l><span>    }</span></span>
+<span class=giallo-l><span>}</span></span></code></pre><p>We can test this challenge with foundry test script.<p><code>Exploit.t.sol</code><pre class="giallo z-code"><code data-lang=solidity><span class=giallo-l><span class=z-comment>// SPDX-License-Identifier: UNLICENSED</span></span>
+<span class=giallo-l><span class=z-keyword>pragma</span><span class="z-entity z-name z-tag"> solidity</span><span class=z-constant> ^0.8.13</span><span>;</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class=z-keyword>import</span><span> {</span><span class="z-entity z-name">Exploit as CoE</span><span>}</span><span class=z-keyword> from</span><span class=z-string> "../src/ChildOtter/Exploit.sol"</span><span>;</span></span>
+<span class=giallo-l><span class="z-storage z-type">interface</span><span class="z-entity z-name"> IChallenge</span><span> {</span></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> solved</span><span>()</span><span class="z-storage z-type z-keyword"> external returns</span><span>(</span><span class=z-support>bool</span><span>);</span></span>
+<span class=giallo-l><span>}</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">contract</span><span class="z-entity z-name"> ExploitTest</span><span class=z-storage> is</span><span class="z-entity z-name"> Test</span><span> {</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> setUp</span><span>()</span><span class="z-storage z-type"> public</span><span> {</span></span>
+<span class=giallo-l><span class=z-comment>        // fork the ctf chain</span></span>
+<span class=giallo-l><span>        vm.</span><span class="z-entity z-name">createSelectFork</span><span>(</span><span class=z-string>"http://18.207.142.64:38545"</span><span>,</span><span class=z-constant> 3</span><span>);</span></span>
+<span class=giallo-l><span>    }</span></span>
+<span class=giallo-l></span>
+<span class=giallo-l><span class="z-storage z-type">    function</span><span class="z-entity z-name"> test_childotter</span><span>()</span><span class="z-storage z-type"> public</span><span> {</span></span>
+<span class=giallo-l><span class=z-support>        address</span><span> target </span><span class=z-keyword>=</span><span class=z-constant> 0x63461D5b5b83bD9BA102fF21d8533b3aad172116</span><span>;</span></span>
+<span class=giallo-l><span>        CoE exp </span><span class=z-keyword>= new</span><span class="z-entity z-name"> CoE</span><span>();</span></span>
+<span class=giallo-l><span>        exp.</span><span class="z-entity z-name">exploit</span><span>();</span></span>
+<span class=giallo-l><span class="z-entity z-name">        assertTrue</span><span>(</span><span class="z-entity z-name">IChallenge</span><span>(target).</span><span class="z-entity z-name">solved</span><span>());</span></span>
+<span class=giallo-l><span>    }</span></span>
+<span class=giallo-l><span>}</span></span></code></pre><p><code>forge test --match-test test_childotter -vv</code> will confirm the challenge is solved. Submitting the exploit ZK Proof will credit some points in CTF.<hr><h3 id=references>References</h3><ol><li><a href=https://ethereum.stackexchange.com/questions/114186/how-does-ethereum-fit-a-mapping-into-storage target=_blank>StackOverflow</a><li><a href=https://docs.soliditylang.org/en/latest/internals/layout_in_memory.html target=_blank>Solidity lang docs</a><li><a href="https://youtu.be/i_LwhlFNSkI?feature=shared" target=_blank>How mappings stored in EVM - MappingsJesper Kristensen YT</a><li><a href="https://youtu.be/Ru3inmu1FuQ?feature=shared" target=_blank>EVM Explained - Owen Thurm YT</a><li><a href="https://youtu.be/kCswGz9naZg?feature=shared" target=_blank>EVM Guide - Jordan McKinney YT</a></ol></div><nav aria-label="More posts" class=post-nav><a href=https://themj0ln1r.com/ctf/nullconhackimctf23/><span>Older</span>Nullcon Hackim CTF 2023</a><a class=next href=https://themj0ln1r.com/ctf/tcp1pctf/><span>Newer</span>TCP1P CTF 2023</a></nav></article></main><footer class=site-footer><div class="container footer-inner"><span>© 2026 Charan Nomula</span><nav aria-label=Elsewhere><a rel="me noopener" href=https://github.com/TheMj0ln1r/ target=_blank>GitHub</a><a rel="me noopener" href=https://x.com/TheMj0ln1r/ target=_blank>X</a><a rel="me noopener" href=https://linkedin.com/in/mj0ln1r/ target=_blank>LinkedIn</a></nav></div></footer>
