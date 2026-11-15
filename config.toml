@@ -1,6 +1,6 @@
 base_url = "https://themj0ln1r.com/"
 title = "Charan Nomula"
-description = "Building smart contracts. Reviewing smart contracts."
+description = "Charan Nomula's blog (TheMj0ln1r). Building and reviewing smart contracts. Writing on DeFi, cross-chain bridges and CTF writeups."
 build_search_index = false
 generate_feeds = false
 compile_sass = true
@@ -18,6 +18,7 @@ data_attr_position = "pre"
 
 [extra]
 author = "Charan Nomula"
+handle = "TheMj0ln1r"
 intro = "Building smart contracts. Reviewing smart contracts."
 favicon = "/favicons/favicon.ico"
 repo_url = "https://github.com/TheMj0ln1r/themj0ln1r.github.io/"
