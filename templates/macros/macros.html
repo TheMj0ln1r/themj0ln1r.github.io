@@ -1,34 +1,37 @@
-{# Post list grouped by year. Expects pages sorted newest first. #}
-{% macro list_posts(pages) %}
-<div class="post-list">
-    {% set_global prev_year = "" %}
+{# Compact rows: title left, date right. #}
+{% macro rows(pages, date_format="%b %Y") %}
+<ul class="rows">
     {%- for page in pages %}
-        {% set year = page.date | date(format="%Y") %}
-        {% if year != prev_year %}
-            {% if not loop.first %}</ol>{% endif %}
-            <h2 class="year">{{ year }}</h2>
-            <ol class="posts">
-            {% set_global prev_year = year %}
-        {% endif %}
-        <li class="post-item">
-            <time datetime="{{ page.date }}">{{ page.date | date(format="%b %d") }}</time>
-            <div class="post-item-body">
-                <a class="post-item-title" href="{{ page.permalink }}">{{ page.title }}</a>
-                {% if page.draft %}<span class="draft">draft</span>{% endif %}
-                <div class="post-item-meta">
-                    <span>{{ page.reading_time }} min read</span>
-                    {% if page.taxonomies.tags %}
-                        {% for tag in page.taxonomies.tags | slice(end=4) %}
-                        <a class="tag" href="{{ get_taxonomy_url(kind='tags', name=tag) }}">{{ tag }}</a>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-        </li>
-        {% if loop.last %}</ol>{% endif %}
-    {% endfor -%}
-</div>
-{% endmacro list_posts %}
+    <li>
+        <a href="{{ page.permalink }}">{{ page.title }}</a>{% if page.draft %}<span class="draft">draft</span>{% endif %}
+        {% if page.date %}<time datetime="{{ page.date }}">{{ page.date | date(format=date_format) }}</time>{% endif %}
+    </li>
+    {%- endfor %}
+</ul>
+{% endmacro rows %}
+
+{# Full list grouped by year. Expects pages sorted newest first. #}
+{% macro by_year(pages) %}
+{% set_global prev_year = "" %}
+{%- for page in pages %}
+    {% set year = page.date | date(format="%Y") %}
+    {% if year != prev_year %}
+        {% if not loop.first %}</ul>{% endif %}
+        <h2 class="year">{{ year }}</h2>
+        <ul class="rows">
+        {% set_global prev_year = year %}
+    {% endif %}
+    <li>
+        <a href="{{ page.permalink }}">{{ page.title }}</a>{% if page.draft %}<span class="draft">draft</span>{% endif %}
+        <time datetime="{{ page.date }}">{{ page.date | date(format="%b %d") }}</time>
+    </li>
+    {% if loop.last %}</ul>{% endif %}
+{% endfor -%}
+{% endmacro by_year %}
+
+{% macro sec_head(num, label) %}
+<h2 class="sec-head"><span class="num">{{ num }}</span>{{ label }}</h2>
+{% endmacro sec_head %}
 
 {% macro toc_list(toc) %}
 <ol>
@@ -46,10 +49,3 @@
     {% endfor %}
 </ol>
 {% endmacro toc_list %}
-
-{% macro page_header(title, subtitle="") %}
-<header class="page-head">
-    <h1>{{ title }}</h1>
-    {% if subtitle %}<p class="lede">{{ subtitle }}</p>{% endif %}
-</header>
-{% endmacro page_header %}

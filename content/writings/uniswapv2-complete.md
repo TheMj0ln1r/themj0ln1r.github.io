@@ -2,11 +2,7 @@
 title = "Uniswap V2 Complete Code Walkthrough"
 date = "2024-01-09"
 
-[taxonomies]
-tags=["web3", "defi"]
-
 [extra]
-
 +++
 
 Hello all, This post is all about **Uniswap V2 Contracts**. This is the notes written by me while learning Uniswap V2 from various resources. I have written short notes on each and every line of code in <a href="https://github.com/Uniswap/v2-core/" target=_blank>UniswapV2 Core Contracts</a> and <a href="https://github.com/Uniswap/v2-periphery/" target=_blank>UniswapV2 Periphery Contracts</a>. You can check my <a href="https://themj0ln1r.github.io/posts/uniswapv2overview">Uniswap V1_V2_V3 Overview</a> post to get a an overview on Uniswap protocol.

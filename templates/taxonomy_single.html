@@ -1,8 +1,0 @@
-{% extends "base.html" %}
-
-{% block main_content %}
-    {% set n = term.pages | length %}
-    {{ post_macros::page_header(title="#" ~ term.name, subtitle=n ~ " posts") }}
-    {{ post_macros::list_posts(pages=term.pages) }}
-    <p class="back"><a href="{{ get_url(path='tags') }}">&larr; All tags</a></p>
-{% endblock main_content %}

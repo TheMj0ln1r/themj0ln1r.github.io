@@ -4,20 +4,19 @@
 {% include "partials/header.html" %}
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    {% include "partials/nav.html" %}
+    {% block site_header %}{% include "partials/nav.html" %}{% endblock site_header %}
 
-    <main id="main" class="{% block main_class %}container{% endblock main_class %}">
+    <main id="main" class="container">
         {% block main_content %}{% endblock main_content %}
     </main>
 
     <footer class="site-footer">
         <div class="container footer-inner">
             <span>&copy; {{ now() | date(format="%Y") }} {{ config.extra.author }}</span>
-            <nav class="footer-links" aria-label="Elsewhere">
+            <nav aria-label="Elsewhere">
                 {% for social in config.extra.socials | default(value=[]) %}
                 <a href="{{ social.url }}" rel="me noopener" target="_blank">{{ social.name }}</a>
                 {% endfor %}
-                <a href="{{ get_url(path='atom.xml', trailing_slash=false) }}">RSS</a>
             </nav>
         </div>
     </footer>

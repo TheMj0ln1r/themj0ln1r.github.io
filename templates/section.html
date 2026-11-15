@@ -1,23 +1,8 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-    {% set is_home = current_path == "/" %}
-    {% if section.extra.section_path -%}
-        {% set section = get_section(path=section.extra.section_path) %}
-    {% endif -%}
-
-    {% if is_home %}
-        <section class="intro">
-            <h1>{{ config.extra.author }}</h1>
-            <p class="lede">{{ config.extra.intro }}</p>
-        </section>
-        <h2 class="list-heading">{{ section.title }}</h2>
-    {% else %}
-        {% set n = section.pages | length %}
-        {{ post_macros::page_header(title=section.title, subtitle=n ~ " posts") }}
-    {% endif %}
-
+    <h1 class="page-title">{{ section.title }}</h1>
+    <p class="page-sub">{{ section.pages | length }} posts</p>
     {% if section.content %}<div class="prose">{{ section.content | safe }}</div>{% endif %}
-
-    {{ post_macros::list_posts(pages=section.pages) }}
+    {{ post_macros::by_year(pages=section.pages) }}
 {% endblock main_content %}

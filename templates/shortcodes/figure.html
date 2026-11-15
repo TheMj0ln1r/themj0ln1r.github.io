@@ -1,0 +1,6 @@
+{#- Numbered figure for diagrams.
+    Usage: {{ figure(src="/assets/img/blog_img/post/arch.svg", alt="...", caption="...", width="80%") }} -#}
+<figure class="fig">
+    <img src="{{ src }}" alt="{{ alt | default(value=caption | default(value='')) }}"{% if width %} style="width: {{ width }}"{% endif %} loading="lazy">
+    {% if caption %}<figcaption>{{ caption | markdown(inline=true) | safe }}</figcaption>{% endif %}
+</figure>

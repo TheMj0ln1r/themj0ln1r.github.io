@@ -2,11 +2,7 @@
 title = "RareSkills Circom Puzzles - Spoilers"
 date = "2025-11-06"
 
-[taxonomies]
-tags=["web3", "zk", "circom"]
-
 [extra]
-
 +++
 
 

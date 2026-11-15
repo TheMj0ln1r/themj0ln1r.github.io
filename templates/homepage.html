@@ -1,1 +1,60 @@
-{% extends "section.html" %}
+{% extends "base.html" %}
+
+{% block site_header %}{% endblock site_header %}
+
+{% block main_content %}
+{% set cv = load_data(path="data/cv.toml") %}
+{% set writing = get_section(path="writings/_index.md") %}
+{% set ctf = get_section(path="ctf/_index.md") %}
+
+<header class="hero">
+    <h1>{{ config.extra.author }}</h1>
+    <nav class="links" aria-label="Elsewhere">
+        {% for s in config.extra.socials %}
+        <a href="{{ s.url }}" aria-label="{{ s.name }}" rel="me noopener" target="_blank"><span class="icon">{{ load_data(path="static/icons/" ~ s.icon ~ ".svg", format="plain") | safe }}</span></a>
+        {% endfor %}
+    </nav>
+</header>
+<p class="lede">{{ config.extra.intro }} <span class="handle">Online as TheMj0ln1r.</span></p>
+
+{{ post_macros::sec_head(num="1", label="Experience") }}
+{% for r in cv.roles %}
+<div class="role">
+    <img class="role-logo{% if r.logo_style %} {{ r.logo_style }}{% endif %}" src="{{ get_url(path=r.logo) }}" alt="" width="30" height="30">
+    <div class="role-head">
+        <span><span class="org">{% if r.url %}<a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.org }}</a>{% else %}{{ r.org }}{% endif %}</span>, <span class="title">{{ r.title }}</span></span>
+        <span class="dates">{{ r.dates }}</span>
+    </div>
+    {% if r.points %}
+    <ul>
+        {% for p in r.points %}<li>{{ p | markdown(inline=true) | safe }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endfor %}
+
+{{ post_macros::sec_head(num="2", label="Education") }}
+{% for e in cv.education %}
+<div class="role">
+    <img class="role-logo{% if e.logo_style %} {{ e.logo_style }}{% endif %}" src="{{ get_url(path=e.logo) }}" alt="" width="30" height="30">
+    <div class="role-head">
+        <span><span class="org">{% if e.url %}<a href="{{ e.url }}" target="_blank" rel="noopener">{{ e.school }}</a>{% else %}{{ e.school }}{% endif %}</span>, <span class="title">{{ e.degree }}</span></span>
+        <span class="dates">{{ e.dates }}</span>
+    </div>
+</div>
+{% endfor %}
+
+{{ post_macros::sec_head(num="3", label="Selected") }}
+<ul class="plain-list">
+    {% for p in cv.selected.points %}<li>{{ p | markdown(inline=true) | safe }}</li>{% endfor %}
+</ul>
+
+{{ post_macros::sec_head(num="4", label="Writing") }}
+{{ post_macros::rows(pages=writing.pages) }}
+
+<section class="no-print">
+{{ post_macros::sec_head(num="5", label="CTF Writeups") }}
+{{ post_macros::rows(pages=ctf.pages | slice(end=5)) }}
+<a class="more" href="{{ ctf.permalink }}">All {{ ctf.pages | length }} writeups</a>
+</section>
+{% endblock main_content %}

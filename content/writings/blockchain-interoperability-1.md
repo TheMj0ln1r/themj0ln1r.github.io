@@ -3,11 +3,7 @@ title = "Blockchain Interoperability Part-1 : Interoperability Problem And Bridg
 
 date = "2025-11-16"
 
-[taxonomies]
-tags=["blockchain", "interoperability", "bridges", "cross-chain", "web3"]
-
 [extra]
-
 +++
 
 
