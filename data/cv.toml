@@ -1,0 +1,40 @@
+# Rendered on the homepage by templates/homepage.html.
+# logo_style: "silhouette" paints every opaque pixel black (for colored logos).
+
+[[roles]]
+org = "Phoenix Labs (Spark)"
+url = "https://spark.fi/"
+logo = "logos/spark.png"
+logo_style = "silhouette"
+title = "Senior Smart Contract Engineer"
+dates = "Jan 2026 to Present"
+points = [
+    "Building [diamond-pau](https://github.com/sky-ecosystem/diamond-pau), Spark's next-generation onchain allocator, live on Ethereum and Arbitrum.",
+    "Review governance [spells](https://github.com/sparkdotfi/spark-spells) and contribute to [SparkLend](https://github.com/sparkdotfi/sparklend-v1-core) and [Spark Vaults](https://github.com/sparkdotfi/spark-vaults-v2).",
+]
+
+[[roles]]
+org = "Supra"
+url = "https://supra.com/"
+logo = "logos/supra.svg"
+title = "Lead Blockchain Engineer"
+dates = "Feb 2024 to Jan 2026"
+points = [
+    "Architected and led [SupraNova](https://supranova.ai/), a trustless Ethereum to Supra bridge, from research to mainnet.",
+    "Researched cross-chain designs (Wormhole, LayerZero, Hyperlane, ZK bridges) and contributed to [Hyperloop](https://eprint.iacr.org/2025/176).",
+]
+
+[[education]]
+school = "Rajiv Gandhi University of Knowledge Technologies"
+url = "https://www.rgukt.in/"
+logo = "logos/rgukt.png"
+logo_style = "silhouette"
+degree = "Computer Science"
+dates = "2020 to 2024"
+
+[selected]
+points = [
+    "Contributed to [Hyperloop](https://eprint.iacr.org/2025/176), a non-interactive multisig bridge paper (IACR ePrint 2025/176).",
+    "Contributor, [Interoperability Protocol Security Checklist](https://github.com/windhustler/Interoperability-Protocol-Security-Checklist).",
+    "Top 10 in Web3 CTFs including Statemind (top 3), MetaRed, TCP1P and HackedLabs.",
+]

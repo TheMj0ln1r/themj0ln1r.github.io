@@ -1,35 +1,30 @@
 base_url = "https://themj0ln1r.github.io/"
-title = "TheMj0ln1r Blog"
-description = ""
+title = "Charan Nomula"
+description = "Building smart contracts. Reviewing smart contracts."
 build_search_index = false
-generate_feeds = true
+generate_feeds = false
 compile_sass = true
 minify_html = true
-taxonomies = [{ name = "tags" }]
+
+[markdown]
+bottom_footnotes = true
 
 [markdown.highlighting]
 enabled = true
 style = "class"
-light_theme = "github-light"
-dark_theme = "github-dark"
+theme = "github-light"
 extra_grammars = ["syntaxes/huff.tmLanguage.json"]
 data_attr_position = "pre"
 
 [extra]
 author = "Charan Nomula"
-intro = "Smart contract engineer at Phoenix Labs (Spark). Notes on DeFi internals, EVM, cross-chain protocols and CTF writeups."
+intro = "Building smart contracts. Reviewing smart contracts."
 favicon = "/favicons/favicon.ico"
 repo_url = "https://github.com/TheMj0ln1r/themj0ln1r.github.io/"
-menu = [
-    { name = "Writings", url = "/", weight = 1 },
-    { name = "CV", url = "/cv", weight = 2 },
-    { name = "Archive", url = "/archive", weight = 3 },
-    { name = "Tags", url = "/tags", weight = 4 },
-]
 socials = [
-    { name = "GitHub", url = "https://github.com/TheMj0ln1r/" },
-    { name = "X", url = "https://x.com/TheMj0ln1r/" },
-    { name = "LinkedIn", url = "https://linkedin.com/in/mj0ln1r/" },
+    { name = "GitHub", icon = "github", url = "https://github.com/TheMj0ln1r/" },
+    { name = "X", icon = "x", url = "https://x.com/TheMj0ln1r/" },
+    { name = "LinkedIn", icon = "linkedin", url = "https://linkedin.com/in/mj0ln1r/" },
 ]
 
 [extra.analytics]
@@ -37,4 +32,4 @@ enabled = true
 
 [extra.analytics.goatcounter]
 user = "themj0ln1r"
-host = "goatcounter.com" # default= goatcounter.com
+host = "goatcounter.com"

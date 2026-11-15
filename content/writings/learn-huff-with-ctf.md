@@ -2,11 +2,7 @@
 title = "Learn Huff by solving a CTF challenge"
 date = "2025-12-14"
 
-[taxonomies]
-tags=["web3", "huff", "evm"]
-
 [extra]
-
 +++
 
 Huff is a low-level programming language for writing highly optimized EVM smart contracts. High-level languages like Solidity and Vyper prioritize developer experience through abstraction, improving readability and reducing implementation complexity. These abstractions impose an optimization ceiling that prevents developers from achieving maximum gas efficiency. Yul, an intermediate language usable as inline assembly in Solidity or as standalone code, offers better optimization than Solidity but still cannot match direct opcode-level control. The Aztec Protocol team created Huff to implement [Weierstrudel](https://github.com/aztecprotocol/weierstrudel/tree/master/huff_modules), an on-chain elliptic curve arithmetic library requiring gas optimization beyond what existing languages could provide. In fact, Huff is not a new programming language for EVM, it is just a set of tools created to help developers to write smart contracts with pure EVM opcodes.

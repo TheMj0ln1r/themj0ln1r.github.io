@@ -27,35 +27,12 @@
         {% endfor %}
     {% endif %}
 
-    <meta name="theme-color" content="#f2f2f0" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#ffffff">
     {% if config.extra.favicon %}<link rel="icon" href="{{ config.extra.favicon }}">{% endif %}
-    <link rel="alternate" type="application/atom+xml" title="{{ config.title }}" href="{{ get_url(path='atom.xml', trailing_slash=false) }}">
 
+    <link rel="preload" href="{{ get_url(path='fonts/v/source-serif-4-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{{ get_url(path='fonts/v/inter-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{{ get_url(path='main.css') }}">
-    <link rel="stylesheet" id="hl-light" href="{{ get_url(path='giallo-light.css') }}" media="(prefers-color-scheme: light)">
-    <link rel="stylesheet" id="hl-dark" href="{{ get_url(path='giallo-dark.css') }}" media="(prefers-color-scheme: dark)">
-
-    {# Theme: saved choice, else system preference. Runs before paint to avoid a flash. #}
-    <script>
-        (function () {
-            var KEY = "theme-storage";
-            function apply(mode) {
-                document.documentElement.dataset.theme = mode;
-                document.getElementById("hl-light").media = mode === "light" ? "all" : "not all";
-                document.getElementById("hl-dark").media = mode === "dark" ? "all" : "not all";
-            }
-            var saved = null;
-            try { saved = localStorage.getItem(KEY); } catch (e) {}
-            apply(saved || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
-            window.toggleTheme = function () {
-                var next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-                try { localStorage.setItem(KEY, next); } catch (e) {}
-                apply(next);
-            };
-        })();
-    </script>
 
     <script defer src="{{ get_url(path='js/codeblock.js') }}"></script>
 

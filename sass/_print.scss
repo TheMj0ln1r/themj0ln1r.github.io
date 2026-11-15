@@ -1,0 +1,11 @@
+/* Printing the homepage gives a one-page CV. */
+@media print {
+  @page { margin: 14mm 16mm; }
+  body { font-size: 10.5pt; line-height: 1.45; }
+  .site-footer, .skip-link, .more, .no-print, .code-copy { display: none !important; }
+  .hero { padding-top: 0; }
+  .sec-head { margin-top: 1.2rem; }
+  a { text-decoration: none; }
+  .role, .rows li { break-inside: avoid; }
+  pre.giallo code { white-space: pre-wrap; }
+}

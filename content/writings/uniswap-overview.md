@@ -2,11 +2,7 @@
 title = "Uniswap V1_V2_V3 Overview"
 date = "2024-01-08"
 
-[taxonomies]
-tags=["web3", "defi"]
-
 [extra]
-
 +++
 
 Hey hi all, I got something useful for all web3 learners. Past few days I spent to understand bits and bytes of the Uniswap Protocol. I gathered the best resources to learn all the things about Uniswap V2. During my learning I have taken notes of every thing that I learned. In this post you can get an gist of **Uniswap DEX** Protocol. You can check my <a href="https://themj0ln1r.github.io/posts/uniswapv2complete">Uniswap V2 Complete Code Walkthrough</a> post to learn everything about Uniswap V2.

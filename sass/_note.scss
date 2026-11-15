@@ -1,7 +1,8 @@
 .note {
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius);
-  background: var(--note);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--ink);
+  border-radius: 3px;
+  background: var(--bg);
   overflow: hidden;
 
   > .note-head, > summary {
@@ -10,8 +11,9 @@
     gap: 0.55rem;
     padding: 0.65rem 1rem;
     font-weight: 600;
-    font-size: 0.92rem;
-    color: var(--text-strong);
+    font-size: 0.85rem;
+    font-family: var(--sans);
+    color: var(--ink);
     &.center { justify-content: center; }
     p { margin: 0; }
   }
@@ -30,18 +32,18 @@
       transform: rotate(-45deg);
       transition: transform 0.15s ease;
     }
-    &:hover { background: var(--border-soft); }
+    &:hover { color: var(--accent); }
   }
   &[open] > summary {
-    border-bottom: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--rule);
     &::before { transform: rotate(45deg); }
   }
 
-  > .note-head { border-bottom: 1px solid var(--border-soft); }
+  > .note-head { border-bottom: 1px solid var(--rule); }
 
   .note-body {
     padding: 1rem;
-    background: var(--bg);
+    font-size: 0.95em;
     > :last-child { margin-bottom: 0; }
     // Code fills the note edge to edge.
     > pre.giallo:only-child { margin: -1rem; border: 0; border-radius: 0; }

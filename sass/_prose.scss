@@ -2,56 +2,58 @@
   overflow-wrap: break-word;
 
   > :first-child { margin-top: 0; }
+  p, ul, ol, blockquote, table, figure, details, aside, pre { margin: 0 0 1.2rem; }
+  p, li { text-wrap: pretty; }
+  // Justified body text from tablet width up; hyphenation keeps word spacing even.
+  // Phones stay left-aligned: too few words per line to justify without big gaps.
+  @media (min-width: 601px) {
+    > p, > ul > li, > ol > li, blockquote p, .note-body p {
+      text-align: justify;
+      hyphens: auto;
+      -webkit-hyphens: auto;
+    }
+  }
 
-  p, ul, ol, blockquote, table, figure, details, aside, pre { margin: 0 0 1.35rem; }
-
-  // Posts use "#" as their section level, so h1 inside the body is a section heading.
+  // Headings are sans, small and quiet; the accent number does the signposting.
   h1, h2, h3, h4, h5, h6 {
-    color: var(--text-strong);
+    font-family: var(--sans);
+    color: var(--ink);
     line-height: 1.3;
     letter-spacing: -0.015em;
     font-weight: 650;
-    margin: 2.6rem 0 0.9rem;
+    margin: 2.6rem 0 0.8rem;
     text-wrap: balance;
+    hyphens: manual;
   }
-  h1 { font-size: var(--step-2); padding-bottom: 0.4rem; border-bottom: 1px solid var(--border-soft); }
-  h2 { font-size: var(--step-1); }
-  h3 { font-size: 1.05rem; }
-  h4, h5, h6 { font-size: 1rem; color: var(--muted); }
-  h1 + h2, h2 + h3 { margin-top: 1.25rem; }
+  h1 { font-size: 1.32rem; }
+  h2 { font-size: 1.1rem; }
+  h3 { font-size: 0.98rem; }
+  h4, h5, h6 { font-size: 0.9rem; color: var(--muted); }
+  h1 + h2, h2 + h3 { margin-top: 1.3rem; }
 
-  strong { color: var(--text-strong); font-weight: 650; }
+  strong { font-weight: 650; }
 
-  a {
-    text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
-    text-underline-offset: 3px;
-    &:hover { text-decoration-color: var(--accent); }
-  }
-
-  ul, ol { padding-left: 1.4rem; }
-  li { margin: 0.35rem 0; }
-  li::marker { color: var(--muted); }
-  li > ul, li > ol { margin: 0.35rem 0 0; }
+  ul, ol { padding-left: 1.35rem; }
+  li { margin: 0.3rem 0; }
+  li::marker { color: var(--faint); }
+  li > ul, li > ol { margin: 0.3rem 0 0; }
 
   blockquote {
     margin-inline: 0;
-    padding: 0.2rem 0 0.2rem 1.1rem;
-    border-left: 3px solid var(--border);
-    color: var(--muted);
+    padding: 0 0 0 1.1rem;
+    border-left: 2px solid var(--ink);
+    font-style: italic;
     > :last-child { margin-bottom: 0; }
   }
 
-  hr { border: 0; border-top: 1px solid var(--border-soft); margin: 3rem 0; }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 2.8rem 0; }
 
-  img, video {
+  img, video, svg.diagram {
     display: block;
     max-width: 100%;
     height: auto;
-    margin: 1.75rem auto;
-    border-radius: var(--radius);
+    margin: 1.8rem auto;
   }
-  :root[data-theme="dark"] & img { background: #f0f3f6; }
 
   table {
     display: block;
@@ -59,11 +61,16 @@
     max-width: 100%;
     overflow-x: auto;
     border-collapse: collapse;
-    font-size: 0.92rem;
+    font-family: var(--sans);
+    font-size: 0.8rem;
     line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
   }
-  th, td { padding: 0.55rem 0.85rem; border: 1px solid var(--border-soft); text-align: left; vertical-align: top; }
-  th { background: var(--bg-soft); color: var(--text-strong); font-weight: 600; }
+  th, td { padding: 0.45rem 0.8rem; text-align: left; vertical-align: top; }
+  th { font-weight: 600; border-bottom: 1px solid var(--ink); }
+  tr + tr td { border-top: 1px solid var(--rule); }
 
   // MathJax has no line breaking, so wide display equations scroll inside their own box.
   mjx-container[display="true"] {
@@ -72,15 +79,149 @@
     overflow-x: auto;
     overflow-y: hidden;
     padding-block: 0.25rem;
-    scrollbar-width: thin;
   }
   mjx-container:not([display="true"]) { max-width: 100%; }
 
-  mark { background: var(--mark); color: inherit; padding: 0 0.15em; border-radius: 3px; }
+  mark { background: var(--accent-wash); color: inherit; padding: 0 0.15em; }
 
-  .tldr {
-    padding: 0.9rem 1.1rem;
-    background: var(--accent-soft);
-    border-radius: var(--radius);
+  /* Figures (shortcodes/figure.html): numbered like a paper. */
+  counter-reset: fig;
+  figure.fig {
+    counter-increment: fig;
+    margin: 2rem 0;
+    img, svg { margin: 0 auto; }
+    figcaption {
+      margin-top: 0.7rem;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: var(--muted);
+      text-align: center;
+      &::before { content: "Figure " counter(fig) ". "; color: var(--accent); font-weight: 600; }
+    }
   }
+
+  /* Bottom footnotes (markdown.bottom_footnotes). */
+  .footnote-reference a, sup a {
+    color: var(--accent);
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: 0.8em;
+    padding: 0 0.1em;
+  }
+  .footnotes {
+    margin-top: 3.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: var(--muted);
+    ol { padding-left: 1.2rem; }
+    li::marker { color: var(--accent); font-family: var(--sans); }
+    li:target { background: var(--accent-wash); }
+    a[href^="#fr"] { text-decoration: none; color: var(--accent); }
+  }
+  .footnote-definition:target { background: var(--accent-wash); }
+}
+
+/* Section numbers for Writing posts. The template sets from-h1 / from-h2 by the post's top level. */
+@mixin numbered($top, $sub) {
+  counter-reset: s1;
+  #{$top} { counter-increment: s1; counter-reset: s2; }
+  #{$sub} { counter-increment: s2; }
+  #{$top}::before { content: counter(s1); }
+  #{$sub}::before { content: counter(s1) "." counter(s2); }
+  #{$top}::before, #{$sub}::before {
+    display: inline-block;
+    min-width: 1.5em;
+    margin-right: 0.55em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+}
+.prose.numbered.from-h1 { @include numbered(h1, h2); }
+.prose.numbered.from-h2 { @include numbered(h2, h3); }
+// Headings inside notes/footnotes are not sections.
+.prose.numbered .note :is(h1, h2, h3)::before { content: none; }
+
+/* Post title block */
+.post-head {
+  margin: 2rem 0 2.2rem;
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  h1 {
+    font-family: var(--sans);
+    font-size: 2.05rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    margin: 0.5rem 0 0.8rem;
+    text-wrap: balance;
+  }
+  .meta { font-family: var(--sans); font-size: 0.8rem; color: var(--muted); }
+  .meta span + span::before { content: "\00b7"; margin: 0 0.5em; }
+}
+@media (max-width: 600px) { .post-head h1 { font-size: 1.6rem; } }
+
+.abstract {
+  margin: 0 0 2rem;
+  padding: 0.1rem 0 0.1rem 1rem;
+  border-left: 2px solid var(--accent);
+  font-style: italic;
+  b { font-family: var(--sans); font-style: normal; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; margin-right: 0.5em; }
+}
+
+/* Inline numbered contents block */
+.toc {
+  margin: 0 0 2.6rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  .toc-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 0.5rem; }
+  ol { list-style: none; margin: 0; padding: 0; counter-reset: t; }
+  ol ol { padding-left: 2.1em; }
+  ol ol a::before { min-width: 2.1em; }
+  li { counter-increment: t; margin: 0.18rem 0; }
+  a { display: inline-flex; text-decoration: none; &:hover { color: var(--accent); } }
+  a::before {
+    flex: none;
+    content: counters(t, ".");
+    display: inline-block;
+    min-width: 1.5em;
+    margin-right: 0.6em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+}
+.toc.plain a::before { content: none; }
+
+.post-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  a { text-decoration: none; }
+  span { display: block; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+  .next { text-align: right; }
+}
+@media (max-width: 600px) { .post-nav { grid-template-columns: 1fr; .next { text-align: left; } } }
+
+details.toc.plain {
+  summary { cursor: pointer; margin: 0; list-style: none; &::-webkit-details-marker { display: none; } &::after { content: " +"; color: var(--accent); } }
+  &[open] summary { margin-bottom: 0.5rem; &::after { content: " \2212"; } }
 }

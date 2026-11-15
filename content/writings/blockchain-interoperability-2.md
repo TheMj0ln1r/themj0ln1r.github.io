@@ -2,11 +2,7 @@
 title = "Blockchain Interoperability Part-2 : Atomic Swaps & HTLC's"
 date = "2025-12-27"
 
-[taxonomies]
-tags=["interoperability", "cross-chain", "web3", "atomicswap", "htlc", "blockchain"]
-
 [extra]
-
 +++
 
 Cross-chain asset swaps face a trust problem. Exchanging Token-A for Token-B across blockchains through a centralized exchange requires both parties to trust the exchange with their funds. If the exchange colludes with one party or fails during the swap, the other party loses their assets. Within a single blockchain, decentralized exchanges like Uniswap solve this using smart contracts as trustless intermediaries. Atomic swaps extend this trustless exchange model across different blockchains without intermediaries. 
